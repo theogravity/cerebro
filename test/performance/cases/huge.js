@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var Cerebro = require('../../../src/index.js'),
+var Cerebro = require('../../../src/cerebro.js'),
     configuration = require('../../fixtures/combined/huge.js'),
     cerebro = new Cerebro(configuration);
 

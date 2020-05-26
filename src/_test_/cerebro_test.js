@@ -7,12 +7,12 @@
 /* eslint-disable no-unused-expressions */
 
 var expect = require('chai').expect,
-    Cerebro = require('../index.js'),
+    Cerebro = require('../cerebro.js'),
     Evaluator = require('../evaluator.js'); // stub purposes
 
 require('../../test/setup/server');
 
-describe('./index.js', function() {
+describe('./cerebro.js', function() {
     beforeEach(function() {
         this.config = [{a: 1}];
         this.labels = {a: ['s'], b: ['c'], c: ['s', 'c']};
@@ -153,7 +153,7 @@ describe('./index.js', function() {
                 rawConfig = {a: 111, b: true, c: {multilevel: [1, 2]}},
                 labels = {a: ['s'], b: ['c'], c: ['s', 'c']};
 
-            this.sandbox.stub(Cerebro.prototype, '_build', function() {
+            this.sandbox.stub(Cerebro.prototype, '_build').callsFake(function() {
                 return {answers: rawConfig, labels};
             });
             this.rawConfig = rawConfig;

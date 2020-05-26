@@ -7,7 +7,7 @@
 /* eslint-disable no-unused-expressions */
 
 var expect = require('chai').expect,
-    Cerebro = require('../../src/index.js'),
+    Cerebro = require('../cerebro.js'),
     FIXTURE_PATH = '../../test/fixtures/';
 
 require('../../test/setup/server');
