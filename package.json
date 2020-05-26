@@ -4,7 +4,7 @@
   "description": "A generic configuration system for Node.js.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "license": "MIT",
-  "main": "src/cerebro.js",
+  "main": "src/cerebro.ts",
   "scripts": {
     "test": "grunt test:ci",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"

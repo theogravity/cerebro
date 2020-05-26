@@ -12,7 +12,7 @@ var expect = require('chai').expect,
 
 require('../../test/setup/server');
 
-describe('./cerebro.js', function() {
+describe('./cerebro.ts', function() {
     beforeEach(function() {
         this.config = [{a: 1}];
         this.labels = {a: ['s'], b: ['c'], c: ['s', 'c']};
