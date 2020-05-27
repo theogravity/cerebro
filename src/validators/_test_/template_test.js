@@ -5,9 +5,10 @@
 
 /* global describe, it, beforeEach */
 /* eslint-disable no-unused-expressions */
+/* eslint-disable no-template-curly-in-string */
 
-var validate = require('../index')
-var expect = require('chai').expect
+const validate = require('../index')
+const expect = require('chai').expect
 
 describe('template validation', function () {
   beforeEach(function () {
@@ -15,14 +16,18 @@ describe('template validation', function () {
   })
 
   it('returns no errors if templates not present', function () {
-    var config = [{
-      setting: 'setting',
-      value: 'default',
-      except: [{
-        value: 'other',
-        buckets: ['CMUSCVRT1']
-      }]
-    }]
+    var config = [
+      {
+        setting: 'setting',
+        value: 'default',
+        except: [
+          {
+            value: 'other',
+            buckets: ['CMUSCVRT1']
+          }
+        ]
+      }
+    ]
     var report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(0)
@@ -30,14 +35,18 @@ describe('template validation', function () {
   })
 
   it('provides no errors on valid template', function () {
-    var config = [{
-      setting: 'setting',
-      value: 'default',
-      except: [{
-        value: '${farms}.yahoo.com',
-        farms: [1, 2]
-      }]
-    }]
+    var config = [
+      {
+        setting: 'setting',
+        value: 'default',
+        except: [
+          {
+            value: '${farms}.yahoo.com',
+            farms: [1, 2]
+          }
+        ]
+      }
+    ]
     var report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(0)
@@ -45,10 +54,12 @@ describe('template validation', function () {
   })
 
   it('prevents templates from being defined at toplevel', function () {
-    var config = [{
-      setting: 'setting',
-      value: 'https://${colo}.yahoo.com'
-    }]
+    var config = [
+      {
+        setting: 'setting',
+        value: 'https://${colo}.yahoo.com'
+      }
+    ]
     var report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
@@ -57,30 +68,40 @@ describe('template validation', function () {
   })
 
   it('ensures that template variable has condition restriction', function () {
-    var config = [{
-      setting: 'setting',
-      value: 'default',
-      except: [{
-        value: 'yahoo.com/${farms}/launch'
-        // The validation should fail because farms: [] not defined here
-      }]
-    }]
+    var config = [
+      {
+        setting: 'setting',
+        value: 'default',
+        except: [
+          {
+            value: 'yahoo.com/${farms}/launch'
+            // The validation should fail because farms: [] not defined here
+          }
+        ]
+      }
+    ]
     var report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
     expect(report.valid).to.equal(false)
-    expect(report.errors[0].message).to.match(/doesn't have condition on variable$/)
+    expect(report.errors[0].message).to.match(
+      /doesn't have condition on variable$/
+    )
   })
 
   it('restricts templates to one variable', function () {
-    var config = [{
-      setting: 'setting',
-      value: 'default',
-      except: [{
-        value: '${farms}/${buckets}',
-        farms: [2]
-      }]
-    }]
+    var config = [
+      {
+        setting: 'setting',
+        value: 'default',
+        except: [
+          {
+            value: '${farms}/${buckets}',
+            farms: [2]
+          }
+        ]
+      }
+    ]
     var report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
@@ -88,29 +109,39 @@ describe('template validation', function () {
     expect(report.errors[0].message).to.match(/has more than one variable$/)
   })
 
-  it('doesn\'t allow usage of reserved keywords', function () {
-    var config = [{
-      setting: 'setting',
-      value: 'default',
-      except: [{
-        value: '${value}'
-      }]
-    }]
+  it("doesn't allow usage of reserved keywords", function () {
+    var config = [
+      {
+        setting: 'setting',
+        value: 'default',
+        except: [
+          {
+            value: '${value}'
+          }
+        ]
+      }
+    ]
     var report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
     expect(report.valid).to.equal(false)
-    expect(report.errors[0].message).to.match(/uses reserved keyword as variable$/)
+    expect(report.errors[0].message).to.match(
+      /uses reserved keyword as variable$/
+    )
   })
 
   it('shows all errors for a given entry', function () {
-    var config = [{
-      setting: 'setting',
-      value: 'bad${template}',
-      except: [{
-        value: '${setting}'
-      }]
-    }]
+    var config = [
+      {
+        setting: 'setting',
+        value: 'bad${template}',
+        except: [
+          {
+            value: '${setting}'
+          }
+        ]
+      }
+    ]
     var report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(3)

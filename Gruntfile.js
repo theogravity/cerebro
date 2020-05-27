@@ -40,7 +40,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('bench_ci', ['bench', 'append_benchmarks', 'git_commit'])
 
-  grunt.registerTask('test', ['mocha_istanbul', 'bench'])
+  grunt.registerTask('test', ['mocha_istanbul'])
 
   grunt.registerTask('test:ci', ['mocha_istanbul'])
 }

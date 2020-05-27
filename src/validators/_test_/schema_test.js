@@ -6,16 +6,18 @@
 /* global describe, it, beforeEach */
 /* eslint-disable no-unused-expressions */
 
-var validate = require('../index')
-var expect = require('chai').expect
+const validate = require('../index')
+const expect = require('chai').expect
 
 describe('schema validation', function () {
   describe('key validation', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'setting',
-        value: true
-      }]
+      this.data = [
+        {
+          setting: 'setting',
+          value: true
+        }
+      ]
 
       this.clientSchema = {}
     })
@@ -59,16 +61,18 @@ describe('schema validation', function () {
 
   describe('`setting` type checks', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'setting',
-        value: true
-      }]
+      this.data = [
+        {
+          setting: 'setting',
+          value: true
+        }
+      ]
 
       this.clientSchema = {}
     })
 
     it('returns an error when `setting` is not a string', function () {
-      [true, 42, {}, [], null, undefined].forEach(function (value) {
+      ;[true, 42, {}, [], null, undefined].forEach(function (value) {
         var report
 
         this.data[0].setting = value
@@ -87,16 +91,18 @@ describe('schema validation', function () {
 
   describe('`value` type checks', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'setting',
-        value: true
-      }]
+      this.data = [
+        {
+          setting: 'setting',
+          value: true
+        }
+      ]
 
       this.clientSchema = {}
     })
 
     it('does not return an error when `value` is not null or undefined', function () {
-      [true, 42, {}, [], 'string'].forEach(function (value) {
+      ;[true, 42, {}, [], 'string'].forEach(function (value) {
         var report
 
         this.data[0].value = value
@@ -107,7 +113,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is null or undefined', function () {
-      [null, undefined].forEach(function (value) {
+      ;[null, undefined].forEach(function (value) {
         var report
 
         this.data[0].value = value
@@ -120,17 +126,19 @@ describe('schema validation', function () {
 
   describe('`except` type checks', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'setting',
-        value: true,
-        except: []
-      }]
+      this.data = [
+        {
+          setting: 'setting',
+          value: true,
+          except: []
+        }
+      ]
 
       this.clientSchema = {}
     })
 
     it('returns an error when `except` is not an array', function () {
-      [true, 42, {}, 'string', null, undefined].forEach(function (value) {
+      ;[true, 42, {}, 'string', null, undefined].forEach(function (value) {
         var report
 
         this.data[0].except = value
@@ -311,16 +319,18 @@ describe('schema validation', function () {
 
   describe('client schema', function () {
     it('respects the client schema', function () {
-      var data = [{
-        setting: 'convReplyBucket',
-        value: false,
-        except: [
-          {
-            value: true,
-            buckets: ['CMUSCVRT']
-          }
-        ]
-      }]
+      var data = [
+        {
+          setting: 'convReplyBucket',
+          value: false,
+          except: [
+            {
+              value: true,
+              buckets: ['CMUSCVRT']
+            }
+          ]
+        }
+      ]
       var clientSchema = {
         buckets: {
           type: 'array',
@@ -352,11 +362,13 @@ describe('schema validation', function () {
 
   describe('valueType check', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'testSetting',
-        valueType: 'string',
-        value: 'sample string'
-      }]
+      this.data = [
+        {
+          setting: 'testSetting',
+          valueType: 'string',
+          value: 'sample string'
+        }
+      ]
 
       this.clientSchema = {}
     })
@@ -368,7 +380,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is not a string', function () {
-      [true, 42, {}, []].forEach(function (val) {
+      ;[true, 42, {}, []].forEach(function (val) {
         var report
         var expectedValType = Array.isArray(val) ? 'array' : typeof val
 
@@ -376,8 +388,12 @@ describe('schema validation', function () {
 
         report = validate(this.clientSchema, this.data)
         expect(report.valid).to.be.false
-        expect(report.errors[0].message).to.equal('Value `' + JSON.stringify(val) +
-                    '` was expected to be of type string, but it is type ' + expectedValType)
+        expect(report.errors[0].message).to.equal(
+          'Value `' +
+            JSON.stringify(val) +
+            '` was expected to be of type string, but it is type ' +
+            expectedValType
+        )
       }, this)
     })
 
@@ -391,7 +407,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is not a number', function () {
-      [true, 'abc', {}, []].forEach(function (val) {
+      ;[true, 'abc', {}, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = 'number'
@@ -412,7 +428,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is not a boolean', function () {
-      ['abc', 42, {}, []].forEach(function (val) {
+      ;['abc', 42, {}, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = 'boolean'
@@ -435,7 +451,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is not a object', function () {
-      [true, 'abc', 42, []].forEach(function (val) {
+      ;[true, 'abc', 42, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = 'object'
@@ -454,7 +470,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is not an array', function () {
-      [true, 'abc', 42, {}].forEach(function (val) {
+      ;[true, 'abc', 42, {}].forEach(function (val) {
         var report
 
         this.data[0].valueType = 'array'
@@ -474,7 +490,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is not a uint', function () {
-      [true, 'abc', {}, []].forEach(function (val) {
+      ;[true, 'abc', {}, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = 'uint'
@@ -500,7 +516,8 @@ describe('schema validation', function () {
       report = validate(this.clientSchema, this.data)
       expect(report.valid).to.be.true
 
-      this.data[0].value = 'https://142.42.1.1:8000/?q=Test%20URL-encoded%20stuff'
+      this.data[0].value =
+        'https://142.42.1.1:8000/?q=Test%20URL-encoded%20stuff'
       report = validate(this.clientSchema, this.data)
       expect(report.valid).to.be.true
 
@@ -531,7 +548,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` is not a url', function () {
-      [true, 'abc', 42, {}, []].forEach(function (val) {
+      ;[true, 'abc', 42, {}, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = 'url'
@@ -563,7 +580,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` does not match the regular expression', function () {
-      [true, 'abc', 42, {}, []].forEach(function (val) {
+      ;[true, 'abc', 42, {}, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = {
@@ -572,7 +589,9 @@ describe('schema validation', function () {
         this.data[0].value = val
         report = validate(this.clientSchema, this.data)
         expect(report.valid).to.be.false
-        expect(report.errors[0].message).to.match(/The regular expression .+ failed to validate the value/)
+        expect(report.errors[0].message).to.match(
+          /The regular expression .+ failed to validate the value/
+        )
       }, this)
     })
 
@@ -586,11 +605,13 @@ describe('schema validation', function () {
       this.data[0].value = 'AsDf 42'
       report = validate(this.clientSchema, this.data)
       expect(report.valid).to.be.false
-      expect(report.errors[0].message).to.match(/The regular expression .+ failed to validate the value/)
+      expect(report.errors[0].message).to.match(
+        /The regular expression .+ failed to validate the value/
+      )
     })
 
     it('returns an error when `value` does not match the regular expression', function () {
-      [true, 'abc', 42, {}, []].forEach(function (val) {
+      ;[true, 'abc', 42, {}, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = {
@@ -599,7 +620,9 @@ describe('schema validation', function () {
         this.data[0].value = val
         report = validate(this.clientSchema, this.data)
         expect(report.valid).to.be.false
-        expect(report.errors[0].message).to.match(/The regular expression .+ failed to validate the value/)
+        expect(report.errors[0].message).to.match(
+          /The regular expression .+ failed to validate the value/
+        )
       }, this)
     })
 
@@ -616,7 +639,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` does not match the case insensitive regular expression', function () {
-      [true, 'abc', 42, {}, []].forEach(function (val) {
+      ;[true, 'abc', 42, {}, []].forEach(function (val) {
         var report
 
         this.data[0].valueType = {
@@ -625,7 +648,9 @@ describe('schema validation', function () {
         this.data[0].value = val
         report = validate(this.clientSchema, this.data)
         expect(report.valid).to.be.false
-        expect(report.errors[0].message).to.match(/The regular expression .+ failed to validate the value/)
+        expect(report.errors[0].message).to.match(
+          /The regular expression .+ failed to validate the value/
+        )
       }, this)
     })
 
@@ -647,22 +672,28 @@ describe('schema validation', function () {
 
       report = validate({}, this.data)
       expect(report.valid).to.be.false
-      expect(report.errors[0].message).to.equal('The object valueType `{\"abc\":\"allthethings!\"}` is' +
-                                                      ' not a known or supported type')
+      expect(report.errors[0].message).to.equal(
+        'The object valueType `{"abc":"allthethings!"}` is' +
+          ' not a known or supported type'
+      )
     })
   })
 
   describe('valueType except-block check', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'testSetting',
-        valueType: 'string',
-        value: 'sample string',
-        except: [{
-          value: 'A different string',
-          farms: [9323]
-        }]
-      }]
+      this.data = [
+        {
+          setting: 'testSetting',
+          valueType: 'string',
+          value: 'sample string',
+          except: [
+            {
+              value: 'A different string',
+              farms: [9323]
+            }
+          ]
+        }
+      ]
 
       this.clientSchema = require('./fixtures/settings/client_schema.json')
     })
@@ -674,7 +705,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when except-block `value` is not a string', function () {
-      [true, 42, {}, []].forEach(function (val) {
+      ;[true, 42, {}, []].forEach(function (val) {
         var report
 
         this.data[0].except[0].value = val
@@ -687,19 +718,23 @@ describe('schema validation', function () {
 
   describe('valueType second except-block check', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'testSetting',
-        valueType: 'string',
-        value: 'sample string',
-        except: [{
-          value: 'A different string',
-          farms: [9323]
-        },
+      this.data = [
         {
-          value: 'A second string',
-          farms: [9323]
-        }]
-      }]
+          setting: 'testSetting',
+          valueType: 'string',
+          value: 'sample string',
+          except: [
+            {
+              value: 'A different string',
+              farms: [9323]
+            },
+            {
+              value: 'A second string',
+              farms: [9323]
+            }
+          ]
+        }
+      ]
 
       this.clientSchema = require('./fixtures/settings/client_schema.json')
     })
@@ -712,7 +747,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when a second except `value` is not a string', function () {
-      [true, 42, {}, []].forEach(function (val) {
+      ;[true, 42, {}, []].forEach(function (val) {
         var report
 
         this.data[0].except[1].value = val
@@ -725,14 +760,17 @@ describe('schema validation', function () {
 
   describe('feature dependency check', function () {
     beforeEach(function () {
-      this.data = [{
-        setting: 'someFeature',
-        value: false
-      }, {
-        setting: 'setting',
-        value: false,
-        except: []
-      }]
+      this.data = [
+        {
+          setting: 'someFeature',
+          value: false
+        },
+        {
+          setting: 'setting',
+          value: false,
+          except: []
+        }
+      ]
 
       this.clientSchema = {}
     })
@@ -753,9 +791,8 @@ describe('schema validation', function () {
     it('returns an error when `setting` is not a string', function () {
       this.data[1].except.push({
         value: true
-      });
-
-      [true, 42, {}, []].forEach(function (valType) {
+      })
+      ;[true, 42, {}, []].forEach(function (valType) {
         var report
 
         this.data[1].except[0].setting = valType

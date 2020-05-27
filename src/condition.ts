@@ -18,7 +18,7 @@ const PROPS = {
 
 const RANGE_REGEX = /^(-?\d+)(\.{2,3})(-?\d+)$/
 
-export default class Condition {
+export class Condition {
   /**
    * Evaluate one condition against provided test value.
    *
@@ -37,19 +37,19 @@ export default class Condition {
     testValue,
     customEvaluators?: Record<string, Function>
   ) {
-    var type = Condition._getConditionType(condition)
+    const type = this._getConditionType(condition)
 
     switch (type) {
       case CONDITION_TYPES.ENUM:
-        return Condition._checkEnum(condition, testValue)
+        return this._checkEnum(condition, testValue)
       case CONDITION_TYPES.CUSTOM_EVALUATOR:
-        return Condition._checkCustomEvaluator(
+        return this._checkCustomEvaluator(
           condition,
           testValue,
           customEvaluators
         )
       case CONDITION_TYPES.PRIMITIVE:
-        return Condition._checkPrimitive(condition, testValue)
+        return this._checkPrimitive(condition, testValue)
       default:
         throw new Error('Unrecognized except type: ' + type)
     }
@@ -126,7 +126,7 @@ export default class Condition {
    */
   private static _checkEnum (condition, testValue) {
     // precondition: the passed-in condition is an array.
-    var specialCondition = condition[0]
+    const specialCondition = condition[0]
 
     // if the element in the array is 'all', then any value will cause the condition to be evaluated as true
     if (specialCondition === 'all') {
@@ -152,7 +152,7 @@ export default class Condition {
       return condition.some(function (element) {
         // If the element is a string, then it must be a range or no match possible (type mismatch)
         if (typeof element === 'string') {
-          return Condition._checkRange(element, testValue)
+          return this._checkRange(element, testValue)
         }
 
         return element === testValue
@@ -186,7 +186,10 @@ export default class Condition {
    *                   FALSE if the context does not.
    */
   private static _checkRange (element, testValue) {
-    var result, min, max, temp
+    let result
+    let min
+    let max
+    let temp
 
     if (typeof element !== 'string') {
       throw new Error(
@@ -248,8 +251,8 @@ export default class Condition {
     testValue,
     customEvaluators
   ) {
-    var evaluate = customEvaluators[condition.evaluator] // get the evaluate function
-    var dimensionValue = condition.dimensionValue
+    const evaluate = customEvaluators[condition.evaluator] // get the evaluate function
+    const dimensionValue = condition.dimensionValue
 
     if (evaluate) {
       // Custom evaluators are supposed to return a boolean.

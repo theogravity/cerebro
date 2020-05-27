@@ -3,11 +3,11 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
+import { Evaluator } from '../evaluator'
+
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
-var expect = require('chai').expect
-
-import Evaluator from '../evaluator'
+const expect = require('chai').expect
 
 require('../../test/setup/server')
 

@@ -7,11 +7,10 @@
 
 'use strict'
 
-import Condition from './condition'
-
-var crc32 = require('buffer-crc32')
-var template = require('lodash.template')
-var isTemplate = require('./validators/helpers').isTemplate
+import { Condition } from './condition'
+import crc32 from 'buffer-crc32'
+import template from 'lodash.template'
+import { isTemplate } from './validators/helpers'
 
 /**
  * Definition of terms:
@@ -61,7 +60,7 @@ var isTemplate = require('./validators/helpers').isTemplate
  * The data passed in by the user.  It is used to determine whether the conditions of except blocks are satisfied.
  * The keys of the context object must be the same as the conditions it is trying to fulfill.
  */
-export default class Evaluator {
+export class Evaluator {
   /** This allows the evaluator to make optimizations on each rule */
   static prepareEntry (configEntry) {
     if (configEntry.except) {
@@ -95,10 +94,10 @@ export default class Evaluator {
    * @return {} The answer for the entry
    */
   static evaluate (entry, context, overrides, answers, customEvaluators) {
-    var i
-    var exceptBlock
-    var options = { context: context, overrides: null }
-    var customEvals = customEvaluators || {}
+    let i
+    let exceptBlock
+    const options = { context: context, overrides: null }
+    const customEvals = customEvaluators || {}
 
     // if the user passes in anything that overrides a particular setting, use it first
     if (
@@ -161,10 +160,9 @@ export default class Evaluator {
     answers,
     customEvaluators
   ) {
-    var conditionNames = Object.keys(exceptBlock)
-    var _this = this
+    const conditionNames = Object.keys(exceptBlock)
 
-    return conditionNames.every(function (conditionName) {
+    return conditionNames.every(conditionName => {
       var conditionValue = exceptBlock[conditionName]
       var testValue = context[conditionName]
       var percentile
@@ -189,7 +187,7 @@ export default class Evaluator {
       }
 
       if (conditionName === 'percentage') {
-        return _this._evaluatePercentage(entry.setting, context, conditionValue)
+        return this._evaluatePercentage(entry.setting, context, conditionValue)
       }
 
       if (conditionName === 'randomPercentage') {
@@ -219,8 +217,8 @@ export default class Evaluator {
    * It is returned in this format for the ease of use by the caller.
    */
   private static _getAnswer (entry, exceptBlock, options) {
-    var block = exceptBlock || entry
-    var overrideValue
+    const block = exceptBlock || entry
+    let overrideValue
 
     if (!options) {
       options = {}
@@ -276,7 +274,9 @@ export default class Evaluator {
     context,
     qualifiedPercentage
   ) {
-    var calculatedCrc, percentile, percentageSeed
+    let calculatedCrc
+    let percentile
+    let percentageSeed
 
     // We require a context value 'percentageSeed' to be supplied in order to personalize
     // the percentage crc calculation.  'percentageSeed' can be either a string or a number.

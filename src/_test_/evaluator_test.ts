@@ -6,10 +6,10 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-import Condition from '../condition'
-import Evaluator from '../evaluator'
+import { Condition } from '../condition'
+import { Evaluator } from '../evaluator'
 
-var expect = require('chai').expect
+const expect = require('chai').expect
 
 require('../../test/setup/server')
 

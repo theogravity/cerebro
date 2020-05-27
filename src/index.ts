@@ -1,5 +1,3 @@
-import Cerebro from './cerebro'
+import { Cerebro } from './cerebro'
 
-export default {
-  Cerebro
-}
+export { Cerebro }

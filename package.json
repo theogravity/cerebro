@@ -13,6 +13,7 @@
     "build": "npm run build:clean && npm run compile",
     "build:clean": "rm -rf build/*",
     "compile": "tsc",
+    "bench": "npm run build && grunt bench",
     "test": "grunt test",
     "test:ci": "grunt test:ci",
     "toc": "toc-md README.md README.md",

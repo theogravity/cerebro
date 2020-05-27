@@ -6,10 +6,10 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-import Cerebro from '../cerebro'
-import Evaluator from '../evaluator' // stub purposes
+import { Cerebro } from '../cerebro'
+import { Evaluator } from '../evaluator' // stub purposes
 
-var expect = require('chai').expect
+const expect = require('chai').expect
 
 require('../../test/setup/server')
 

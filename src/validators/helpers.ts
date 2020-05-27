@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var TEMPLATE_REGEX = /\${[a-z]+}/gi
+const TEMPLATE_REGEX = /\${[a-z]+}/gi
 
 /**
  * Indicated whether the value is a template string
@@ -13,7 +13,7 @@ var TEMPLATE_REGEX = /\${[a-z]+}/gi
  * @return {Boolean}
  */
 function isTemplate (value) {
-  var matches
+  let matches
 
   if (typeof value === 'string') {
     matches = value.match(TEMPLATE_REGEX)
@@ -24,7 +24,4 @@ function isTemplate (value) {
   return false
 }
 
-module.exports = {
-  TEMPLATE_REGEX: TEMPLATE_REGEX,
-  isTemplate: isTemplate
-}
+export { TEMPLATE_REGEX, isTemplate }

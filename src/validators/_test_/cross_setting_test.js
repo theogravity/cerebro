@@ -10,24 +10,32 @@ var validate = require('../index')
 var expect = require('chai').expect
 
 beforeEach(function () {
-  this.config = [{
-    setting: 'settingA',
-    value: true
-  }, {
-    setting: 'settingB',
-    value: true,
-    except: [{
-      value: false,
-      setting: 'settingA'
-    }]
-  }, {
-    setting: 'settingC',
-    value: true,
-    except: [{
-      value: false,
-      setting: 'settingB'
-    }]
-  }]
+  this.config = [
+    {
+      setting: 'settingA',
+      value: true
+    },
+    {
+      setting: 'settingB',
+      value: true,
+      except: [
+        {
+          value: false,
+          setting: 'settingA'
+        }
+      ]
+    },
+    {
+      setting: 'settingC',
+      value: true,
+      except: [
+        {
+          value: false,
+          setting: 'settingB'
+        }
+      ]
+    }
+  ]
 
   this.clientSchema = {}
 })
@@ -40,8 +48,10 @@ describe('cross setting validation', function () {
 
     report = validate(this.clientSchema, this.config)
 
-    expect(report.errors[0].message).to.equal('For settingA, your dependency `settingC` was referenced before it' +
-        ' was resolved. Move the definition of it above settingA')
+    expect(report.errors[0].message).to.equal(
+      'For settingA, your dependency `settingC` was referenced before it' +
+        ' was resolved. Move the definition of it above settingA'
+    )
     expect(report.valid).to.be.false
   })
 
@@ -55,8 +65,10 @@ describe('cross setting validation', function () {
 
     report = validate(this.clientSchema, this.config)
 
-    expect(report.errors[0].message).to.equal('For settingB, your dependency `settingC` was referenced before it' +
-        ' was resolved. Move the definition of it above settingB')
+    expect(report.errors[0].message).to.equal(
+      'For settingB, your dependency `settingC` was referenced before it' +
+        ' was resolved. Move the definition of it above settingB'
+    )
     expect(report.valid).to.be.false
   })
 
@@ -67,7 +79,9 @@ describe('cross setting validation', function () {
 
     report = validate(this.clientSchema, this.config)
 
-    expect(report.errors[0].message).to.equal('Setting `settingB` depends on itself.')
+    expect(report.errors[0].message).to.equal(
+      'Setting `settingB` depends on itself.'
+    )
     expect(report.valid).to.be.false
   })
 

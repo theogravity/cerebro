@@ -5,10 +5,10 @@
 
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
-import Cerebro from '../cerebro'
+import { Cerebro } from '../cerebro'
 
-var expect = require('chai').expect
-var FIXTURE_PATH = '../../test/fixtures/'
+const expect = require('chai').expect
+const FIXTURE_PATH = '../../test/fixtures/'
 
 require('../../test/setup/server')
 

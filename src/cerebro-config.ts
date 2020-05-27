@@ -5,7 +5,7 @@ import { ICerebroConfig } from './interfaces'
  * @constructor
  * @param {Object} resolvedConfig - object created by building context with settings config
  */
-export default class CerebroConfig implements ICerebroConfig {
+export class CerebroConfig implements ICerebroConfig {
   _resolved: any
   _labels: any
 

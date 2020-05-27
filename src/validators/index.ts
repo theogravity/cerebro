@@ -2,11 +2,12 @@
  * Copyright 2017 Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
+import { isTemplate, TEMPLATE_REGEX } from './helpers'
 
-var tv4 = require('tv4')
-var UINT_REGEX = /^\d+$/
+const tv4 = require('tv4')
+const UINT_REGEX = /^\d+$/
 // URL regex - Thanks to Diego Perini - https://gist.github.com/dperini/729294
-var URL_REGEX = new RegExp(
+const URL_REGEX = new RegExp(
   '^' +
     // protocol identifier
     '(?:(?:https?|ftp)://)' +
@@ -42,11 +43,8 @@ var URL_REGEX = new RegExp(
     '$',
   'i'
 )
-var KEYWORDS_REGEX = /^(setting|value|enabled|except)$/
-var EMAIL_REGEX = /^.+@(.+\.)+(.+)$/
-var helpers = require('./helpers')
-var TEMPLATE_REGEX = helpers.TEMPLATE_REGEX
-var isTemplate = helpers.isTemplate
+const KEYWORDS_REGEX = /^(setting|value|enabled|except)$/
+const EMAIL_REGEX = /^.+@(.+\.)+(.+)$/
 
 /* Plug the clientSchema into the definitions portion of the cerebroSchema and
  * set up pointers within the `except` block.
@@ -61,9 +59,9 @@ var isTemplate = helpers.isTemplate
  * @return {Object} The generated schema that combines both the schema outline and the user-provided schema.
  */
 function _generateSchema (cerebroSchema, clientSchema) {
-  var schema = JSON.parse(JSON.stringify(cerebroSchema)) // to not mutate the caller's object
-  var refLink = '#/definitions/'
-  var keys = Object.keys(clientSchema)
+  const schema = JSON.parse(JSON.stringify(cerebroSchema)) // to not mutate the caller's object
+  const refLink = '#/definitions/'
+  const keys = Object.keys(clientSchema)
 
   // This is how we insert the clientSchema object into the definitions portion of `schema.json`.
   schema.definitions = clientSchema
@@ -88,15 +86,15 @@ function _generateSchema (cerebroSchema, clientSchema) {
  * @return {Object} report object that contains errors and valid.  tv4 outputs errors in the same format.
  */
 function _validateCrossSettingDependencies (configuration) {
-  var existingSettings = {}
-  var errors = []
+  const existingSettings = {}
+  const errors = []
 
   configuration.forEach(function (entry) {
-    var dependencies = entry.except
+    const dependencies = entry.except
 
     if (Array.isArray(dependencies)) {
       dependencies.forEach(dependency => {
-        var dependencyName = dependency.setting
+        const dependencyName = dependency.setting
 
         if (dependencyName) {
           // if an entry depends on itself, error
@@ -145,7 +143,7 @@ function _validateCrossSettingDependencies (configuration) {
  * 4. The variable doesn't point to some reserved key like 'value'
  */
 function _validateTemplates (config) {
-  var errors = []
+  const errors = []
 
   config.forEach(function (entry) {
     if (isTemplate(entry.value)) {
@@ -210,7 +208,7 @@ function _validateTemplates (config) {
  *                  and a boolean that describes whether validation passed or not.
  * @return {Object} Returns an error object if there is a validation failure.  Otherwise null.
  */
-function _checkValueTypes (value, expectedType) {
+function _checkValueTypes (value, expectedType, errors?) {
   var isRegex
   var pattern
   var regexStr

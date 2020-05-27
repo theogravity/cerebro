@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var Cerebro = require('../../../src/cerebro')
+var Cerebro = require('../../../build/cerebro').Cerebro
 var configuration = require('../../fixtures/simple/enabled')
 var cerebro = new Cerebro(configuration)
 

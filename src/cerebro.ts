@@ -10,15 +10,15 @@ import {
   ICerebroOptions
 } from './interfaces'
 
-import Evaluator from './evaluator'
-import CerebroConfig from './cerebro-config'
+import { Evaluator } from './evaluator'
+import { CerebroConfig } from './cerebro-config'
 
 /**
  * @param {Array} config - array containing setting entries
  * @param {Object} [Optional] options Object containing customEvaluators
  *      @param {Object} customEvaluators object containing the custom evaluation methods
  */
-export default class Cerebro {
+export class Cerebro {
   _config: any
   _customEvaluators: any
 
