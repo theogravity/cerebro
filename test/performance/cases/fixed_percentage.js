@@ -3,18 +3,18 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var Cerebro = require('../../../src/cerebro.js'),
-    configuration = require('../../fixtures/percentage/fixed.js'),
-    cerebro = new Cerebro(configuration);
+var Cerebro = require('../../../src/cerebro')
+var configuration = require('../../fixtures/percentage/fixed.js')
+var cerebro = new Cerebro(configuration)
 
 /**
  * A performance test that evaluates fixed percentages.
  */
-module.exports = function() {
-    var context = {
-            percentageSeed: 435754932
-        },
-        cerebroConfig = cerebro.resolveConfig(context);
+module.exports = function () {
+  var context = {
+    percentageSeed: 435754932
+  }
+  var cerebroConfig = cerebro.resolveConfig(context)
 
-    cerebroConfig.isEnabled('fixed');
-};
+  cerebroConfig.isEnabled('fixed')
+}

@@ -3,18 +3,18 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var Cerebro = require('../../../src/cerebro.js'),
-    configuration = require('../../fixtures/enums/default.js'),
-    cerebro = new Cerebro(configuration);
+var Cerebro = require('../../../src/cerebro')
+var configuration = require('../../fixtures/enums/default.js')
+var cerebro = new Cerebro(configuration)
 
 /**
  * A performance test that evaluates one except block with an enum
  */
-module.exports = function() {
-    var context = {
-            farm: '123'
-        },
-        cerebroConfig = cerebro.resolveConfig(context);
+module.exports = function () {
+  var context = {
+    farm: '123'
+  }
+  var cerebroConfig = cerebro.resolveConfig(context)
 
-    cerebroConfig.isEnabled('list');
-};
+  cerebroConfig.isEnabled('list')
+}

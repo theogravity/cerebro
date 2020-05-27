@@ -1,4 +1,4 @@
 module.exports = [{
-    setting: 'simple',
-    value: true
-}];
+  setting: 'simple',
+  value: true
+}]

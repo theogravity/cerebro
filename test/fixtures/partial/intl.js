@@ -1,9 +1,9 @@
 module.exports = [{
-    setting: 'intl',
-    value: false,
-    except: [{
-        intls: [
-            'xa'
-        ]
-    }]
-}];
+  setting: 'intl',
+  value: false,
+  except: [{
+    intls: [
+      'xa'
+    ]
+  }]
+}]

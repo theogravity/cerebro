@@ -3,16 +3,16 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var Cerebro = require('../../../src/cerebro.js'),
-    configuration = require('../../fixtures/simple/enabled.js'),
-    cerebro = new Cerebro(configuration);
+var Cerebro = require('../../../src/cerebro')
+var configuration = require('../../fixtures/simple/enabled.js')
+var cerebro = new Cerebro(configuration)
 
 /**
  * A simple performance test with one boolean setting and one non-boolean setting
  */
-module.exports = function() {
-    var context = {},
-        cerebroConfig = cerebro.resolveConfig(context, {overrides: {simple: false}});
+module.exports = function () {
+  var context = {}
+  var cerebroConfig = cerebro.resolveConfig(context, { overrides: { simple: false } })
 
-    cerebroConfig.isEnabled('simple');
-};
+  cerebroConfig.isEnabled('simple')
+}

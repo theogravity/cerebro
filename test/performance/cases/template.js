@@ -3,20 +3,20 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var Cerebro = require('../../../src/cerebro.js'),
-    configuration = require('../../fixtures/template/simple.js'),
-    partnerValue = configuration[0].except[0].partner,
-    cerebro = new Cerebro(configuration);
+var Cerebro = require('../../../src/cerebro')
+var configuration = require('../../fixtures/template/simple.js')
+var partnerValue = configuration[0].except[0].partner
+var cerebro = new Cerebro(configuration)
 
 /**
  * A simple performance test with one boolean setting and one non-boolean setting
  */
-module.exports = function() {
-    var context = {
-            // ensure that the template value is used with exact partner condition
-            partner: partnerValue
-        },
-        cerebroConfig = cerebro.resolveConfig(context);
+module.exports = function () {
+  var context = {
+    // ensure that the template value is used with exact partner condition
+    partner: partnerValue
+  }
+  var cerebroConfig = cerebro.resolveConfig(context)
 
-    cerebroConfig.getValue('template');
-};
+  cerebroConfig.getValue('template')
+}

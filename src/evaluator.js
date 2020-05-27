@@ -3,15 +3,15 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-/*global module, require */
+/* global module, require */
 
-'use strict';
+'use strict'
 
-var Condition = require('./condition.js'),
-    Evaluator,
-    crc32 = require('buffer-crc32'),
-    template = require('lodash.template'),
-    isTemplate = require('./validators/helpers.js').isTemplate;
+var Condition = require('./condition')
+var Evaluator
+var crc32 = require('buffer-crc32')
+var template = require('lodash.template')
+var isTemplate = require('./validators/helpers').isTemplate
 
 /**
  * Definition of terms:
@@ -62,21 +62,21 @@ var Condition = require('./condition.js'),
  * The keys of the context object must be the same as the conditions it is trying to fulfill.
  */
 Evaluator = {
-    /** This allows the evaluator to make optimizations on each rule */
-    prepareEntry: function(configEntry) {
-        if (configEntry.except) {
-            configEntry.except.forEach(function(ex) {
-                if (isTemplate(ex.value)) {
-                    // compile the template upfront to reduce unnecessary work later
-                    ex._compiledTemplate = template(ex.value);
-                }
-            });
+  /** This allows the evaluator to make optimizations on each rule */
+  prepareEntry: function (configEntry) {
+    if (configEntry.except) {
+      configEntry.except.forEach(function (ex) {
+        if (isTemplate(ex.value)) {
+          // compile the template upfront to reduce unnecessary work later
+          ex._compiledTemplate = template(ex.value)
         }
+      })
+    }
 
-        return configEntry;
-    },
+    return configEntry
+  },
 
-    /**
+  /**
      * @param {Object} entry Setting object
      *
      *  {
@@ -94,42 +94,42 @@ Evaluator = {
      * @param {Object} customEvaluators Any custom evaluators for the config
      * @return {} The answer for the entry
      */
-    evaluate: function(entry, context, overrides, answers, customEvaluators) {
-        var i,
-            exceptBlock,
-            options = {context: context},
-            customEvals = customEvaluators || {};
+  evaluate: function (entry, context, overrides, answers, customEvaluators) {
+    var i
+    var exceptBlock
+    var options = { context: context }
+    var customEvals = customEvaluators || {}
 
-        // if the user passes in anything that overrides a particular setting, use it first
-        if (overrides && overrides.hasOwnProperty(entry.setting)) {
-            options.overrides = overrides;
+    // if the user passes in anything that overrides a particular setting, use it first
+    if (overrides && overrides.hasOwnProperty(entry.setting)) {
+      options.overrides = overrides
 
-            return this._getAnswer(entry, null, options);
-        }
+      return this._getAnswer(entry, null, options)
+    }
 
-        if (entry.except) {
-            for (i = 0; i < entry.except.length; i++) {
-                exceptBlock = entry.except[i];
+    if (entry.except) {
+      for (i = 0; i < entry.except.length; i++) {
+        exceptBlock = entry.except[i]
 
-                /**
+        /**
                  * If all conditions are satisfied, return the value provided by this except block.
                  * There may be multiple except blocks in this entry, but we return the answer of
                  * the first except block that the user satisfies all the conditions for.
                  */
-                if (this._evaluateExceptBlock(entry, exceptBlock, context, answers, customEvals)) {
-                    return this._getAnswer(entry, exceptBlock, options);
-                }
-            }
+        if (this._evaluateExceptBlock(entry, exceptBlock, context, answers, customEvals)) {
+          return this._getAnswer(entry, exceptBlock, options)
         }
+      }
+    }
 
-        /**
+    /**
          * If the user did not satisfy the conditions for any of the except blocks,
          * and/or if there was no except block present, return the default answer.
          */
-        return this._getAnswer(entry, null, options);
-    },
+    return this._getAnswer(entry, null, options)
+  },
 
-    /**
+  /**
      * Checks whether the context satisfies ALL conditions of the given except block.
      * @param {Object} entry Setting.  Required because we need to know the name of the setting.
      * @param {Object} exceptBlock
@@ -143,49 +143,49 @@ Evaluator = {
      * @param {Object} customEvaluators Any custom evaluators for the config
      * @return {Boolean} TRUE if ALL conditions match, FALSE if ANY of the conditions fail.
      */
-    _evaluateExceptBlock: function(entry, exceptBlock, context, answers, customEvaluators) {
-        var conditionNames = Object.keys(exceptBlock),
-            _this = this;
+  _evaluateExceptBlock: function (entry, exceptBlock, context, answers, customEvaluators) {
+    var conditionNames = Object.keys(exceptBlock)
+    var _this = this
 
-        return conditionNames.every(function(conditionName) {
-            var conditionValue = exceptBlock[conditionName],
-                testValue = context[conditionName],
-                percentile;
+    return conditionNames.every(function (conditionName) {
+      var conditionValue = exceptBlock[conditionName]
+      var testValue = context[conditionName]
+      var percentile
 
-            if (conditionName === 'value' || conditionName === '_compiledTemplate') {
-                // don't evaluate internal names
-                return true;
-            }
+      if (conditionName === 'value' || conditionName === '_compiledTemplate') {
+        // don't evaluate internal names
+        return true
+      }
 
-            if (conditionName === 'setting') {
-                // check what the existing setting has been resolved to.
-                // we have a precondition that settings must be resolved before they are evaluated,
-                // so we can do a simple check here.
+      if (conditionName === 'setting') {
+        // check what the existing setting has been resolved to.
+        // we have a precondition that settings must be resolved before they are evaluated,
+        // so we can do a simple check here.
 
-                if (Array.isArray(conditionValue)) {
-                    // like setting, but for each and every setting in the conditionValue array
-                    // useful for ANDing settings (whereas ORing can be accomplished with multiple exception blocks)
-                    return conditionValue.every(cv => Boolean(answers[cv]));
-                }
+        if (Array.isArray(conditionValue)) {
+          // like setting, but for each and every setting in the conditionValue array
+          // useful for ANDing settings (whereas ORing can be accomplished with multiple exception blocks)
+          return conditionValue.every(cv => Boolean(answers[cv]))
+        }
 
-                return Boolean(answers[conditionValue]);
-            }
+        return Boolean(answers[conditionValue])
+      }
 
-            if (conditionName === 'percentage') {
-                return _this._evaluatePercentage(entry.setting, context, conditionValue);
-            }
+      if (conditionName === 'percentage') {
+        return _this._evaluatePercentage(entry.setting, context, conditionValue)
+      }
 
-            if (conditionName === 'randomPercentage') {
-                percentile = Math.random() * 100;
+      if (conditionName === 'randomPercentage') {
+        percentile = Math.random() * 100
 
-                return (percentile >= 0 && percentile < conditionValue);
-            }
+        return (percentile >= 0 && percentile < conditionValue)
+      }
 
-            return Condition.evaluate(conditionValue, testValue, customEvaluators);
-        });
-    },
+      return Condition.evaluate(conditionValue, testValue, customEvaluators)
+    })
+  },
 
-    /**
+  /**
      * For the definiton of what an answer is, please refer to the `Definition of Terms` at the top of the file.
      *
      * @param {Object} entry Setting.  Required because we need to know the name of the setting.
@@ -201,18 +201,18 @@ Evaluator = {
      * ```
      * It is returned in this format for the ease of use by the caller.
      */
-    _getAnswer: function(entry, exceptBlock, options) {
-        var block = exceptBlock || entry;
-        var overrideValue;
+  _getAnswer: function (entry, exceptBlock, options) {
+    var block = exceptBlock || entry
+    var overrideValue
 
-        if (!options) {
-            options = {};
-        }
+    if (!options) {
+      options = {}
+    }
 
-        if (options.overrides) {
-            overrideValue = options.overrides[entry.setting];
+    if (options.overrides) {
+      overrideValue = options.overrides[entry.setting]
 
-            /*
+      /*
              * If the original value is a boolean, then preserve it.
              * A common use case for cerebro is to override a boolean setting
              * with a number.  Imagine the case where the user enters a
@@ -221,28 +221,28 @@ Evaluator = {
              * application, because a module may receive a number when it is
              * expecting a boolean.
              */
-            if (typeof block.value === 'boolean') {
-                overrideValue = Boolean(overrideValue);
-            }
+      if (typeof block.value === 'boolean') {
+        overrideValue = Boolean(overrideValue)
+      }
 
-            return {
-                key: entry.setting,
-                value: overrideValue
-            };
-        } else if (block._compiledTemplate) {
-            return {
-                key: entry.setting,
-                value: block._compiledTemplate(options.context)
-            };
-        }
+      return {
+        key: entry.setting,
+        value: overrideValue
+      }
+    } else if (block._compiledTemplate) {
+      return {
+        key: entry.setting,
+        value: block._compiledTemplate(options.context)
+      }
+    }
 
-        return {
-            key: entry.setting, // name of the setting
-            value: block.value // answer, value
-        };
-    },
+    return {
+      key: entry.setting, // name of the setting
+      value: block.value // answer, value
+    }
+  },
 
-    /**
+  /**
      * Evaluates a percentage condition and returns true if the percentage is less than the
      * requested 'qualifiedPercentage'.
      *
@@ -254,39 +254,39 @@ Evaluator = {
      * @param {Object} context Contextual data about the user
      * @param {number} qualifiedPercentage The percentage that we should qualify (return true).
      */
-    _evaluatePercentage: function(settingName, context, qualifiedPercentage) {
-        var calculatedCrc,
-            percentile,
-            percentageSeed;
+  _evaluatePercentage: function (settingName, context, qualifiedPercentage) {
+    var calculatedCrc,
+      percentile,
+      percentageSeed
 
-        // We require a context value 'percentageSeed' to be supplied in order to personalize
-        // the percentage crc calculation.  'percentageSeed' can be either a string or a number.
-        // The implementor should select a value for 'percentageSeed' that is unique for the user.
-        percentageSeed = context.percentageSeed;
-        // If percentageSeed is not passed in, then we consider the condition to have failed
-        if (typeof percentageSeed !== 'string' && typeof percentageSeed !== 'number') {
-            throw new Error('The property `percentageSeed` must be set in the context ' +
-                            'in order for the percentage to be calculated');
-        }
-
-        //  If percentageSeed is a number, then transform it into a string.
-        if (typeof percentageSeed === 'number') {
-            percentageSeed = percentageSeed.toString();
-        }
-
-        // Explanation of the crc percentage formula:
-        //
-        // We take the 'percentageSeed' string and concatenate
-        // the entry setting name of the given condition in order to randomize the results
-        // across settings.  We then calculate the crc32 of the entire string.
-        // We want an accuracy of 0.001%, so we mod the string to
-        // remove all the high digits  (we keep the 5 lower digits), then divide by 1000 so that it
-        // is a percentage between 0 and 100%.
-        calculatedCrc = crc32(percentageSeed + settingName);
-        percentile = (crc32.unsigned(calculatedCrc) % 100000) / 1000;
-
-        return (percentile >= 0 && percentile < qualifiedPercentage);
+    // We require a context value 'percentageSeed' to be supplied in order to personalize
+    // the percentage crc calculation.  'percentageSeed' can be either a string or a number.
+    // The implementor should select a value for 'percentageSeed' that is unique for the user.
+    percentageSeed = context.percentageSeed
+    // If percentageSeed is not passed in, then we consider the condition to have failed
+    if (typeof percentageSeed !== 'string' && typeof percentageSeed !== 'number') {
+      throw new Error('The property `percentageSeed` must be set in the context ' +
+                            'in order for the percentage to be calculated')
     }
-};
 
-module.exports = Evaluator;
+    //  If percentageSeed is a number, then transform it into a string.
+    if (typeof percentageSeed === 'number') {
+      percentageSeed = percentageSeed.toString()
+    }
+
+    // Explanation of the crc percentage formula:
+    //
+    // We take the 'percentageSeed' string and concatenate
+    // the entry setting name of the given condition in order to randomize the results
+    // across settings.  We then calculate the crc32 of the entire string.
+    // We want an accuracy of 0.001%, so we mod the string to
+    // remove all the high digits  (we keep the 5 lower digits), then divide by 1000 so that it
+    // is a percentage between 0 and 100%.
+    calculatedCrc = crc32(percentageSeed + settingName)
+    percentile = (crc32.unsigned(calculatedCrc) % 100000) / 1000
+
+    return (percentile >= 0 && percentile < qualifiedPercentage)
+  }
+}
+
+module.exports = Evaluator

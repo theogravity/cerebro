@@ -12,6 +12,23 @@ Cerebro receives two inputs:
 
 Cerebro outputs the resolved configuration.
 
+# Table of Contents
+
+<!-- TOC -->
+- [Usage](#usage)
+- [Configuration Rules](#configuration-rules)
+  - [Evaluation Order](#evaluation-order)
+- [Supported Formats for Context Checks in Except](#supported-formats-for-context-checks-in-except)
+  - [Enums](#enums)
+  - [Ranges](#ranges)
+  - [Setting Dependency](#setting-dependency)
+  - [Custom Evaluators](#custom-evaluators)
+- [Overrides](#overrides)
+  - [Labels](#labels)
+- [Thanks](#thanks)
+
+<!-- TOC END -->
+
 ## Usage
 
 ```js

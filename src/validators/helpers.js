@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-var TEMPLATE_REGEX = /\${[a-z]+}/gi;
+var TEMPLATE_REGEX = /\${[a-z]+}/gi
 
 /**
  * Indicated whether the value is a template string
@@ -12,19 +12,19 @@ var TEMPLATE_REGEX = /\${[a-z]+}/gi;
  * @param  {*}  value
  * @return {Boolean}
  */
-function isTemplate(value) {
-    var matches;
+function isTemplate (value) {
+  var matches
 
-    if (typeof value === 'string') {
-        matches = value.match(TEMPLATE_REGEX);
+  if (typeof value === 'string') {
+    matches = value.match(TEMPLATE_REGEX)
 
-        return !!matches && matches.length > 0;
-    }
+    return !!matches && matches.length > 0
+  }
 
-    return false;
+  return false
 }
 
 module.exports = {
-    TEMPLATE_REGEX: TEMPLATE_REGEX,
-    isTemplate: isTemplate
-};
+  TEMPLATE_REGEX: TEMPLATE_REGEX,
+  isTemplate: isTemplate
+}
