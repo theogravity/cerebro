@@ -1,10 +1,10 @@
-Cerebro
+Cerebra
 ===============
 
 [![Build Status](https://travis-ci.org/yahoo/cerebro.svg?branch=master)](https://travis-ci.org/yahoo/cerebro)
 [![Coverage Status](https://coveralls.io/repos/github/yahoo/cerebro/badge.svg?branch=master)](https://coveralls.io/github/yahoo/cerebro?branch=master)
 
-A generic configuration system for Node.js.
+A production-level configuration system for Node.js.
 
 Cerebro receives two inputs:
   - the context, which is all data associated with a specific user or request.  each individual piece of context is referred to as a `dimension`.

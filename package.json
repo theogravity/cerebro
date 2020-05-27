@@ -1,7 +1,7 @@
 {
-  "name": "cerebro",
+  "name": "cerebra",
   "version": "1.2.1",
-  "description": "A generic configuration system for Node.js.",
+  "description": "A production-level configuration system for Node.js.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "contributors": [
     "Theo Gravity <theo@suteki.nu> (https://github.com/theogravity)"
@@ -67,9 +67,9 @@
   "types": "build/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yahoo/cerebro.git"
+    "url": "https://github.com/theogravity/cerebra.git"
   },
-  "homepage": "https://github.com/yahoo/cerebro#readme",
+  "homepage": "https://github.com/theogravity/cerebra#readme",
   "eslintConfig": {
     "parserOptions": {
       "ecmaVersion": 6,
