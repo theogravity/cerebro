@@ -1,16 +1,26 @@
-Cerebra
-===============
+# Cerebra
 
 [![Build Status](https://travis-ci.org/yahoo/cerebro.svg?branch=master)](https://travis-ci.org/yahoo/cerebro)
 [![Coverage Status](https://coveralls.io/repos/github/yahoo/cerebro/badge.svg?branch=master)](https://coveralls.io/github/yahoo/cerebro?branch=master)
 
-A production-level configuration system for Node.js.
+A production-level (used at Yahoo and Samsung) configuration system for Node.js.
 
 Cerebro receives two inputs:
   - the context, which is all data associated with a specific user or request.  each individual piece of context is referred to as a `dimension`.
   - the configuration, which are the values which will be chosen based on what the context is.
 
 Cerebro outputs the resolved configuration.
+
+# Fork notice
+
+This is a fork of the original Yahoo project, [`Cerebro`](https://github.com/yahoo/cerebro).
+
+Changes:
+
+- Incorporates [AND of settings](https://github.com/yahoo/cerebro/pull/14) by @lpw
+- Updated parts of the codebase to Typescript
+- Updated parts of the codebase to classes
+- Updated toolchain to be typescript-based
 
 # Table of Contents
 
@@ -32,7 +42,7 @@ Cerebro outputs the resolved configuration.
 ## Usage
 
 ```js
-import Cerebro from 'cerebro';
+import Cerebro from 'cerebra';
 
 const configuration = [{
   setting: 'timer',
@@ -91,7 +101,7 @@ If all the criteria in an `except` block is met, the value in the except block w
 Here is an example:
 
 ```js
-import Cerebro from ('cerebro');
+import { Cerebro } from 'cerebra';
 
 const configuration = [{
   setting: 'timer',
