@@ -93,7 +93,7 @@ export class Evaluator {
    * @param {Object} customEvaluators Any custom evaluators for the config
    * @return {} The answer for the entry
    */
-  static evaluate (entry, context, overrides, answers, customEvaluators) {
+  static evaluate (entry, context, overrides, answers, customEvaluators?) {
     let i
     let exceptBlock
     const options = { context: context, overrides: null }
