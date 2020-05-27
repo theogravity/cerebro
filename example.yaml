@@ -1,0 +1,20 @@
+- setting: username
+  value: my-username
+
+- setting: password
+  value: my-password
+
+- setting: database
+  value: test-database
+  except:
+    value: prd-database
+    environment:
+      - production
+
+- setting: a_number
+  value: 1
+
+- setting: an_array
+  value:
+    - apples
+    - oranges

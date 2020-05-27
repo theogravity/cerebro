@@ -47,6 +47,116 @@ export class CerebroConfig implements ICerebroConfig {
   }
 
   /**
+   * Gets the requested value as an object. Returns null if the value does not exist.
+   * Throws an error if the requested value is not an object.
+   * @param {String} name The name of the setting that you want to value of
+   * @return {Object|null} The value of the setting
+   */
+  getValueAsObject (name: string): Record<string, any> {
+    const setting = this._resolved[name]
+
+    if (typeof setting === 'undefined') {
+      return null
+    }
+
+    if (typeof setting !== 'object') {
+      throw new Error(
+        'The requested setting (' +
+          name +
+          ') from getValueAsObject is not an object. ' +
+          'It is a ' +
+          typeof setting +
+          '.  Please use #getValue instead.'
+      )
+    }
+
+    return setting
+  }
+
+  /**
+   * Gets the requested value as a float. Returns null if the value does not exist.
+   * Throws an error if the requested value is not a number.
+   * @param {String} name The name of the setting that you want to value of
+   * @return {Number|null} The value of the setting
+   */
+  getValueAsFloat (name: string): number {
+    const setting = this._resolved[name]
+    const value = parseFloat(setting)
+
+    if (typeof setting === 'undefined') {
+      return null
+    }
+
+    if (isNaN(value)) {
+      throw new Error(
+        'The requested setting (' +
+          name +
+          ') from getValueAsFloat is not a number. ' +
+          'It is a ' +
+          typeof setting +
+          '.  Please use #getValue instead.'
+      )
+    }
+
+    return value
+  }
+
+  /**
+   * Gets the requested value as an integer. Returns null if the value does not exist.
+   * Throws an error if the requested value is not a number.
+   * @param {String} name The name of the setting that you want to value of
+   * @return {Number|null} The value of the setting
+   */
+  getValueAsInt (name: string): number {
+    const setting = this._resolved[name]
+    const value = parseInt(setting, 10)
+
+    if (typeof setting === 'undefined') {
+      return null
+    }
+
+    if (isNaN(value)) {
+      throw new Error(
+        'The requested setting (' +
+          name +
+          ') from getValueAsInt is not a number. ' +
+          'It is a ' +
+          typeof setting +
+          '.  Please use #getValue instead.'
+      )
+    }
+
+    return value
+  }
+
+  /**
+   * Gets the requested value as an array. Returns null if the value does not exist.
+   * Throws an error if the requested value is not an array.
+   * @param {String} name The name of the setting that you want to value of
+   * @return {Array|null}
+   */
+  getValueAsArray<T = any> (name: string): Array<T> {
+    const setting = this._resolved[name]
+
+    if (typeof setting === 'undefined') {
+      return null
+    }
+
+    if (Array.isArray(setting)) {
+      return setting
+    }
+
+    throw new Error(
+      'The requested setting (' +
+        name +
+        ') from getValueAsArray is not an array. ' +
+        'It is a ' +
+        typeof setting +
+        '.  Please use #getValue instead.'
+    )
+  }
+
+  /**
    * Gets the requested value if it is not a Boolean.  Returns null if the value does not exist.
    * Throws an error if the requested value is a Boolean.
    *
@@ -68,6 +178,8 @@ export class CerebroConfig implements ICerebroConfig {
           'Please use #isEnabled instead.'
       )
     }
+
+    // did not include other types for backwards-compat
 
     return setting
   }

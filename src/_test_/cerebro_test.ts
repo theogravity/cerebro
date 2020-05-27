@@ -160,10 +160,18 @@ describe('./cerebro.ts', function () {
   })
 
   describe('CerebroConfig', function () {
+    let rawConfig
+
     beforeEach(function () {
       var cerebro = new Cerebro([])
-      var rawConfig = { a: 111, b: true, c: { multilevel: [1, 2] } }
       var labels = { a: ['s'], b: ['c'], c: ['s', 'c'] }
+      rawConfig = {
+        a: 111,
+        b: true,
+        c: { multilevel: [1, 2] },
+        d: 12.3,
+        asArray: [1, 2]
+      }
 
       this.sandbox.stub(Cerebro.prototype, '_build').callsFake(function () {
         return { answers: rawConfig, labels }
@@ -204,6 +212,84 @@ describe('./cerebro.ts', function () {
         expect(
           function () {
             this.cerebroConfig.isEnabled('a')
+          }.bind(this)
+        ).to.throw(/Please use #getValue instead./)
+      })
+    })
+
+    describe('#getValueAsInt', function () {
+      it('does not evaluate if feature is not present', function () {
+        expect(this.cerebroConfig.getValueAsInt('non_existing_feature')).to.be
+          .null
+      })
+
+      it('returns feature value', function () {
+        expect(this.cerebroConfig.getValueAsInt('a')).to.equal(111)
+      })
+
+      it('throws an error if the setting is not a number', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getValueAsInt('b')
+          }.bind(this)
+        ).to.throw(/Please use #getValue instead./)
+      })
+    })
+
+    describe('#getValueAsFloat', function () {
+      it('does not evaluate if feature is not present', function () {
+        expect(this.cerebroConfig.getValueAsFloat('non_existing_feature')).to.be
+          .null
+      })
+
+      it('returns feature value', function () {
+        expect(this.cerebroConfig.getValueAsFloat('d')).to.equal(12.3)
+      })
+
+      it('throws an error if the setting is not a number', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getValueAsFloat('b')
+          }.bind(this)
+        ).to.throw(/Please use #getValue instead./)
+      })
+    })
+
+    describe('#getValueAsArray', function () {
+      it('does not evaluate if feature is not present', function () {
+        expect(this.cerebroConfig.getValueAsArray('non_existing_feature')).to.be
+          .null
+      })
+
+      it('returns feature value', function () {
+        expect(this.cerebroConfig.getValueAsArray('asArray')).to.equal(
+          rawConfig.asArray
+        )
+      })
+
+      it('throws an error if the setting is not an array', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getValueAsArray('b')
+          }.bind(this)
+        ).to.throw(/Please use #getValue instead./)
+      })
+    })
+
+    describe('#getValueAsObject', function () {
+      it('does not evaluate if feature is not present or is not an object', function () {
+        expect(this.cerebroConfig.getValueAsObject('non_existing_feature')).to
+          .be.null
+      })
+
+      it('returns feature value', function () {
+        expect(this.cerebroConfig.getValueAsObject('c')).to.equal(rawConfig.c)
+      })
+
+      it('throws an error if the setting is not an object', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getValueAsArray('b')
           }.bind(this)
         ).to.throw(/Please use #getValue instead./)
       })

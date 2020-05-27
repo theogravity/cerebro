@@ -1,7 +1,7 @@
 {
   "name": "cerebra",
   "version": "1.2.1",
-  "description": "A production-level configuration system for Node.js.",
+  "description": "A production-level YAML-based configuration system for Node.js.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "contributors": [
     "Theo Gravity <theo@suteki.nu> (https://github.com/theogravity)"
@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "buffer-crc32": "^0.2.13",
+    "js-yaml": "^3.14.0",
     "lodash.template": "^4.5.0",
     "tv4": "^1.3.0"
   },

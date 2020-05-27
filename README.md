@@ -21,6 +21,12 @@ Changes:
 - Updated parts of the codebase to Typescript
 - Updated parts of the codebase to classes
 - Updated toolchain to be typescript-based
+- Added new methods to the Cerebro configurator object. In addition to `getValue()`, added
+  - `getValueAsInt()`
+  - `getValueAsFloat()`
+  - `getValueAsArray()`
+  - `getValueAsInt()`
+  - `getValueAsObject()`
 
 # Table of Contents
 
