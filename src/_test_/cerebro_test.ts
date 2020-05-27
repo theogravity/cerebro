@@ -170,6 +170,7 @@ describe('./cerebro.ts', function () {
         b: true,
         c: { multilevel: [1, 2] },
         d: 12.3,
+        e: 'test',
         asArray: [1, 2]
       }
 
@@ -217,81 +218,75 @@ describe('./cerebro.ts', function () {
       })
     })
 
-    describe('#getValueAsInt', function () {
+    describe('#getInt', function () {
       it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getValueAsInt('non_existing_feature')).to.be
-          .null
+        expect(this.cerebroConfig.getInt('non_existing_feature')).to.be.null
+      })
+
+      it('does not evaluate if feature is not a number', function () {
+        expect(this.cerebroConfig.getInt('b')).to.be.null
       })
 
       it('returns feature value', function () {
-        expect(this.cerebroConfig.getValueAsInt('a')).to.equal(111)
-      })
-
-      it('throws an error if the setting is not a number', function () {
-        expect(
-          function () {
-            this.cerebroConfig.getValueAsInt('b')
-          }.bind(this)
-        ).to.throw(/Please use #getValue instead./)
+        expect(this.cerebroConfig.getInt('a')).to.equal(111)
       })
     })
 
-    describe('#getValueAsFloat', function () {
+    describe('#getFloat', function () {
       it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getValueAsFloat('non_existing_feature')).to.be
-          .null
+        expect(this.cerebroConfig.getFloat('non_existing_feature')).to.be.null
+      })
+
+      it('does not evaluate if feature is not a number', function () {
+        expect(this.cerebroConfig.getFloat('b')).to.be.null
       })
 
       it('returns feature value', function () {
-        expect(this.cerebroConfig.getValueAsFloat('d')).to.equal(12.3)
-      })
-
-      it('throws an error if the setting is not a number', function () {
-        expect(
-          function () {
-            this.cerebroConfig.getValueAsFloat('b')
-          }.bind(this)
-        ).to.throw(/Please use #getValue instead./)
+        expect(this.cerebroConfig.getFloat('d')).to.equal(12.3)
       })
     })
 
-    describe('#getValueAsArray', function () {
+    describe('#getArray', function () {
       it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getValueAsArray('non_existing_feature')).to.be
-          .null
+        expect(this.cerebroConfig.getArray('non_existing_feature')).to.be.null
+      })
+
+      it('does not evaluate if feature is not an array', function () {
+        expect(this.cerebroConfig.getArray('d')).to.be.null
       })
 
       it('returns feature value', function () {
-        expect(this.cerebroConfig.getValueAsArray('asArray')).to.equal(
+        expect(this.cerebroConfig.getArray('asArray')).to.equal(
           rawConfig.asArray
         )
       })
-
-      it('throws an error if the setting is not an array', function () {
-        expect(
-          function () {
-            this.cerebroConfig.getValueAsArray('b')
-          }.bind(this)
-        ).to.throw(/Please use #getValue instead./)
-      })
     })
 
-    describe('#getValueAsObject', function () {
-      it('does not evaluate if feature is not present or is not an object', function () {
-        expect(this.cerebroConfig.getValueAsObject('non_existing_feature')).to
-          .be.null
+    describe('#getObject', function () {
+      it('does not evaluate if feature is not present', function () {
+        expect(this.cerebroConfig.getObject('non_existing_feature')).to.be.null
+      })
+
+      it('does not evaluate if feature is not an object', function () {
+        expect(this.cerebroConfig.getObject('b')).to.be.null
       })
 
       it('returns feature value', function () {
-        expect(this.cerebroConfig.getValueAsObject('c')).to.equal(rawConfig.c)
+        expect(this.cerebroConfig.getObject('c')).to.equal(rawConfig.c)
+      })
+    })
+
+    describe('#getString', function () {
+      it('does not evaluate if feature is not present', function () {
+        expect(this.cerebroConfig.getString('non_existing_feature')).to.be.null
       })
 
-      it('throws an error if the setting is not an object', function () {
-        expect(
-          function () {
-            this.cerebroConfig.getValueAsArray('b')
-          }.bind(this)
-        ).to.throw(/Please use #getValue instead./)
+      it('does not evaluate if feature is not a string', function () {
+        expect(this.cerebroConfig.getString('b')).to.be.null
+      })
+
+      it('returns feature value', function () {
+        expect(this.cerebroConfig.getString('e')).to.equal('test')
       })
     })
 

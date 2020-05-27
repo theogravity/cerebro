@@ -1,16 +1,22 @@
 import yaml from 'js-yaml'
 import { readFileSync } from 'fs'
 import { Cerebro } from './index'
+import { getOverridesFromEnv } from './env-loader'
+import { ICerebroConfig } from './interfaces'
 
-export function loadConfigWithoutContext (configFile: string) {
-  const config = yaml.safeLoad(readFileSync(configFile, 'utf8'))
-  return new Cerebro(config)
-}
-
+/**
+ * @param {String} configFile Path to YAML file
+ * @param {Object} [context] environment context
+ */
 export function loadConfig (
   configFile: string,
   context: Record<string, any> = {}
-): Record<string, any> {
-  const cerebro = loadConfigWithoutContext(configFile)
-  return cerebro.resolveConfig(context)
+): ICerebroConfig {
+  const config = yaml.safeLoad(readFileSync(configFile, 'utf8'))
+
+  const cerebro = new Cerebro(config)
+
+  return cerebro.resolveConfig(context, {
+    overrides: getOverridesFromEnv(config)
+  })
 }

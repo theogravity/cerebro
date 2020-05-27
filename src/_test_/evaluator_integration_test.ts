@@ -11,7 +11,7 @@ const expect = require('chai').expect
 
 require('../../test/setup/server')
 
-describe('evaluator.js', function () {
+describe('evaluator.ts', function () {
   describe('multiple conditions', function () {
     beforeEach(function () {
       this.settingName = 'testFeature'

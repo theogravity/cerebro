@@ -32,33 +32,36 @@ export interface ICerebroConfig {
    */
   isEnabled(name: string): boolean
   /**
-   * Gets the requested value as an object. Returns null if the value does not exist.
+   * Gets the requested value as an object. Returns null if the value does not exist or is not an object.
    * Throws an error if the requested value is not an object.
    * @param {String} name The name of the setting that you want to value of
    * @return {Object|null} The value of the setting
    */
-  getValueAsObject(name: string): Record<string, any>
+  getObject(name: string): Record<string, any>
   /**
-   * Gets the requested value as an integer. Returns null if the value does not exist.
-   * Throws an error if the requested value is not a number.
+   * Gets the requested value as an integer. Returns null if the value does not exist or is not a number.
    * @param {String} name The name of the setting that you want to value of
    * @return {Number|null} The value of the setting
    */
-  getValueAsInt(name: string): number
+  getInt(name: string): number
   /**
-   * Gets the requested value as a float. Returns null if the value does not exist.
-   * Throws an error if the requested value is not a number.
+   * Gets the requested value as a float. Returns null if the value does not exist or is not a number.
    * @param {String} name The name of the setting that you want to value of
    * @return {Number|null} The value of the setting
    */
-  getValueAsFloat(name: string): number
+  getFloat(name: string): number
   /**
-   * Gets the requested value as an array. Returns null if the value does not exist.
-   * Throws an error if the requested value is not an array.
+   * Gets the requested value as an array. Returns null if the value does not exist or is not an array.
    * @param {String} name The name of the setting that you want to value of
    * @return {Array|null}
    */
-  getValueAsArray<T = any>(name: string): Array<T>
+  getArray<T = any>(name: string): Array<T>
+  /**
+   * Gets the requested value as a string. Returns null if the value does not exist or is not a string.
+   * @param {String} name The name of the setting that you want to value of
+   * @return {String|null}
+   */
+  getString(name: string): string
   /**
    * Gets the requested value if it is not a Boolean.  Returns null if the value does not exist.
    * Throws an error if the requested value is a Boolean.

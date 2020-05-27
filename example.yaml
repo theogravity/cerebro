@@ -1,15 +1,26 @@
+# Sample cerebra configuration file
+
+# Set a key called "username" with a value of "my-username"
 - setting: username
   value: my-username
 
 - setting: password
   value: my-password
 
+# duplicate keys are *ignored*
+- setting: password
+  value: overriden
+
+# override the value based on a dimension
+# use the alternative value "prd-database"
+# if the "environment" context property value is "production" or "stage"
 - setting: database
   value: test-database
   except:
-    value: prd-database
-    environment:
-      - production
+    - value: prd-database
+      environment:
+        - production
+        - stage
 
 - setting: a_number
   value: 1
@@ -18,3 +29,13 @@
   value:
     - apples
     - oranges
+
+- setting: an_object
+  value:
+    sampleKey: 1234
+    sampleKey2: 12345.6
+
+# you can leave a key without a value
+# this will be interpreted as a null
+- setting: a_null
+  value:

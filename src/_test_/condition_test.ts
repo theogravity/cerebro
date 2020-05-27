@@ -12,7 +12,7 @@ const expect = require('chai').expect
 
 require('../../test/setup/server')
 
-describe('./condition.js', function () {
+describe('./condition.ts', function () {
   describe('general', function () {
     it('throws an error when an unrecognized condition value is passed in', function () {
       var conditionValue = null

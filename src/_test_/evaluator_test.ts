@@ -13,7 +13,7 @@ const expect = require('chai').expect
 
 require('../../test/setup/server')
 
-describe('evaluator.js', function () {
+describe('evaluator.ts', function () {
   describe('#prepareEntry', function () {
     it('precompiles templates', function () {
       var entry = {

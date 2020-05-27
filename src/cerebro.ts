@@ -28,7 +28,7 @@ export class Cerebro {
     }
 
     this._config = this._preprocess(config)
-    this._customEvaluators = options && options.customEvaluators
+    this._customEvaluators = options?.customEvaluators
 
     this._validateCustomEvaluators()
   }

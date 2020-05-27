@@ -1,0 +1,44 @@
+[
+  {
+    "setting": "username",
+    "value": "my-username"
+  },
+  {
+    "setting": "password",
+    "value": "my-password"
+  },
+  {
+    "setting": "database",
+    "value": "test-database",
+    "except": [
+      {
+        "value": "prd-database",
+        "environment": [
+          "production"
+        ]
+      }
+    ]
+  },
+  {
+    "setting": "a_number",
+    "value": 1
+  },
+  {
+    "setting": "an_array",
+    "value": [
+      "apples",
+      "oranges"
+    ]
+  },
+  {
+    "setting": "an_object",
+    "value": {
+      "sampleKey": 1234,
+      "sampleKey2": 12345.6
+    }
+  },
+  {
+    "setting": "a_null",
+    "value": null
+  }
+]

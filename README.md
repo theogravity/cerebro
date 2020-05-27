@@ -17,16 +17,13 @@ This is a fork of the original Yahoo project, [`Cerebro`](https://github.com/yah
 
 Changes:
 
+- YAML loading
+- environment variable overrides
 - Incorporates [AND of settings](https://github.com/yahoo/cerebro/pull/14) by @lpw
 - Updated parts of the codebase to Typescript
 - Updated parts of the codebase to classes
 - Updated toolchain to be typescript-based
-- Added new methods to the Cerebro configurator object. In addition to `getValue()`, added
-  - `getValueAsInt()`
-  - `getValueAsFloat()`
-  - `getValueAsArray()`
-  - `getValueAsInt()`
-  - `getValueAsObject()`
+- Added new methods to the Cerebro configurator object
 
 # Table of Contents
 
