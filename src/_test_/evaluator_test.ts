@@ -7,9 +7,9 @@
 /* eslint-disable no-unused-expressions */
 
 import Condition from '../condition'
+import Evaluator from '../evaluator'
 
 var expect = require('chai').expect
-var Evaluator = require('../evaluator')
 
 require('../../test/setup/server')
 

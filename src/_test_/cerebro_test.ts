@@ -7,9 +7,9 @@
 /* eslint-disable no-unused-expressions */
 
 import Cerebro from '../cerebro'
+import Evaluator from '../evaluator' // stub purposes
 
 var expect = require('chai').expect
-var Evaluator = require('../evaluator') // stub purposes
 
 require('../../test/setup/server')
 

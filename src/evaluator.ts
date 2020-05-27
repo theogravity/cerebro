@@ -9,7 +9,6 @@
 
 import Condition from './condition'
 
-var Evaluator
 var crc32 = require('buffer-crc32')
 var template = require('lodash.template')
 var isTemplate = require('./validators/helpers').isTemplate
@@ -62,9 +61,9 @@ var isTemplate = require('./validators/helpers').isTemplate
  * The data passed in by the user.  It is used to determine whether the conditions of except blocks are satisfied.
  * The keys of the context object must be the same as the conditions it is trying to fulfill.
  */
-Evaluator = {
+export default class Evaluator {
   /** This allows the evaluator to make optimizations on each rule */
-  prepareEntry: function (configEntry) {
+  static prepareEntry (configEntry) {
     if (configEntry.except) {
       configEntry.except.forEach(function (ex) {
         if (isTemplate(ex.value)) {
@@ -75,7 +74,7 @@ Evaluator = {
     }
 
     return configEntry
-  },
+  }
 
   /**
    * @param {Object} entry Setting object
@@ -95,7 +94,7 @@ Evaluator = {
    * @param {Object} customEvaluators Any custom evaluators for the config
    * @return {} The answer for the entry
    */
-  evaluate: function (entry, context, overrides, answers, customEvaluators) {
+  static evaluate (entry, context, overrides, answers, customEvaluators) {
     var i
     var exceptBlock
     var options = { context: context, overrides: null }
@@ -139,7 +138,7 @@ Evaluator = {
      * and/or if there was no except block present, return the default answer.
      */
     return this._getAnswer(entry, null, options)
-  },
+  }
 
   /**
    * Checks whether the context satisfies ALL conditions of the given except block.
@@ -155,7 +154,7 @@ Evaluator = {
    * @param {Object} customEvaluators Any custom evaluators for the config
    * @return {Boolean} TRUE if ALL conditions match, FALSE if ANY of the conditions fail.
    */
-  _evaluateExceptBlock: function (
+  private static _evaluateExceptBlock (
     entry,
     exceptBlock,
     context,
@@ -201,7 +200,7 @@ Evaluator = {
 
       return Condition.evaluate(conditionValue, testValue, customEvaluators)
     })
-  },
+  }
 
   /**
    * For the definiton of what an answer is, please refer to the `Definition of Terms` at the top of the file.
@@ -219,7 +218,7 @@ Evaluator = {
    * ```
    * It is returned in this format for the ease of use by the caller.
    */
-  _getAnswer: function (entry, exceptBlock, options) {
+  private static _getAnswer (entry, exceptBlock, options) {
     var block = exceptBlock || entry
     var overrideValue
 
@@ -258,7 +257,7 @@ Evaluator = {
       key: entry.setting, // name of the setting
       value: block.value // answer, value
     }
-  },
+  }
 
   /**
    * Evaluates a percentage condition and returns true if the percentage is less than the
@@ -272,7 +271,11 @@ Evaluator = {
    * @param {Object} context Contextual data about the user
    * @param {number} qualifiedPercentage The percentage that we should qualify (return true).
    */
-  _evaluatePercentage: function (settingName, context, qualifiedPercentage) {
+  private static _evaluatePercentage (
+    settingName,
+    context,
+    qualifiedPercentage
+  ) {
     var calculatedCrc, percentile, percentageSeed
 
     // We require a context value 'percentageSeed' to be supplied in order to personalize
@@ -309,5 +312,3 @@ Evaluator = {
     return percentile >= 0 && percentile < qualifiedPercentage
   }
 }
-
-module.exports = Evaluator

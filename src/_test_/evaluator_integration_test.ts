@@ -6,7 +6,8 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 var expect = require('chai').expect
-var Evaluator = require('../evaluator')
+
+import Evaluator from '../evaluator'
 
 require('../../test/setup/server')
 

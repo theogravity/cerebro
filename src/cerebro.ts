@@ -10,8 +10,7 @@ import {
   ICerebroOptions
 } from './interfaces'
 
-const Evaluator = require('./evaluator')
-
+import Evaluator from './evaluator'
 import CerebroConfig from './cerebro-config'
 
 /**
