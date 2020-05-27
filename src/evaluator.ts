@@ -7,7 +7,8 @@
 
 'use strict'
 
-var Condition = require('./condition')
+import Condition from './condition'
+
 var Evaluator
 var crc32 = require('buffer-crc32')
 var template = require('lodash.template')
@@ -77,31 +78,34 @@ Evaluator = {
   },
 
   /**
-     * @param {Object} entry Setting object
-     *
-     *  {
-     *      setting: 'acb',
-     *      value: 1,
-     *      except: [{
-     *          value: 2,
-     *          locale: ['en', 'uk']
-     *      }]
-     *  }
-     *
-     * @param {Object} context Contextual data about the user
-     * @param {Object} overrides Any specific overrides of the config for the user
-     * @param {Object} answers An object containing the resolved answers.
-     * @param {Object} customEvaluators Any custom evaluators for the config
-     * @return {} The answer for the entry
-     */
+   * @param {Object} entry Setting object
+   *
+   *  {
+   *      setting: 'acb',
+   *      value: 1,
+   *      except: [{
+   *          value: 2,
+   *          locale: ['en', 'uk']
+   *      }]
+   *  }
+   *
+   * @param {Object} context Contextual data about the user
+   * @param {Object} overrides Any specific overrides of the config for the user
+   * @param {Object} answers An object containing the resolved answers.
+   * @param {Object} customEvaluators Any custom evaluators for the config
+   * @return {} The answer for the entry
+   */
   evaluate: function (entry, context, overrides, answers, customEvaluators) {
     var i
     var exceptBlock
-    var options = { context: context }
+    var options = { context: context, overrides: null }
     var customEvals = customEvaluators || {}
 
     // if the user passes in anything that overrides a particular setting, use it first
-    if (overrides && overrides.hasOwnProperty(entry.setting)) {
+    if (
+      overrides &&
+      Object.prototype.hasOwnProperty.call(overrides, entry.setting)
+    ) {
       options.overrides = overrides
 
       return this._getAnswer(entry, null, options)
@@ -112,38 +116,52 @@ Evaluator = {
         exceptBlock = entry.except[i]
 
         /**
-                 * If all conditions are satisfied, return the value provided by this except block.
-                 * There may be multiple except blocks in this entry, but we return the answer of
-                 * the first except block that the user satisfies all the conditions for.
-                 */
-        if (this._evaluateExceptBlock(entry, exceptBlock, context, answers, customEvals)) {
+         * If all conditions are satisfied, return the value provided by this except block.
+         * There may be multiple except blocks in this entry, but we return the answer of
+         * the first except block that the user satisfies all the conditions for.
+         */
+        if (
+          this._evaluateExceptBlock(
+            entry,
+            exceptBlock,
+            context,
+            answers,
+            customEvals
+          )
+        ) {
           return this._getAnswer(entry, exceptBlock, options)
         }
       }
     }
 
     /**
-         * If the user did not satisfy the conditions for any of the except blocks,
-         * and/or if there was no except block present, return the default answer.
-         */
+     * If the user did not satisfy the conditions for any of the except blocks,
+     * and/or if there was no except block present, return the default answer.
+     */
     return this._getAnswer(entry, null, options)
   },
 
   /**
-     * Checks whether the context satisfies ALL conditions of the given except block.
-     * @param {Object} entry Setting.  Required because we need to know the name of the setting.
-     * @param {Object} exceptBlock
-     * `{
-     *      value: 111,
-     *      lang: ['en', 'us'],
-     *      farm: [1111, 2222]
-     * }`
-     * @param {Object} context Contextual data about the user
-     * @param {Object} answers An object containing the resolved answers.
-     * @param {Object} customEvaluators Any custom evaluators for the config
-     * @return {Boolean} TRUE if ALL conditions match, FALSE if ANY of the conditions fail.
-     */
-  _evaluateExceptBlock: function (entry, exceptBlock, context, answers, customEvaluators) {
+   * Checks whether the context satisfies ALL conditions of the given except block.
+   * @param {Object} entry Setting.  Required because we need to know the name of the setting.
+   * @param {Object} exceptBlock
+   * `{
+   *      value: 111,
+   *      lang: ['en', 'us'],
+   *      farm: [1111, 2222]
+   * }`
+   * @param {Object} context Contextual data about the user
+   * @param {Object} answers An object containing the resolved answers.
+   * @param {Object} customEvaluators Any custom evaluators for the config
+   * @return {Boolean} TRUE if ALL conditions match, FALSE if ANY of the conditions fail.
+   */
+  _evaluateExceptBlock: function (
+    entry,
+    exceptBlock,
+    context,
+    answers,
+    customEvaluators
+  ) {
     var conditionNames = Object.keys(exceptBlock)
     var _this = this
 
@@ -178,7 +196,7 @@ Evaluator = {
       if (conditionName === 'randomPercentage') {
         percentile = Math.random() * 100
 
-        return (percentile >= 0 && percentile < conditionValue)
+        return percentile >= 0 && percentile < conditionValue
       }
 
       return Condition.evaluate(conditionValue, testValue, customEvaluators)
@@ -186,21 +204,21 @@ Evaluator = {
   },
 
   /**
-     * For the definiton of what an answer is, please refer to the `Definition of Terms` at the top of the file.
-     *
-     * @param {Object} entry Setting.  Required because we need to know the name of the setting.
-     * @param {Object} [Optional] exceptBlock If an except block is passed, that means we want to get the answer from it
-     *      We have to pass in the entry along with the exceptBlock because the exceptBlock does not contain the
-     *      name of the setting.
-     * @return {Object} An object that contains both the name and the value of the setting in this format:
-     * ```
-     * {
-     *     key: name of the setting
-     *     value: value of the setting
-     * }
-     * ```
-     * It is returned in this format for the ease of use by the caller.
-     */
+   * For the definiton of what an answer is, please refer to the `Definition of Terms` at the top of the file.
+   *
+   * @param {Object} entry Setting.  Required because we need to know the name of the setting.
+   * @param {Object} [Optional] exceptBlock If an except block is passed, that means we want to get the answer from it
+   *      We have to pass in the entry along with the exceptBlock because the exceptBlock does not contain the
+   *      name of the setting.
+   * @return {Object} An object that contains both the name and the value of the setting in this format:
+   * ```
+   * {
+   *     key: name of the setting
+   *     value: value of the setting
+   * }
+   * ```
+   * It is returned in this format for the ease of use by the caller.
+   */
   _getAnswer: function (entry, exceptBlock, options) {
     var block = exceptBlock || entry
     var overrideValue
@@ -213,14 +231,14 @@ Evaluator = {
       overrideValue = options.overrides[entry.setting]
 
       /*
-             * If the original value is a boolean, then preserve it.
-             * A common use case for cerebro is to override a boolean setting
-             * with a number.  Imagine the case where the user enters a
-             * number, 0 or 1, instead of true or false for a query parameter.
-             * This type inconsistency can lead to validation errors in the
-             * application, because a module may receive a number when it is
-             * expecting a boolean.
-             */
+       * If the original value is a boolean, then preserve it.
+       * A common use case for cerebro is to override a boolean setting
+       * with a number.  Imagine the case where the user enters a
+       * number, 0 or 1, instead of true or false for a query parameter.
+       * This type inconsistency can lead to validation errors in the
+       * application, because a module may receive a number when it is
+       * expecting a boolean.
+       */
       if (typeof block.value === 'boolean') {
         overrideValue = Boolean(overrideValue)
       }
@@ -243,30 +261,33 @@ Evaluator = {
   },
 
   /**
-     * Evaluates a percentage condition and returns true if the percentage is less than the
-     * requested 'qualifiedPercentage'.
-     *
-     * We require a context value 'percentageSeed' to be supplied in order to personalize
-     * the percentage crc calculation.  'percentageSeed' can be either a string or a number.
-     * The implementor should select a value for 'percentageSeed' that is unique for the user.
-     *
-     * @param {string} settingName The entry setting name.  Required because we need to know the name of the setting.
-     * @param {Object} context Contextual data about the user
-     * @param {number} qualifiedPercentage The percentage that we should qualify (return true).
-     */
+   * Evaluates a percentage condition and returns true if the percentage is less than the
+   * requested 'qualifiedPercentage'.
+   *
+   * We require a context value 'percentageSeed' to be supplied in order to personalize
+   * the percentage crc calculation.  'percentageSeed' can be either a string or a number.
+   * The implementor should select a value for 'percentageSeed' that is unique for the user.
+   *
+   * @param {string} settingName The entry setting name.  Required because we need to know the name of the setting.
+   * @param {Object} context Contextual data about the user
+   * @param {number} qualifiedPercentage The percentage that we should qualify (return true).
+   */
   _evaluatePercentage: function (settingName, context, qualifiedPercentage) {
-    var calculatedCrc,
-      percentile,
-      percentageSeed
+    var calculatedCrc, percentile, percentageSeed
 
     // We require a context value 'percentageSeed' to be supplied in order to personalize
     // the percentage crc calculation.  'percentageSeed' can be either a string or a number.
     // The implementor should select a value for 'percentageSeed' that is unique for the user.
     percentageSeed = context.percentageSeed
     // If percentageSeed is not passed in, then we consider the condition to have failed
-    if (typeof percentageSeed !== 'string' && typeof percentageSeed !== 'number') {
-      throw new Error('The property `percentageSeed` must be set in the context ' +
-                            'in order for the percentage to be calculated')
+    if (
+      typeof percentageSeed !== 'string' &&
+      typeof percentageSeed !== 'number'
+    ) {
+      throw new Error(
+        'The property `percentageSeed` must be set in the context ' +
+          'in order for the percentage to be calculated'
+      )
     }
 
     //  If percentageSeed is a number, then transform it into a string.
@@ -285,7 +306,7 @@ Evaluator = {
     calculatedCrc = crc32(percentageSeed + settingName)
     percentile = (crc32.unsigned(calculatedCrc) % 100000) / 1000
 
-    return (percentile >= 0 && percentile < qualifiedPercentage)
+    return percentile >= 0 && percentile < qualifiedPercentage
   }
 }
 

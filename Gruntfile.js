@@ -28,15 +28,11 @@ module.exports = function (grunt) {
           '**/_test_/**/*_test.ts'
         ]
       }
-    },
-    eslint: {
-      target: ['src']
     }
   })
 
   grunt.loadNpmTasks('grunt-benchmark')
   grunt.loadNpmTasks('grunt-mocha-istanbul')
-  grunt.loadNpmTasks('grunt-eslint')
 
   require('./grunt_tasks/bench')(grunt)
 
@@ -44,7 +40,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('bench_ci', ['bench', 'append_benchmarks', 'git_commit'])
 
-  grunt.registerTask('test', ['eslint', 'mocha_istanbul', 'bench'])
+  grunt.registerTask('test', ['mocha_istanbul', 'bench'])
 
-  grunt.registerTask('test:ci', ['eslint', 'mocha_istanbul'])
+  grunt.registerTask('test:ci', ['mocha_istanbul'])
 }

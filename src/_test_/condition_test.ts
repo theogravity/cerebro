@@ -6,8 +6,9 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
+import Condition from '../condition'
+
 var expect = require('chai').expect
-var Condition = require('../condition')
 
 require('../../test/setup/server')
 
@@ -45,7 +46,8 @@ describe('./condition.js', function () {
       var condition = {}
       var testValue = {}
 
-      expect(function () {
+      expect(() => {
+        // @ts-expect-error
         Condition.evaluate(condition, testValue, this.customEvaluators)
       }).to.throw(/Unknown type of context field/)
     })
@@ -276,7 +278,7 @@ describe('./condition.js', function () {
 
       it('returns false when the context input types is incorrect', function () {
         var conditionValue = ['1205...1200']
-        var contextValue = [1200]
+        var contextValue: any = [1200]
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
 
@@ -295,6 +297,7 @@ describe('./condition.js', function () {
         var contextValue = 1200
 
         expect(function () {
+          // @ts-expect-error
           Condition._checkRange(conditionValue, contextValue)
         }).to.throw(/Expected a string type of element for range check: 1200/)
       })
@@ -304,6 +307,7 @@ describe('./condition.js', function () {
         var contextValue = '1200'
 
         expect(function () {
+          // @ts-expect-error
           Condition._checkRange(conditionValue, contextValue)
         }).to.throw(
           /Expected a numerical type of context value for range check: 120/

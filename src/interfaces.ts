@@ -10,7 +10,7 @@ export type ICerebroConfigEntryException = {
 }
 
 export interface ICerebroOptions {
-  customEvaluators?: { [key: string]: Function }
+  customEvaluators?: Record<string, Function>
 }
 
 export interface ICerebroContext {
@@ -19,12 +19,12 @@ export interface ICerebroContext {
 }
 
 export interface ICerebroConfigOptions {
-  overrides?: { [key: string]: any }
+  overrides?: Record<string, any>
 }
 
 export interface ICerebroConfig {
   isEnabled(name: string): boolean
-  getValue(name: string): any
+  getValue<T = any>(name: string): T
   dehydrate(): string
   getRawConfig(): Record<string, any>
   getLabels(): Record<string, any>

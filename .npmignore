@@ -21,3 +21,4 @@ docs/
 typedoc.js
 build/
 patches/
+coverage/

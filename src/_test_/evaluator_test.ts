@@ -6,9 +6,10 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
+import Condition from '../condition'
+
 var expect = require('chai').expect
 var Evaluator = require('../evaluator')
-var Condition = require('../condition') // stubbing a method on this
 
 require('../../test/setup/server')
 
