@@ -11,16 +11,28 @@
 - setting: password
   value: overriden
 
-# override the value based on a dimension
+# override the value based on a context
 # use the alternative value "prd-database"
-# if the "environment" context property value is "production" or "stage"
+# if the "environment" context dimension value is "production" or "stage"
 - setting: database
+  # default value if no context is specified
   value: test-database
   except:
     - value: prd-database
       environment:
         - production
         - stage
+
+# If the context contains
+# "production" or "stage" for the "environment" context
+# *and* "a" for the "bucket" context, then use the value of 50
+- setting: bucket_test
+  value: 100
+  except:
+    - value: 50
+      # alternate way to write an array
+      environment: ['production', 'stage']
+      bucket: a
 
 - setting: a_number
   value: 1
@@ -32,6 +44,8 @@
 
 - setting: an_object
   value:
+    # notice there are no dashes here,
+    # each item is a key/value pair in an object
     sampleKey: 1234
     sampleKey2: 12345.6
 
@@ -39,3 +53,68 @@
 # this will be interpreted as a null
 - setting: a_null
   value:
+
+- setting: noneFlag
+  value: false
+  except:
+   - value: true
+     # none is a special keyword - if the "environment" context *exists*,
+     # then the default will be used
+     environment: ['none']
+
+- setting: allFlag
+  value: false
+  except:
+    - value: true
+      # all is a special keyword - if the "environment" context *exists*, then "true" will be used
+      environment: ['all']
+
+- setting: is_your_birthday_inc
+  value: false
+  except:
+    - value: true
+      # inclusive range, if "userBirthdayYear" falls between 2000 and 2010, inclusive, then value is "true"
+      userBirthdayYear: ['2000..2010']
+
+- setting: is_your_birthday_exc
+  value: false
+  except:
+    - value: true
+      # exclusive range, if "userBirthdayYear" falls between 2000 and 2010, exclusive, then value is "true"
+      userBirthdayYear: ['2000...2010']
+
+# Having a setting value be dependent on another
+# Basic case
+- setting: independent
+  value: false
+  except:
+    - value: true
+      environment: ['alpha']
+
+- setting: dependent
+  value: false
+  except:
+    - value: true
+      setting: independent
+
+# AND dependent case
+- setting: foo
+  value: true
+
+- setting: bar
+  value: true
+
+- setting: andOfFooAndBar
+  value: false
+  except:
+    - value: true
+      setting: ['foo', 'bar']
+
+# OR dependent case
+- setting: andOfFooOrBar
+  value: false
+  except:
+    - value: true
+      setting: foo
+    - value: true
+      setting: bar

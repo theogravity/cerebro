@@ -1,308 +1,577 @@
-# Cerebra
+# Configma
 
 [![Build Status](https://travis-ci.org/yahoo/cerebro.svg?branch=master)](https://travis-ci.org/yahoo/cerebro)
 [![Coverage Status](https://coveralls.io/repos/github/yahoo/cerebro/badge.svg?branch=master)](https://coveralls.io/github/yahoo/cerebro?branch=master)
 
-A production-level (used at Yahoo and Samsung) configuration system for Node.js.
+A production-level configuration system for Node.js.
 
-Cerebro receives two inputs:
-  - the context, which is all data associated with a specific user or request.  each individual piece of context is referred to as a `dimension`.
-  - the configuration, which are the values which will be chosen based on what the context is.
-
-Cerebro outputs the resolved configuration.
+- An improvement on the battle-tested configuration library `cerebro` used at Yahoo and Samsung 
+properties serving millions of users.
+- Define your configuration using YAML.
+- Use alternate configuration values based on a defined context.
+  * Want to use use one value for dev, and another for production? You can!
+  * Dynamically adjust config values through things like query parameters - great for doing things 
+  like bucket (A/B-style) testing.
+  * ...and much more!  
+- Override any configuration using environment variables.
 
 # Fork notice
 
-This is a fork of the original Yahoo project, [`Cerebro`](https://github.com/yahoo/cerebro).
+This is a fork of the original Yahoo project, [`cerebro`](https://github.com/yahoo/cerebro).
 
 Changes:
 
-- YAML loading
+- Define configuration using a YAML file (you can still use the original `Cerebro` object if you want to use JSON)
 - environment variable overrides
 - Incorporates [AND of settings](https://github.com/yahoo/cerebro/pull/14) by @lpw
 - Updated parts of the codebase to Typescript
 - Updated parts of the codebase to classes
 - Updated toolchain to be typescript-based
-- Added new methods to the Cerebro configurator object
+- Added new methods to the config object
+- Re-written readme / updated usage examples to use the YAML format instead
 
 # Table of Contents
 
 <!-- TOC -->
-- [Usage](#usage)
+- [Install](#install)
+- [Static configuration](#static-configuration)
+  - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
+- [Dynamic configuration](#dynamic-configuration)
+- [`CerebroConfig` API](#cerebroconfig-api)
+  - [`getRawConfig()`](#getrawconfig)
+  - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
+  - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
+  - [`getString(settingName: string) : string`](#getstringsettingname-string--string)
+  - [`getInt(settingName: string) : number`](#getintsettingname-string--number)
+  - [`getFloat(settingName: string) : number`](#getfloatsettingname-string--number)
+  - [`getArray(settingName: string): Array`](#getarraysettingname-string-array)
+  - [`getObject(settingName: string): object`](#getobjectsettingname-string-object)
 - [Configuration Rules](#configuration-rules)
-  - [Evaluation Order](#evaluation-order)
-- [Supported Formats for Context Checks in Except](#supported-formats-for-context-checks-in-except)
-  - [Enums](#enums)
-  - [Ranges](#ranges)
-  - [Setting Dependency](#setting-dependency)
-  - [Custom Evaluators](#custom-evaluators)
-- [Overrides](#overrides)
-  - [Labels](#labels)
-- [Thanks](#thanks)
+  - [Basic configuration](#basic-configuration)
+  - [Context-based configuration](#context-based-configuration)
+    - [Evaluation Order](#evaluation-order)
+    - [Supported Formats for Context Checks in Except](#supported-formats-for-context-checks-in-except)
+      - [Enums](#enums)
+        - [None / All](#none--all)
+    - [Set value based on ranges](#set-value-based-on-ranges)
+    - [Dependent settings](#dependent-settings)
+      - [Basic dependency](#basic-dependency)
+        - [Multiple dependencies (AND operation)](#multiple-dependencies-and-operation)
+        - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
 
 <!-- TOC END -->
 
-## Usage
+## Install
 
-```js
-import Cerebro from 'cerebra';
+`$ npm i configma --save`
 
-const configuration = [{
-  setting: 'timer',
-  value: 30,
-  except: [{
-    value: 15,
-    environment: ['alpha']
-  }]
-}];
+## `loadStaticConfig()` - Static configuration
 
-const context = {
-  environment: 'alpha'
-};
+If you have configuration that never changes during run-time, static configuration is recommended.
 
-// initialize Cerebro
-const cerebro = new Cerebro(configuration);
-const resolvedConfiguration = cerebro.resolveConfig(context);
+Given the following yaml definition:
 
-console.log(resolvedConfiguration);
-// -> { timer: 15 } because the setting `timer` is set to 15 when the environment is alpha.
-// for all other environments, the resolvedConfiguration would be { timer: 30 }
+```yaml
+- setting: enable_database
+  value: true
+
+- setting: max_power
+  value: 1
+  except:
+   - value: 0
+     environment:
+       - production
+     power: low
+
+- setting: database_name
+  value: test-database
+  except:
+    - value: prd-database
+      environment:
+        - production
 ```
 
+Get the config values with a custom context.
+
+```typescript
+import { loadStaticConfig } from 'configma'
+
+// Optional, specify a set of context dimensions that determines
+// what configuration values to use
+const context = {
+  environment: 'production',
+  power: 'low'
+}
+
+// config is an instance of CerebroConfig
+const config = loadStaticConfig('example.yaml', context)
+
+console.log(config.getRawConfig())
+```
+
+Outputs:
+
+```json
+{"enable_database":true,"max_power":0,"database_name":"prd-database"}
+```
+
+### Overriding configuration using environment variables
+
+You can override any configuration value by specifying an environment variable.
+
+For example, you can override the `enable_database` value above using the following before
+calling `loadConfig()`:
+
+`process.env.enable_database = false`
+
+Or, via command line:
+
+`$ enable_database=false node app.js`
+
+## `getDynamicConfigBuilder()` - Dynamic configuration
+
+If you have configuration that should change during run-time, such as via an HTTP request based on 
+query parameters, use dynamic configuration.
+
+```typescript
+import { getDynamicConfigBuilder } from 'configma'
+
+// configFn = (context, overrides = {}) => CerebroConfig
+const configFn = getDynamicConfigBuilder('settings.yaml')
+
+// express middleware example
+export function middleware((req, res) => {
+  const context = {
+    // this is not a safe example - always sanitize any kind of user input!
+    power: req.query.power,
+    environment: process.env.NODE_ENV
+  }
+ 
+  // example 1: construct the configuration based on the context
+  let config = configFn(context)
+  
+  // example 2: an override can be specified that will override any config value
+  // the value of max_power will always be 0 here
+  config = configFn(context, { max_power: 0 })
+ 
+  const configValue = config.getInt('max_power')
+})
+```
+
+## `CerebroConfig` API
+
+### Basic getters
+
+Configuration values are accessed via the `CerebroConfig` API.
+
+#### `getRawConfig()`
+
+Returns the resolved configuration as an object.
+
+#### `getValue(settingName: string) : any`
+
+Gets the requested value if it is not a `Boolean`.  Returns `null` if the value does not exist.
+
+Throws an error if the requested value is a `Boolean`.
+
+`const value = config.getValue('setting_name')`
+
+If you're using Typescript, you can assign a type to it:
+
+```typescript
+// the value you're fetching is a number type
+const value = config.getValue<number>('setting_name')
+```
+
+#### `isEnabled(settingName: string) : boolean`
+
+This is recommended for feature flags.
+
+Gets the requested value if it is a `Boolean`. Returns `null` if the value does not exist.
+
+Throws an error if the requested value is not a `Boolean`.
+
+`const isEnabled = config.isEnabled('setting_name')`
+
+### Type-specific getters
+
+In most use-cases, you can use `getValue()` (for all types but `boolean`), and `isEnabled()`.
+
+These methods are provided if you want to return `null` if the value is not of that type.
+
+#### `getString(settingName: string) : string`
+
+Gets the requested value as a string. Returns `null` if the value does not exist or is not a string.
+
+`const value = config.getString('setting_name')`
+
+#### `getInt(settingName: string) : number`
+
+Gets the requested value as an integer. Returns `null` if the value does not exist or is not a number.
+
+`const value = config.getInt('setting_name')`
+
+#### `getFloat(settingName: string) : number`
+
+Gets the requested value as a float. Returns `null` if the value does not exist or is not a number.
+
+`const value = config.getFloat('setting_name')`
+
+#### `getArray(settingName: string): Array`
+
+Gets the requested value as an array. Returns `null` if the value does not exist or is not an array.
+
+`const values = config.getArray('setting_name')`
+
+If you're using Typescript, you can assign a type to it:
+
+```typescript
+// the value you're fetching is an array of numbers
+const values = config.getArray<number>('setting_name')
+```
+
+#### `getObject(settingName: string): object`
+
+Gets the requested value as an object. Returns `null` if the value does not exist or is not an object.
+
+`const obj = config.getObject('setting_name')`
+
+If you're using Typescript, you can assign a type to it:
+
+```typescript
+// the value you're fetching is an object containing string values
+const obj = config.getObject<string>('setting_name')
+```
 
 ## Configuration Rules
-For configuration, Cerebro expects an array that contains objects that have a `setting` and a `value`.  `setting` is the name of the configuration setting, and `value` is the value that will be assigned to it.  `value` can be any JSON data type.
 
-Here is an example configuration object:
+### Basic configuration
 
-```
-[{
-  setting: 'timer',
-  value: 30,
-  except: [{
-    value: 15,
-    environment: ['alpha']
-  }]
-}]
+- Each item in the YAML file must be an array item that is an object containing a `setting` and a `value`.
+- The `setting` is the setting name, and the `value` is the value to assign to that setting.
+
+```yaml
+- setting: config_name
+  value: config_value
 ```
 
-Settings must explicitly set the value in the `except` blocks.
+### Context-based configuration
 
-Settings are expected to follow these rules:
-- Setting must be a string.
-- Value must not be undefined.
-- Except must be an array.
+- You can specify alternate configuration based on the context input by specfying an `except` property.
+- Except must be an array
 - The elements of except must be objects.
 - An element of except must contain value, and this value must not be undefined.
 
 Settings are defined formally in `src/validators/schema.json`.
 
-### Evaluation Order
+```yaml
+# override the value based on a context
+# use the alternative value "prd-database"
+# if the "environment" context property value is "production" or "stage"
+- setting: database
+  # default value
+  value: test-database
+  except:
+    - value: prd-database
+      environment:
+        - production
+        - stage
+```
 
-If all the criteria in an `except` block is met, the value in the except block will be used.  The except blocks are checked in order, and it exits once it finds a match.  If no `except` block matches fully, then the default value is used.
+#### Evaluation Order
 
-Here is an example:
+- If all the criteria in an `except` block is met, the value in the except block will be used. 
+  * The except blocks are evaluated in-order, and it **stops** evaluation once it finds a match.  
+- If no `except` block matches fully, then the default value is used.
+
+Given this configuration:
+
+```yaml
+- setting: timer
+  value: 30
+  except:
+    # First item in evaluation
+    - value: 15
+      environment: 
+        - alpha
+    # Second item
+    - value: 20
+      environment:
+        - alpha
+      bucket: a
+```
+
+And the context dimensions:
 
 ```js
-import { Cerebro } from 'cerebra';
-
-const configuration = [{
-  setting: 'timer',
-  value: 30,
-  except: [{
-    value: 15,
-    environment: ['alpha']
-  }, {
-    value: 20,
-    environment: ['alpha'],
-    bucket: 'a'
-  }]
-}];
-
 const context = {
   environment: 'alpha',
   bucket: 'a'
-};
-
-// initialize Cerebro
-const cerebro = new Cerebro(configuration);
-const resolvedConfiguration = cerebro.resolveConfig(context);
-
-console.log(resolvedConfiguration);
-// -> { timer: 15 } because the setting `timer` is set to 15 when the environment is alpha.
-// in this case, {timer: 20} would never be hit because {timer: 15} will cause the evaluation
-// to end immediately when environment is alpha
+}
 ```
 
-## Supported Formats for Context Checks in Except
+The output will be:
 
-### Enums
-Given an except block that accepts multiple values for the same dimension, enable the setting if a dimension in the context object matches one of those values.  For example, if the configuration has something like this:
-
-```js
-[{
-  setting: 'enableNewFeature',
-  value: false,
-  except: [{
-    value: true,
-    bucket: ['a', 'b']
-  }]
-}];
+```json
+{ "timer": 15 }
 ```
 
-The setting should be enabled if the context object contains the dimension `bucket: 'a'` or `bucket: 'b'`.
+This is because the evaluator ends once conditions are met, and in the first exception rule,
+the setting `timer` is set to 15 when the environment is `alpha` only.
 
-Enums also support two additional options, `none` and `all`.  Here's what the configuration would look like:
+This can be fixed by re-ordering the exception items:
 
-```js
-[{
-    setting: 'enableNewFeature',
-    value: false,
-    except: [{
-        value: true,
-        partner: [
-            'all'
-        ]
-    }]
-}];
+```yaml
+- setting: timer
+  value: 30
+  except:
+    - value: 20
+      environment:
+        - alpha
+      bucket: a
+    - value: 15
+      environment: 
+        - alpha
 ```
 
-In this case, if the context object contains __any__ partner, the setting will be enabled.  If the context contains no partner, the setting will be disabled.  In other words, the setting is only enabled for partners.
+#### Supported Formats for Context Checks in Except
 
-```js
-[{
-  setting: 'enableNewFeature',
-  value: false,
-  except: [{
-    value: true,
-    partner: ['none']
-  }]
-}];
+##### Enums
+
+The except value will be used if the `bucket` dimension value is either `a` or `b`:
+
+```yaml
+- setting: enableNewFeature
+  value: false
+  except:
+    - value: true
+      bucket:
+        - a
+        - b
 ```
 
-Similar logic applies to `none`.  If the context contains no partner, the setting will be enabled.  If the context contains any partner, the setting will be disabled.  In other words, the setting is disabled only for partners.
+Can also be written as:
 
-### Ranges
-A configuration may contain a range of values.  The range may be inclusive or exclusive.
-
-An inclusive range looks like this: `rangeExample: ['1000..2000']`.
-An exclusive range looks like this: `rangeExample: ['1000...2000']`.
-
-Here’s an example of a setting using a range:
-
-```js
-[{
-  setting: 'enableNewFeature',
-  value: false,
-  except: [{
-    value: true,
-    userBirthdayYear: ['2000...2010']
-  }]
-}];
+```yaml
+- setting: enableNewFeature
+  value: false
+  except:
+    - value: true
+      bucket: ['a', 'b']
 ```
 
-Thus, if the context contains a dimension called `userBirthdayYear` that is anywhere between 2000 and 2010, exclusive, the setting will be enabled.
+###### None / All
 
-### Setting Dependency
-One setting may depend on another setting.  In this case, the configuration would look something like this:
+Enums also support two additional options, `none` and `all`:
 
-```js
-[{
-  setting: 'independent',
-  value: false,
-  except: [{
-    value: true,
-    environment: ['alpha']
-  }]
-}, {
-  setting: 'dependent',
-  value: false,
-  except: [{
-    value: true,
-    setting: 'independent'
-  }]
-}];
+`all`: If the context has a `partner` dimension with any kind of value, it will match.
+
+```yaml
+- setting: enableNewFeature
+  value: false
+  except:
+    # This value will be used if partner has any kind of value set
+    - value: true
+      partner: ['all']
 ```
 
-In this case, the dependent setting will not be enabled unless the independent setting is also enabled.
+`none`: If the context has a `partner` dimension with any kind of value, the **default** value will be used.
 
-The setting dependency may be extended to depend on multiple settings.  In this case, the evaluation will be true only when each and every specified setting is true.  In other words, this is an AND operation between the specified settings (an OR operation can be achieved in other ways, such as using separate exception blocks).
+```yaml
+- setting: enableNewFeature
+  # This value will be used if partner is defined
+  value: false
+  except:
+    # Used if partner is *not* defined
+    - value: true
+      partner: ['none']
+```
 
-For example:
-```js
+#### Set value based on ranges
+
+You can specify a value to use if a dimension happens to fall in a range of values.
+
+- An inclusive range looks like this: `rangeExample: ['1000..2000']`.
+- An exclusive range looks like this: `rangeExample: ['1000...2000']`.
+
+In the following example, if the context contains a dimension called `userBirthdayYear` 
+that is anywhere between 2000 and 2010, exclusive, `enableNewFeature` will be `true`.
+
+```yaml
+- setting: enableNewFeature
+  value: false
+  except:
+    - value: true
+      userBirthdayYear: ['2000...2010']
+```
+
+#### Dependent settings
+
+You can have a setting be dependent on another setting.
+
+##### Basic dependency
+
+`dependent` will not be enabled unless `independent` is aldo enabled.
+
+```yaml
+- setting: independent
+  value: false
+  except:
+    - value: true
+      environment: ['alpha']
+
+- setting: dependent
+  value: false
+  except:
+    - value: true
+      setting: independent
+```
+
+###### Multiple dependencies (AND operation)
+
+The value `true` will be used only if the value of `foo` and `bar` is true.
+
+```yaml
 - setting: andOfFooAndBar
   value: false
   except:
     - value: true
-      settings:
-        - foo
-        - bar
+      setting: ['foo', 'bar']
 ```
-or
-```js
+
+###### Multiple dependencies (OR operation)
+
+```yaml
+- setting: andOfFooOrBar
+  value: false
+  except:
+    - value: true
+      setting: foo
+    - value: true
+      setting: bar
+```
+
+### Full example YAML
+
+```yaml
+# Sample cerebra configuration file
+
+# Set a key called "username" with a value of "my-username"
+- setting: username
+  value: my-username
+
+- setting: password
+  value: my-password
+
+# duplicate keys are *ignored*
+- setting: password
+  value: overriden
+
+# override the value based on a context
+# use the alternative value "prd-database"
+# if the "environment" context dimension value is "production" or "stage"
+- setting: database
+  # default value if no context is specified
+  value: test-database
+  except:
+    - value: prd-database
+      environment:
+        - production
+        - stage
+
+# If the context contains
+# "production" or "stage" for the "environment" context
+# *and* "a" for the "bucket" context, then use the value of 50
+- setting: bucket_test
+  value: 100
+  except:
+    - value: 50
+      # alternate way to write an array
+      environment: ['production', 'stage']
+      bucket: a
+
+- setting: a_number
+  value: 1
+
+- setting: an_array
+  value:
+    - apples
+    - oranges
+
+- setting: an_object
+  value:
+    # notice there are no dashes here,
+    # each item is a key/value pair in an object
+    sampleKey: 1234
+    sampleKey2: 12345.6
+
+# you can leave a key without a value
+# this will be interpreted as a null
+- setting: a_null
+  value:
+
+- setting: noneFlag
+  value: false
+  except:
+   - value: true
+     # none is a special keyword - if the "environment" context *exists*,
+     # then the default will be used
+     environment: ['none']
+
+- setting: allFlag
+  value: false
+  except:
+    - value: true
+      # all is a special keyword - if the "environment" context *exists*, then "true" will be used
+      environment: ['all']
+
+- setting: is_your_birthday_inc
+  value: false
+  except:
+    - value: true
+      # inclusive range, if "userBirthdayYear" falls between 2000 and 2010, inclusive, then value is "true"
+      userBirthdayYear: ['2000..2010']
+
+- setting: is_your_birthday_exc
+  value: false
+  except:
+    - value: true
+      # exclusive range, if "userBirthdayYear" falls between 2000 and 2010, exclusive, then value is "true"
+      userBirthdayYear: ['2000...2010']
+
+# Having a setting value be dependent on another
+# Basic case
+- setting: independent
+  value: false
+  except:
+    - value: true
+      environment: ['alpha']
+
+- setting: dependent
+  value: false
+  except:
+    - value: true
+      setting: independent
+
+# AND dependent case
+- setting: foo
+  value: true
+
+- setting: bar
+  value: true
+
 - setting: andOfFooAndBar
   value: false
   except:
     - value: true
-      settings: [foo, bar]
+      setting: ['foo', 'bar']
 
+# OR dependent case
+- setting: andOfFooOrBar
+  value: false
+  except:
+    - value: true
+      setting: foo
+    - value: true
+      setting: bar
 ```
-
-### Custom Evaluators
-We may want to evaluate a context in a custom way.  For example, we may want to use do a partial string match using a regex.
-
-Below is an example of the configuration:
-
-```js
-[{
-    setting: 'enableNewFeature',
-    value: false,
-    except: [{
-        value: true,
-        partialLocale: ['en']
-    }]
-}]
-```
-
-To use a custom evaluator, you must pass an object called `customEvaluators` through the `options` object in the Cerebro constructor.  This object will have the name of the dimension it is to evaluate as a key and the evaluation function as value.
-
-The evaluation function will receive two parameters, a `dimensionValue`, which is the value given in the configuration (`en` in the above example), and `testValue`, which is the value passed in the context.
-
-The evaluation function must return a boolean.  If it does not return a boolean, the return value will be coerced to a boolean.
-
-For the above configuration, the `customEvaluators` would look like this:
-
-var customEvaluators = {
-    customDimension: function(dimensionValue, testValue) {}
-};
-
-The `dimensionValue` would be [“en”], and the testValue would be whatever the value of `customDimension` was in the context.
-
-## Overrides
-We may want to override a certain setting, regardless of what the configuration says.  To do this, the client must pass an object, `overrides`, into the Cerebro constructor.  The keys of the `overrides` object will be the setting names and the value will be the value of the setting.  Typically, these overrides would come from the request URL, but any source can be used.
-
-### Labels
-Label metadata may be added to each entry in the form of an array of strings.  This does not affect the evaluation of setting entries into their resulting values.  It's stricly meant as a way to contextualize those values.  
-
-For instance, values that are not wanted as part of a client payload can be marked "server".  
-
-Note that this could be used to create subsets of values that no longer have all of the original entries with contraints such as dependencies.  
-
-An alternative way to organize and contextualize is to group settings into separate files.
-
-
-```js
-[{
-    setting: 'enableNewFeature',
-    labels: ['server', 'namedFeatureGroup'],
-    value: false,
-    except: [{
-        value: true,
-        partialLocale: ['en']
-    }]
-}]
-```
-
-## Thanks
-
-* Many thanks to Alasdair Mercer for donating the naming rights :) 

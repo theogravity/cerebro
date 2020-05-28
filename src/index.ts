@@ -1,4 +1,12 @@
 import { Cerebro } from './cerebro'
-import { loadConfig } from './yaml-loader'
+import { loadStaticConfig, getDynamicConfigBuilder } from './yaml-loader'
+import { CerebroConfig } from './cerebro-config'
+import { ICerebroConfig } from './interfaces'
 
-export { Cerebro, loadConfig }
+export {
+  Cerebro,
+  CerebroConfig,
+  ICerebroConfig,
+  loadStaticConfig,
+  getDynamicConfigBuilder
+}

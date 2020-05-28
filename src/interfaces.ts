@@ -24,6 +24,13 @@ export interface ICerebroConfigOptions {
 
 export interface ICerebroConfig {
   /**
+   * Gets the requested value in its raw form. No checks are performed on it.
+   *
+   * @param {String} name The name of the setting that you want to value of
+   * @return {*} The value of the setting
+   */
+  getRawValue<T = any>(name: string): T
+  /**
    * Gets the requested value if it is a Boolean.  Returns null if the value does not exist.
    * Throws an error if the requested value is not a Boolean.
    *
@@ -33,11 +40,10 @@ export interface ICerebroConfig {
   isEnabled(name: string): boolean
   /**
    * Gets the requested value as an object. Returns null if the value does not exist or is not an object.
-   * Throws an error if the requested value is not an object.
    * @param {String} name The name of the setting that you want to value of
    * @return {Object|null} The value of the setting
    */
-  getObject(name: string): Record<string, any>
+  getObject<U = any>(name: string): Record<string, U>
   /**
    * Gets the requested value as an integer. Returns null if the value does not exist or is not a number.
    * @param {String} name The name of the setting that you want to value of
@@ -79,7 +85,7 @@ export interface ICerebroConfig {
    */
   dehydrate(): string
   /**
-   * Returns the resolved config.
+   * Returns the resolved configuration as an object.
    * NOTE: This does not deep clone the object, which means that clients could abuse this
    * by changing values.  Doing a deep clone will obviously impact performance.
    *
@@ -95,3 +101,8 @@ export interface ICerebroConfig {
    */
   getLabels(): Record<string, any>
 }
+
+export type DynamicConfigBuilder = (
+  context: Record<string, any>,
+  overrides?: Record<string, any>
+) => ICerebroConfig

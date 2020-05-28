@@ -290,6 +290,12 @@ describe('./cerebro.ts', function () {
       })
     })
 
+    describe('#getRawValue', function () {
+      it('returns feature value', function () {
+        expect(this.cerebroConfig.getRawValue('e')).to.equal('test')
+      })
+    })
+
     describe('#getRawConfig', function () {
       it('returns the same config used in constructor', function () {
         var actualConfig = this.cerebroConfig.getRawConfig()
