@@ -1,5 +1,5 @@
 {
-  "name": "config-ready",
+  "name": "prod-conf",
   "version": "1.0.0",
   "description": "A production-ready YAML-based configuration system.",
   "author": "Scott Sperling <scsper@yahoo.com>",
@@ -79,9 +79,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/theogravity/config-ready.git"
+    "url": "https://github.com/theogravity/prod-conf.git"
   },
-  "homepage": "https://github.com/theogravity/config-ready#readme",
+  "homepage": "https://github.com/theogravity/prod-conf#readme",
   "eslintConfig": {
     "parserOptions": {
       "ecmaVersion": 6,
