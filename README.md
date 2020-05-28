@@ -47,7 +47,7 @@ Changes:
   - [Dynamic configuration: `getDynamicConfigBuilder(yamlFile)`](#dynamic-configuration-getdynamicconfigbuilderyamlfile)
 - [`CerebroConfig` API](#cerebroconfig-api)
   - [Basic getters](#basic-getters)
-    - [`getRawConfig()`](#getrawconfig)
+    - [`getRawConfig() : object`](#getrawconfig--object)
     - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
     - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
   - [Type-specific getters](#type-specific-getters)
@@ -56,6 +56,7 @@ Changes:
     - [`getFloat(settingName: string) : number`](#getfloatsettingname-string--number)
     - [`getArray(settingName: string): Array`](#getarraysettingname-string-array)
     - [`getObject(settingName: string): object`](#getobjectsettingname-string-object)
+    - [`getRawValue(settingName: string): any`](#getrawvaluesettingname-string-any)
 - [Configuration Rules](#configuration-rules)
   - [Basic configuration](#basic-configuration)
   - [Context-based configuration](#context-based-configuration)
@@ -68,7 +69,7 @@ Changes:
       - [Basic dependency](#basic-dependency)
         - [Multiple dependencies (AND operation)](#multiple-dependencies-and-operation)
         - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
-  - [Full example YAML](#full-example-yaml)
+- [Full example YAML](#full-example-yaml)
 - [Benchmarking](#benchmarking)
 
 <!-- TOC END -->
@@ -194,11 +195,13 @@ export function middleware((req, res) => {
 
 ## `CerebroConfig` API
 
+Use the API to get values from out of your configuration.
+
 ### Basic getters
 
 Configuration values are accessed via the `CerebroConfig` API.
 
-#### `getRawConfig()`
+#### `getRawConfig() : object`
 
 Returns the resolved configuration as an object.
 
@@ -275,6 +278,19 @@ If you're using Typescript, you can assign a type to it:
 ```typescript
 // the value you're fetching is an object containing string values
 const obj = config.getObject<string>('setting_name')
+```
+
+#### `getRawValue(settingName: string): any`
+
+Gets the requested value in its raw form. No checks are performed on it.
+
+`const value = config.getRawValue('setting_name')`
+
+If you're using Typescript, you can assign a type to it:
+
+```typescript
+// the value you're fetching is a string
+const value = config.getRawValue<string>('setting_name')
 ```
 
 ## Configuration Rules
@@ -485,7 +501,7 @@ The value `true` will be used only if the value of `foo` and `bar` is true.
       setting: bar
 ```
 
-### Full example YAML
+## Full example YAML
 
 ```yaml
 # Sample prod-conf configuration file
