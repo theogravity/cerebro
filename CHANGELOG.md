@@ -1,3 +1,9 @@
+## 1.0.3 - Thu May 28 2020 05:12:25
+
+**Contributor:** Theo Gravity
+
+- Update readme
+
 ## 1.0.2 - Thu May 28 2020 04:45:44
 
 **Contributor:** Theo Gravity

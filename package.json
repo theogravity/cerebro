@@ -1,6 +1,6 @@
 {
   "name": "prod-conf",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A production-grade YAML-based configuration system.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "contributors": [
