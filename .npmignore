@@ -28,3 +28,6 @@ tmp/
 test/
 grunt_tasks/
 example.yaml
+.nyc_output/
+Gruntfile.js
+

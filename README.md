@@ -17,6 +17,7 @@ Yahoo and Samsung properties serving millions of users.
   like bucket (A/B-style) testing.
   * ...and much more!  
 - Override any configuration using environment variables.
+- 99% test coverage
 
 # Fork notice
 
