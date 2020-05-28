@@ -195,7 +195,7 @@ export function middleware((req, res) => {
 
 ## `CerebroConfig` API
 
-Use the API to get values from out of your configuration.
+Use the API to fetch values from your configuration.
 
 ### Basic getters
 
