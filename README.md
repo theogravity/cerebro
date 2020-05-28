@@ -1,9 +1,11 @@
-# configma
+# config-ready
 
-[![Build Status](https://travis-ci.org/yahoo/cerebro.svg?branch=master)](https://travis-ci.org/yahoo/cerebro)
-[![Coverage Status](https://coveralls.io/repos/github/yahoo/cerebro/badge.svg?branch=master)](https://coveralls.io/github/yahoo/cerebro?branch=master)
+[![NPM version](http://img.shields.io/npm/v/config-ready.svg?style=flat-square)](https://www.npmjs.com/package/config-ready)
+[![CircleCI](https://circleci.com/gh/theogravity/config-ready.svg?style=svg)](https://circleci.com/gh/theogravity/config-ready) 
+![built with typescript](https://camo.githubusercontent.com/92e9f7b1209bab9e3e9cd8cdf62f072a624da461/68747470733a2f2f666c61742e62616467656e2e6e65742f62616467652f4275696c74253230576974682f547970655363726970742f626c7565) 
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-A production-grade configuration system.
+A production-ready configuration system.
 
 - An improvement on the battle-tested configuration library `cerebro` used at Yahoo and Samsung 
 properties serving millions of users.
@@ -71,7 +73,7 @@ Changes:
 
 ## Install
 
-`$ npm i configma --save`
+`$ npm i config-ready --save`
 
 ## `loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration
 
@@ -102,7 +104,7 @@ Given the following yaml definition:
 Get the config values with a custom context.
 
 ```typescript
-import { loadStaticConfig } from 'configma'
+import { loadStaticConfig } from 'config-ready'
 
 // Optional, specify a set of context dimensions that determines
 // what configuration values to use
@@ -158,7 +160,7 @@ If you have configuration that should change during run-time, such as via an HTT
 query parameters, use dynamic configuration.
 
 ```typescript
-import { getDynamicConfigBuilder } from 'configma'
+import { getDynamicConfigBuilder } from 'config-ready'
 
 // returns a function in the format of:
 // configFn = (context, overrides = {}) => CerebroConfig

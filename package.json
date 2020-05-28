@@ -1,7 +1,7 @@
 {
-  "name": "configma",
+  "name": "config-ready",
   "version": "1.0.0",
-  "description": "A production-grade YAML-based configuration system.",
+  "description": "A production-ready YAML-based configuration system.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "contributors": [
     "Theo Gravity <theo@suteki.nu> (https://github.com/theogravity)"
@@ -79,9 +79,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/theogravity/configma.git"
+    "url": "https://github.com/theogravity/config-ready.git"
   },
-  "homepage": "https://github.com/theogravity/configma#readme",
+  "homepage": "https://github.com/theogravity/config-ready#readme",
   "eslintConfig": {
     "parserOptions": {
       "ecmaVersion": 6,
