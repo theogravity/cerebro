@@ -34,9 +34,13 @@ Changes:
 
 <!-- TOC -->
 - [Install](#install)
-- [`loadStaticConfig()` - Static configuration](#loadstaticconfig---static-configuration)
+- [`loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration](#loadstaticconfigyamlfile-context-overrides---static-configuration)
   - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
-- [`getDynamicConfigBuilder()` - Dynamic configuration](#getdynamicconfigbuilder---dynamic-configuration)
+    - [Via `proces.env`](#via-procesenv)
+    - [via command line](#via-command-line)
+      - [Specifying objects](#specifying-objects)
+      - [Specifying arrays](#specifying-arrays)
+- [`getDynamicConfigBuilder(yamlFile)` - Dynamic configuration](#getdynamicconfigbuilderyamlfile---dynamic-configuration)
 - [`CerebroConfig` API](#cerebroconfig-api)
   - [Basic getters](#basic-getters)
     - [`getRawConfig()`](#getrawconfig)
@@ -61,6 +65,7 @@ Changes:
         - [Multiple dependencies (AND operation)](#multiple-dependencies-and-operation)
         - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
   - [Full example YAML](#full-example-yaml)
+- [Benchmarking](#benchmarking)
 
 <!-- TOC END -->
 
@@ -68,7 +73,7 @@ Changes:
 
 `$ npm i configma --save`
 
-## `loadStaticConfig()` - Static configuration
+## `loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration
 
 If you have configuration that never changes during run-time, static configuration is recommended.
 
@@ -109,6 +114,10 @@ const context = {
 // config is an instance of CerebroConfig
 const config = loadStaticConfig('example.yaml', context)
 
+// Third param is a set of overrides that has first priority over any resolved or environment value
+// database_name will always be 'overwritten'
+// const config = loadStaticConfig('example.yaml', context, { database_name: 'overwritten' })
+
 console.log(config.getRawConfig())
 ```
 
@@ -120,18 +129,30 @@ Outputs:
 
 ### Overriding configuration using environment variables
 
-You can override any configuration value by specifying an environment variable.
+You can override any configuration value by specifying an environment variable of the same name. 
 
-For example, you can override the `enable_database` value above using the following before
+*If you specify an `override` object, it will take precedence over an environment variable.*
+
+#### Via `proces.env`
+
+You can override the `enable_database` value above using the following before
 calling `loadConfig()`:
 
 `process.env.enable_database = false`
 
-Or, via command line:
+#### via command line
 
 `$ enable_database=false node app.js`
 
-## `getDynamicConfigBuilder()` - Dynamic configuration
+##### Specifying objects
+
+`$ enable_database="{\"test\": \"blah\"}" node app.js`
+
+##### Specifying arrays
+
+`$ enable_database="[\"test\", \"blah\"]" node app.js`
+
+## `getDynamicConfigBuilder(yamlFile)` - Dynamic configuration
 
 If you have configuration that should change during run-time, such as via an HTTP request based on 
 query parameters, use dynamic configuration.
@@ -139,6 +160,7 @@ query parameters, use dynamic configuration.
 ```typescript
 import { getDynamicConfigBuilder } from 'configma'
 
+// returns a function in the format of:
 // configFn = (context, overrides = {}) => CerebroConfig
 const configFn = getDynamicConfigBuilder('settings.yaml')
 
@@ -151,11 +173,11 @@ export function middleware((req, res) => {
   }
  
   // example 1: construct the configuration based on the context
-  let config = configFn(context)
+  const config = configFn(context)
   
   // example 2: an override can be specified that will override any config value
   // the value of max_power will always be 0 here
-  config = configFn(context, { max_power: 0 })
+  // config = configFn(context, { max_power: 0 })
  
   const configValue = config.getInt('max_power')
 })

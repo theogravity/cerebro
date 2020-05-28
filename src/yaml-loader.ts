@@ -14,7 +14,8 @@ import { DynamicConfigBuilder, ICerebroConfig } from './interfaces'
  */
 export function loadStaticConfig (
   configFile: string,
-  context: Record<string, any> = {}
+  context: Record<string, any> = {},
+  overrides: Record<string, any> = {}
 ): ICerebroConfig {
   const filePath = resolve(process.cwd(), configFile)
   const config = yaml.safeLoad(readFileSync(filePath, 'utf8'))
@@ -22,7 +23,10 @@ export function loadStaticConfig (
   const cerebro = new Cerebro(config)
 
   return cerebro.resolveConfig(context, {
-    overrides: getOverridesFromEnv(config)
+    overrides: {
+      ...getOverridesFromEnv(config),
+      ...overrides
+    }
   })
 }
 
