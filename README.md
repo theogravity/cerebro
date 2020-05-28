@@ -37,13 +37,14 @@ Changes:
 
 <!-- TOC -->
 - [Install](#install)
-- [`loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration](#loadstaticconfigyamlfile-context-overrides---static-configuration)
-  - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
-    - [Via `process.env`](#via-processenv)
-    - [via command line](#via-command-line)
-      - [Specifying objects](#specifying-objects)
-      - [Specifying arrays](#specifying-arrays)
-- [`getDynamicConfigBuilder(yamlFile)` - Dynamic configuration](#getdynamicconfigbuilderyamlfile---dynamic-configuration)
+- [Getting started](#getting-started)
+  - [`loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration](#loadstaticconfigyamlfile-context-overrides---static-configuration)
+    - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
+      - [Via `process.env`](#via-processenv)
+      - [via command line](#via-command-line)
+        - [Specifying objects](#specifying-objects)
+        - [Specifying arrays](#specifying-arrays)
+  - [`getDynamicConfigBuilder(yamlFile)` - Dynamic configuration](#getdynamicconfigbuilderyamlfile---dynamic-configuration)
 - [`CerebroConfig` API](#cerebroconfig-api)
   - [Basic getters](#basic-getters)
     - [`getRawConfig()`](#getrawconfig)
@@ -76,7 +77,9 @@ Changes:
 
 `$ npm i prod-conf --save`
 
-## `loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration
+## Getting started
+
+### `loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration
 
 If you have configuration that never changes during run-time, static configuration is recommended.
 
@@ -130,32 +133,32 @@ Outputs:
 {"enable_database":true,"max_power":0,"database_name":"prd-database"}
 ```
 
-### Overriding configuration using environment variables
+#### Overriding configuration using environment variables
 
 You can override any configuration value by specifying an environment variable of the same name. 
 
 *If you specify an `override` object, it will take precedence over an environment variable.*
 
-#### Via `process.env`
+##### Via `process.env`
 
 You can override the `enable_database` value above using the following before
 calling `loadConfig()`:
 
 `process.env.enable_database = false`
 
-#### via command line
+##### via command line
 
 `$ enable_database=false node app.js`
 
-##### Specifying objects
+###### Specifying objects
 
 `$ enable_database="{\"test\": \"blah\"}" node app.js`
 
-##### Specifying arrays
+###### Specifying arrays
 
 `$ enable_database="[\"test\", \"blah\"]" node app.js`
 
-## `getDynamicConfigBuilder(yamlFile)` - Dynamic configuration
+### `getDynamicConfigBuilder(yamlFile)` - Dynamic configuration
 
 If you have configuration that should change during run-time, such as via an HTTP request based on 
 query parameters, use dynamic configuration.
