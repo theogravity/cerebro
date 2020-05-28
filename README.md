@@ -39,7 +39,7 @@ Changes:
 - [Install](#install)
 - [`loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration](#loadstaticconfigyamlfile-context-overrides---static-configuration)
   - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
-    - [Via `proces.env`](#via-procesenv)
+    - [Via `process.env`](#via-processenv)
     - [via command line](#via-command-line)
       - [Specifying objects](#specifying-objects)
       - [Specifying arrays](#specifying-arrays)
@@ -136,7 +136,7 @@ You can override any configuration value by specifying an environment variable o
 
 *If you specify an `override` object, it will take precedence over an environment variable.*
 
-#### Via `proces.env`
+#### Via `process.env`
 
 You can override the `enable_database` value above using the following before
 calling `loadConfig()`:
