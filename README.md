@@ -38,13 +38,13 @@ Changes:
 <!-- TOC -->
 - [Install](#install)
 - [Getting started](#getting-started)
-  - [`loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration](#loadstaticconfigyamlfile-context-overrides---static-configuration)
+  - [Static configuration: `loadStaticConfig(yamlFile, context?, overrides?)`](#static-configuration-loadstaticconfigyamlfile-context-overrides)
     - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
       - [Via `process.env`](#via-processenv)
       - [via command line](#via-command-line)
         - [Specifying objects](#specifying-objects)
         - [Specifying arrays](#specifying-arrays)
-  - [`getDynamicConfigBuilder(yamlFile)` - Dynamic configuration](#getdynamicconfigbuilderyamlfile---dynamic-configuration)
+  - [Dynamic configuration: `getDynamicConfigBuilder(yamlFile)`](#dynamic-configuration-getdynamicconfigbuilderyamlfile)
 - [`CerebroConfig` API](#cerebroconfig-api)
   - [Basic getters](#basic-getters)
     - [`getRawConfig()`](#getrawconfig)
@@ -79,7 +79,7 @@ Changes:
 
 ## Getting started
 
-### `loadStaticConfig(yamlFile, context?, overrides?)` - Static configuration
+### Static configuration: `loadStaticConfig(yamlFile, context?, overrides?)`
 
 If you have configuration that never changes during run-time, static configuration is recommended.
 
@@ -125,6 +125,9 @@ const config = loadStaticConfig('example.yaml', context)
 // const config = loadStaticConfig('example.yaml', context, { database_name: 'overwritten' })
 
 console.log(config.getRawConfig())
+
+// pluck a boolean value
+const databaseEnabled = config.isEnabled('enable_database')
 ```
 
 Outputs:
@@ -158,7 +161,7 @@ calling `loadConfig()`:
 
 `$ enable_database="[\"test\", \"blah\"]" node app.js`
 
-### `getDynamicConfigBuilder(yamlFile)` - Dynamic configuration
+### Dynamic configuration: `getDynamicConfigBuilder(yamlFile)`
 
 If you have configuration that should change during run-time, such as via an HTTP request based on 
 query parameters, use dynamic configuration.
