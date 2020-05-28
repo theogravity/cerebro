@@ -7,8 +7,7 @@
 
 A production-grade configuration system.
 
-This is a developer-friendly improvement on the battle-tested configuration library `cerebro` used at 
-Yahoo and Samsung properties serving millions of users.
+This is a developer-friendly improvement on the battle-tested configuration library [`cerebro`](https://github.com/yahoo/cerebro) used at Yahoo and Samsung properties serving millions of users.
 
 - Define your configuration using YAML.
 - Use alternate configuration values based on a defined context.
