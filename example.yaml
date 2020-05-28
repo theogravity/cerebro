@@ -1,4 +1,4 @@
-# Sample cerebra configuration file
+# Sample prod-conf configuration file
 
 # Set a key called "username" with a value of "my-username"
 - setting: username

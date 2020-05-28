@@ -488,7 +488,7 @@ The value `true` will be used only if the value of `foo` and `bar` is true.
 ### Full example YAML
 
 ```yaml
-# Sample cerebra configuration file
+# Sample prod-conf configuration file
 
 # Set a key called "username" with a value of "my-username"
 - setting: username
