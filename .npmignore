@@ -23,3 +23,8 @@ build/
 patches/
 coverage/
 example.yaml
+.nycrc.json
+tmp/
+test/
+grunt_tasks/
+example.yaml

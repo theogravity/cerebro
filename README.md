@@ -34,18 +34,20 @@ Changes:
 
 <!-- TOC -->
 - [Install](#install)
-- [Static configuration](#static-configuration)
+- [`loadStaticConfig()` - Static configuration](#loadstaticconfig---static-configuration)
   - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
-- [Dynamic configuration](#dynamic-configuration)
+- [`getDynamicConfigBuilder()` - Dynamic configuration](#getdynamicconfigbuilder---dynamic-configuration)
 - [`CerebroConfig` API](#cerebroconfig-api)
-  - [`getRawConfig()`](#getrawconfig)
-  - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
-  - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
-  - [`getString(settingName: string) : string`](#getstringsettingname-string--string)
-  - [`getInt(settingName: string) : number`](#getintsettingname-string--number)
-  - [`getFloat(settingName: string) : number`](#getfloatsettingname-string--number)
-  - [`getArray(settingName: string): Array`](#getarraysettingname-string-array)
-  - [`getObject(settingName: string): object`](#getobjectsettingname-string-object)
+  - [Basic getters](#basic-getters)
+    - [`getRawConfig()`](#getrawconfig)
+    - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
+    - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
+  - [Type-specific getters](#type-specific-getters)
+    - [`getString(settingName: string) : string`](#getstringsettingname-string--string)
+    - [`getInt(settingName: string) : number`](#getintsettingname-string--number)
+    - [`getFloat(settingName: string) : number`](#getfloatsettingname-string--number)
+    - [`getArray(settingName: string): Array`](#getarraysettingname-string-array)
+    - [`getObject(settingName: string): object`](#getobjectsettingname-string-object)
 - [Configuration Rules](#configuration-rules)
   - [Basic configuration](#basic-configuration)
   - [Context-based configuration](#context-based-configuration)
@@ -58,6 +60,7 @@ Changes:
       - [Basic dependency](#basic-dependency)
         - [Multiple dependencies (AND operation)](#multiple-dependencies-and-operation)
         - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
+  - [Full example YAML](#full-example-yaml)
 
 <!-- TOC END -->
 
@@ -574,4 +577,30 @@ The value `true` will be used only if the value of `foo` and `bar` is true.
       setting: foo
     - value: true
       setting: bar
+```
+
+## Benchmarking
+
+You can run a benchmark to understand how this package performs under certain conditions:
+
+Check out this repository, install, and run:
+
+`$ npm run bench`
+
+Example output:
+
+```
+>> simple x 26,692,182 ops/sec ±2.43% (90 runs sampled)
+>> simple with override x 16,374,548 ops/sec ±1.61% (87 runs sampled)
+>> enum x 3,743,442 ops/sec ±1.53% (92 runs sampled)
+>> range x 1,659,775 ops/sec ±8.57% (89 runs sampled)
+>> custom evaluator x 3,264,366 ops/sec ±2.85% (88 runs sampled)
+>> cross setting dependencies x 2,916,230 ops/sec ±2.13% (93 runs sampled)
+>> multiple dimensions x 3,493,998 ops/sec ±1.41% (95 runs sampled)
+>> multiple except blocks x 2,459,082 ops/sec ±1.15% (94 runs sampled)
+>> random percentage x 3,732,457 ops/sec ±1.85% (92 runs sampled)
+>> fixed percentage x 1,391,401 ops/sec ±1.48% (92 runs sampled)
+>> template x 1,118,186 ops/sec ±2.31% (88 runs sampled)
+>> huge x 3,517 ops/sec ±2.22% (87 runs sampled)
+Fastest test is simple at 1.63x faster than simple with override
 ```
