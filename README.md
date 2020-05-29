@@ -1,7 +1,7 @@
-# prod-conf
+# configurity
 
-[![NPM version](http://img.shields.io/npm/v/prod-conf.svg?style=flat-square)](https://www.npmjs.com/package/prod-conf)
-[![CircleCI](https://circleci.com/gh/theogravity/prod-conf.svg?style=svg)](https://circleci.com/gh/theogravity/prod-conf) 
+[![NPM version](http://img.shields.io/npm/v/configurity.svg?style=flat-square)](https://www.npmjs.com/package/configurity)
+[![CircleCI](https://circleci.com/gh/theogravity/configurity.svg?style=svg)](https://circleci.com/gh/theogravity/configurity) 
 ![built with typescript](https://camo.githubusercontent.com/92e9f7b1209bab9e3e9cd8cdf62f072a624da461/68747470733a2f2f666c61742e62616467656e2e6e65742f62616467652f4275696c74253230576974682f547970655363726970742f626c7565) 
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
@@ -76,7 +76,7 @@ Changes:
 
 ## Install
 
-`$ npm i prod-conf --save`
+`$ npm i configurity --save`
 
 ## Getting started
 
@@ -109,7 +109,7 @@ Given the following yaml definition:
 Get the config values with a custom context.
 
 ```typescript
-import { loadStaticConfig } from 'prod-conf'
+import { loadStaticConfig } from 'configurity'
 
 // Optional, specify a set of context dimensions that determines
 // what configuration values to use
@@ -168,7 +168,7 @@ If you have configuration that should change during run-time, such as via an HTT
 query parameters, use dynamic configuration.
 
 ```typescript
-import { getDynamicConfigBuilder } from 'prod-conf'
+import { getDynamicConfigBuilder } from 'configurity'
 
 // returns a function in the format of:
 // configFn = (context, overrides = {}) => CerebroConfig
@@ -504,7 +504,7 @@ The value `true` will be used only if the value of `foo` and `bar` is true.
 ## Full example YAML
 
 ```yaml
-# Sample prod-conf configuration file
+# Sample configurity configuration file
 
 # Set a key called "username" with a value of "my-username"
 - setting: username
