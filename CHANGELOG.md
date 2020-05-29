@@ -1,3 +1,11 @@
+## 1.0.5 - Fri May 29 2020 01:45:20
+
+**Contributor:** Theo Gravity
+
+- Rename package from `prod-config` -> `configurity`
+
+Thanks to reddit user `sieabah` for the suggestion.
+
 ## 1.0.4 - Thu May 28 2020 05:23:11
 
 **Contributor:** Theo Gravity
