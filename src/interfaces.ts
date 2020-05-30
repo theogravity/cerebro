@@ -22,6 +22,21 @@ export interface ICerebroConfigOptions {
   overrides?: Record<string, any>
 }
 
+export interface ICerebroConfigParams {
+  /**
+   * Map of setting name : array of labels
+   */
+  labels: Record<string, Array<string>>
+  /**
+   * Map of label : setting value
+   */
+  labelResolved: Record<string, any>
+  /**
+   * The resolved configuration object
+   */
+  answers: Record<string, any>
+}
+
 export interface ICerebroConfig {
   /**
    * Gets the requested value in its raw form. No checks are performed on it.
@@ -100,6 +115,12 @@ export interface ICerebroConfig {
    * Entries with no labels are represented as an empty array (not undefined).
    */
   getLabels(): Record<string, any>
+  /**
+   * Gets configuration categorized under a specific label.
+   *
+   * Returns null if the label does not exist.
+   */
+  getConfigForLabel(label: string): Record<string, any>
 }
 
 export type DynamicConfigBuilder = (

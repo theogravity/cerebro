@@ -67,3 +67,4 @@ lib/
 build/
 coverage/
 tmp/
+test.js

@@ -140,6 +140,30 @@ describe('evaluator.ts', function () {
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.equal(false)
     })
+
+    it('overrides the original setting', function () {
+      var entry = {
+        setting: this.settingName,
+        value: 'abcd',
+        except: [
+          {
+            farm: ['1234'],
+            value: 'defg'
+          }
+        ]
+      }
+      var overrides = {
+        testSetting: 'higj'
+      }
+      var answer
+
+      this.sandbox.stub(Condition, 'evaluate').returns(false)
+
+      answer = Evaluator.evaluate(entry, context, overrides)
+
+      expect(answer.key).to.equal(this.settingName)
+      expect(answer.value).to.equal('higj')
+    })
   })
 
   describe('multiple conditions', function () {

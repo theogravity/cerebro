@@ -3,7 +3,8 @@
   "extension": [".ts", ".js"],
   "check-coverage": true,
   "include": ["src/**"],
-  "statements": 99.5,
+  "exclude": ["src/**/_test_/**", "src/index.ts"],
+  "statements": 99,
   "branches": 94,
   "functions": 98,
   "lines": 99

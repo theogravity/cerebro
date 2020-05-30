@@ -15,6 +15,8 @@
 # use the alternative value "prd-database"
 # if the "environment" context dimension value is "production" or "stage"
 - setting: database
+  # Assign a label to the setting for grouping settings together
+  labels: ['server']
   # default value if no context is specified
   value: test-database
   except:
