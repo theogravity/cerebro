@@ -1,3 +1,11 @@
+## 1.0.6 - Sat May 30 2020 00:21:04
+
+**Contributor:** Theo Gravity
+
+- Merge pull request #1 from theogravity/get-labels
+
+Add `getConfigForLabel()`
+
 ## 1.0.5 - Fri May 29 2020 01:45:20
 
 **Contributor:** Theo Gravity
