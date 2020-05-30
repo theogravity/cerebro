@@ -15,6 +15,7 @@ This is a developer-friendly improvement on the battle-tested configuration libr
   * Dynamically adjust config values through things like query parameters - great for doing things 
   like bucket (A/B-style) testing.
   * ...and much more!  
+- Group settings by tags (aka `labels`)
 - Override any configuration using environment variables.
 - 99% test coverage
 
@@ -49,16 +50,18 @@ Changes:
   - [Basic getters](#basic-getters)
     - [`getRawConfig() : object`](#getrawconfig--object)
     - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
+    - [`getRawValue(settingName: string): any`](#getrawvaluesettingname-string-any)
     - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
+    - [`getConfigForLabel(labelName: string): object`](#getconfigforlabellabelname-string-object)
   - [Type-specific getters](#type-specific-getters)
     - [`getString(settingName: string) : string`](#getstringsettingname-string--string)
     - [`getInt(settingName: string) : number`](#getintsettingname-string--number)
     - [`getFloat(settingName: string) : number`](#getfloatsettingname-string--number)
     - [`getArray(settingName: string): Array`](#getarraysettingname-string-array)
     - [`getObject(settingName: string): object`](#getobjectsettingname-string-object)
-    - [`getRawValue(settingName: string): any`](#getrawvaluesettingname-string-any)
 - [Configuration Rules](#configuration-rules)
   - [Basic configuration](#basic-configuration)
+  - [Group settings by a set of labels](#group-settings-by-a-set-of-labels)
   - [Context-based configuration](#context-based-configuration)
     - [Evaluation Order](#evaluation-order)
     - [Supported Formats for Context Checks in Except](#supported-formats-for-context-checks-in-except)
@@ -138,6 +141,9 @@ Outputs:
 ```
 
 #### Overriding configuration using environment variables
+
+**This only applies to static configuration. In dynamic configuration, you will have to manually pluck out
+your environment variables into the overrides object.**
 
 You can override any configuration value by specifying an environment variable of the same name. 
 
@@ -220,6 +226,19 @@ If you're using Typescript, you can assign a type to it:
 const value = config.getValue<number>('setting_name')
 ```
 
+#### `getRawValue(settingName: string): any`
+
+Gets the requested value in its raw form. No checks are performed on it.
+
+`const value = config.getRawValue('setting_name')`
+
+If you're using Typescript, you can assign a type to it:
+
+```typescript
+// the value you're fetching is a string
+const value = config.getRawValue<string>('setting_name')
+```
+
 #### `isEnabled(settingName: string) : boolean`
 
 This is recommended for feature flags.
@@ -229,6 +248,33 @@ Gets the requested value if it is a `Boolean`. Returns `null` if the value does 
 Throws an error if the requested value is not a `Boolean`.
 
 `const isEnabled = config.isEnabled('setting_name')`
+
+#### `getConfigForLabel(labelName: string): object`
+
+Get an object returning only the settings and their values that was categorized under a label.
+
+```yaml
+- setting: without_label
+  value: blah
+
+- setting: database_name
+  # categorize the setting under the server and database labels
+  labels: ['server', 'database']
+  value: db-name
+
+- setting: service_port
+  labels: ['server']
+  value: 3000
+```
+
+```typescript
+// get only the settings marked under server
+const obj = config.getConfigForLabel('server')
+```
+
+```typescript
+{ "database_name": "db-name", "service_port": 3000 }
+```
 
 ### Type-specific getters
 
@@ -280,19 +326,6 @@ If you're using Typescript, you can assign a type to it:
 const obj = config.getObject<string>('setting_name')
 ```
 
-#### `getRawValue(settingName: string): any`
-
-Gets the requested value in its raw form. No checks are performed on it.
-
-`const value = config.getRawValue('setting_name')`
-
-If you're using Typescript, you can assign a type to it:
-
-```typescript
-// the value you're fetching is a string
-const value = config.getRawValue<string>('setting_name')
-```
-
 ## Configuration Rules
 
 ### Basic configuration
@@ -303,6 +336,18 @@ const value = config.getRawValue<string>('setting_name')
 ```yaml
 - setting: config_name
   value: config_value
+```
+
+### Group settings by a set of labels
+
+You can assign labels to settings and use `getConfigForLabel(label)` to only get settings categorized
+by that label.
+
+```yaml
+- setting: database_name
+  # categorize the setting under the server and database labels
+  labels: ['server', 'database']
+  value: db-name
 ```
 
 ### Context-based configuration

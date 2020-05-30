@@ -93,7 +93,7 @@ export class Evaluator {
    * @param {Object} customEvaluators Any custom evaluators for the config
    * @return {} The answer for the entry
    */
-  static evaluate (entry, context, overrides, answers, customEvaluators?) {
+  static evaluate (entry, context, overrides?, answers?, customEvaluators?) {
     let i
     let exceptBlock
     const options = { context: context, overrides: null }
@@ -216,13 +216,16 @@ export class Evaluator {
    * ```
    * It is returned in this format for the ease of use by the caller.
    */
-  private static _getAnswer (entry, exceptBlock, options) {
+  private static _getAnswer (
+    entry,
+    exceptBlock,
+    options: {
+      context?: Record<string, any>
+      overrides?: Record<any, any>
+    } = {}
+  ) {
     const block = exceptBlock || entry
     let overrideValue
-
-    if (!options) {
-      options = {}
-    }
 
     if (options.overrides) {
       overrideValue = options.overrides[entry.setting]

@@ -1,4 +1,4 @@
-import { ICerebroConfig } from './interfaces'
+import { ICerebroConfig, ICerebroConfigParams } from './interfaces'
 
 /**
  * Wrapper for resolvedConfig that provides convenience methods for checking value types and dehydration
@@ -6,14 +6,16 @@ import { ICerebroConfig } from './interfaces'
  * @param {Object} resolvedConfig - object created by building context with settings config
  */
 export class CerebroConfig implements ICerebroConfig {
-  _resolved: any
-  _labels: any
+  _resolved: Record<string, any>
+  _labels: Record<string, Array<string>>
+  _labelResolved: Record<string, any>
 
-  constructor (resolvedConfig) {
+  constructor (resolvedConfig: ICerebroConfigParams) {
     if (!resolvedConfig.answers) {
       throw new Error('`resolvedConfig` is required')
     }
 
+    this._labelResolved = resolvedConfig.labelResolved
     this._resolved = resolvedConfig.answers
     this._labels = resolvedConfig.labels
   }
@@ -170,8 +172,8 @@ export class CerebroConfig implements ICerebroConfig {
    * @return {JSON} Map of settings to values.
    */
   dehydrate (): string {
-    const { _resolved, _labels } = this
-    const dehydratedObject = { _resolved, _labels }
+    const { _resolved, _labels, _labelResolved } = this
+    const dehydratedObject = { _resolved, _labels, _labelResolved }
 
     return JSON.stringify(dehydratedObject)
   }
@@ -188,13 +190,22 @@ export class CerebroConfig implements ICerebroConfig {
   }
 
   /**
+   * Gets configuration that was categorized under a specific label.
+   *
+   * Returns null if the label does not exist.
+   */
+  getConfigForLabel (label: string): Record<string, any> {
+    return this._labelResolved[label] || null
+  }
+
+  /**
    * Returns the labels from the entries
    *
    * @return {Object} The labels as an object just like getRawConfig,
    * where each key is setting name and its value is an array of string labels.
    * Entries with no labels are represented as an empty array (not undefined).
    */
-  getLabels (): Record<string, any> {
+  getLabels (): Record<string, Array<string>> {
     return this._labels
   }
 }

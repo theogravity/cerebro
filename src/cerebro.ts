@@ -16,7 +16,7 @@ import { CerebroConfig } from './cerebro-config'
 /**
  * @param {Array} config - array containing setting entries
  * @param {Object} [Optional] options Object containing customEvaluators
- *      @param {Object} customEvaluators object containing the custom evaluation methods
+ * @param {Object} customEvaluators object containing the custom evaluation methods
  */
 export class Cerebro {
   _config: any
@@ -65,10 +65,11 @@ export class Cerebro {
     // if the dehydratedObject is not valid, JSON parse will fail and throw an error
     const rehydratedObj = JSON.parse(dehydratedObject)
 
-    const { _resolved, _labels } = rehydratedObj
+    const { _resolved, _labels, _labelResolved } = rehydratedObj
     const builtObject = {
       answers: _resolved,
-      labels: _labels
+      labels: _labels,
+      labelResolved: _labelResolved
     }
 
     return new CerebroConfig(builtObject)
@@ -83,7 +84,9 @@ export class Cerebro {
 
   private _build (context, overrides) {
     const answers = {}
-    const labels = {}
+    const labels: Record<string, Array<string>> = {}
+    const labelResolved = {}
+
     let answer
 
     this._config.forEach(function (entry) {
@@ -99,13 +102,22 @@ export class Cerebro {
         if (!answers.hasOwnProperty(answer.key)) {
           answers[answer.key] = answer.value
           labels[answer.key] = entry.labels || []
+
+          labels[answer.key].forEach(label => {
+            if (!labelResolved[label]) {
+              labelResolved[label] = {}
+            }
+
+            labelResolved[label][answer.key] = answer.value
+          })
         }
       }
     }, this)
 
     return {
       answers,
-      labels
+      labels,
+      labelResolved
     }
   }
 

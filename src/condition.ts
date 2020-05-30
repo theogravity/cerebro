@@ -50,8 +50,8 @@ export class Condition {
         )
       case CONDITION_TYPES.PRIMITIVE:
         return this._checkPrimitive(condition, testValue)
-      default:
-        throw new Error('Unrecognized except type: ' + type)
+      // _getConditionType will always throw if it cannot
+      // recognize the type
     }
   }
 

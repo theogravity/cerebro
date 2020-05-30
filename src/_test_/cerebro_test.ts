@@ -161,10 +161,13 @@ describe('./cerebro.ts', function () {
 
   describe('CerebroConfig', function () {
     let rawConfig
+    let labelResolved
 
     beforeEach(function () {
-      var cerebro = new Cerebro([])
-      var labels = { a: ['s'], b: ['c'], c: ['s', 'c'] }
+      const cerebro = new Cerebro([])
+      const labels = { a: ['s'], b: ['c'], c: ['s', 'c'] }
+      labelResolved = { s: { a: 111 } }
+
       rawConfig = {
         a: 111,
         b: true,
@@ -175,7 +178,7 @@ describe('./cerebro.ts', function () {
       }
 
       this.sandbox.stub(Cerebro.prototype, '_build').callsFake(function () {
-        return { answers: rawConfig, labels }
+        return { answers: rawConfig, labels, labelResolved: labelResolved }
       })
       this.rawConfig = rawConfig
       this.labels = labels
@@ -312,14 +315,27 @@ describe('./cerebro.ts', function () {
       })
     })
 
+    describe('#getConfigForLabel', function () {
+      it('returns a config for a defined label', function () {
+        expect(this.cerebroConfig.getConfigForLabel('s')).to.eql(
+          labelResolved.s
+        )
+      })
+
+      it('returns null for an undefined label', function () {
+        expect(this.cerebroConfig.getConfigForLabel('undef_label')).to.eql(null)
+      })
+    })
+
     describe('#dehydrate', function () {
       it('returns a JSON string', function () {
-        var json = this.cerebroConfig.dehydrate()
+        const json = this.cerebroConfig.dehydrate()
 
         expect(json).to.equal(
           JSON.stringify({
             _resolved: this.rawConfig,
-            _labels: this.labels
+            _labels: this.labels,
+            _labelResolved: labelResolved
           })
         )
       })
