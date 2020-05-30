@@ -2,9 +2,13 @@
 
 **Contributor:** Theo Gravity
 
-- Merge pull request #1 from theogravity/get-labels
+- Add `getConfigForLabel()`
 
-Add `getConfigForLabel()`
+In `cerebro`, you can assign tags (it calls them `labels`) to settings to group settings under a particular tag.
+
+Although it could do this, its usage was very limited as it does not have a getter to work with them.
+
+The new method allows you to get a set of settings by its tag.
 
 ## 1.0.5 - Fri May 29 2020 01:45:20
 
