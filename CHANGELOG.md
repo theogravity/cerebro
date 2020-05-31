@@ -1,3 +1,11 @@
+## 2.0.2 - Sun May 31 2020 01:07:09
+
+**Contributor:** Theo Gravity
+
+- Updated readme on getRawConfig()
+
+A note has been added that `getRawConfig()` does not deep clone the object.
+
 ## 2.0.1 - Sun May 31 2020 00:52:30
 
 **Contributor:** Theo Gravity
