@@ -199,11 +199,7 @@ export function middleware((req, res) => {
 
 ## `CerebroConfig` API
 
-Use the API to fetch values from your configuration.
-
-Configuration values are accessed via the `CerebroConfig` API.
-
-You should use the basic getters in your normal workflow.
+Use the API methods to fetch values from your configuration.
 
 ### `getAssertValue(settingName: string) : any`
 
