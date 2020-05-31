@@ -49,83 +49,6 @@ export class CerebroConfig implements ICerebroConfig {
   }
 
   /**
-   * Gets the requested value as an object. Returns null if the value does not exist or is not an object.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Object|null} The value of the setting
-   */
-  getObject<T = any> (name: string): Record<string, T> {
-    const setting = this._resolved[name]
-
-    if (typeof setting === 'undefined' || typeof setting !== 'object') {
-      return null
-    }
-
-    return setting
-  }
-
-  /**
-   * Gets the requested value as a float. Returns null if the value does not exist or is not a number.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Number|null} The value of the setting
-   */
-  getFloat (name: string): number {
-    const setting = this._resolved[name]
-    const value = parseFloat(setting)
-
-    if (typeof setting === 'undefined' || isNaN(value)) {
-      return null
-    }
-
-    return value
-  }
-
-  /**
-   * Gets the requested value as an integer. Returns null if the value does not exist or is not a number.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Number|null} The value of the setting
-   */
-  getInt (name: string): number {
-    const setting = this._resolved[name]
-    const value = parseInt(setting, 10)
-
-    if (typeof setting === 'undefined' || isNaN(value)) {
-      return null
-    }
-
-    return value
-  }
-
-  /**
-   * Gets the requested value as an array. Returns null if the value does not exist or is not an array.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Array|null}
-   */
-  getArray<T = any> (name: string): Array<T> {
-    const setting = this._resolved[name]
-
-    if (typeof setting === 'undefined' || !Array.isArray(setting)) {
-      return null
-    }
-
-    return setting
-  }
-
-  /**
-   * Gets the requested value as a string. Returns null if the value does not exist or is not a string.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {String|null}
-   */
-  getString (name: string): string {
-    const setting = this._resolved[name]
-
-    if (typeof setting === 'undefined' || typeof setting !== 'string') {
-      return null
-    }
-
-    return setting
-  }
-
-  /**
    * Gets the requested value if it is not a Boolean.  Returns null if the value does not exist.
    * Throws an error if the requested value is a Boolean.
    *
@@ -149,6 +72,36 @@ export class CerebroConfig implements ICerebroConfig {
     }
 
     // did not include other types for backwards-compat
+
+    return setting
+  }
+
+  /**
+   * Gets the requested value if it is not a Boolean.
+   * Throws an error if the requested value is a Boolean / empty / null / undefined.
+   *
+   * @param {String} name The name of the setting that you want to value of
+   * @return {!Boolean|*} The value of the setting
+   */
+  getAssertValue<T = any> (name: string): T {
+    const setting = this._resolved[name]
+
+    if (setting === '' || setting === null || typeof setting === 'undefined') {
+      throw new Error(
+        'The requested setting (' +
+          name +
+          ') from getAssertValue is an empty string, null, or undefined.'
+      )
+    }
+
+    if (typeof setting === 'boolean') {
+      throw new Error(
+        'The requested setting (' +
+          name +
+          ') from isEnabled is a boolean.  ' +
+          'Please use #isEnabled instead.'
+      )
+    }
 
     return setting
   }
@@ -199,11 +152,9 @@ export class CerebroConfig implements ICerebroConfig {
   }
 
   /**
-   * Returns the labels from the entries
+   * Returns an object in the form of `{ <setting_name>: <array of labels> }`.
    *
-   * @return {Object} The labels as an object just like getRawConfig,
-   * where each key is setting name and its value is an array of string labels.
-   * Entries with no labels are represented as an empty array (not undefined).
+   * For settings without labels, an empty array is assigned instead.
    */
   getLabels (): Record<string, Array<string>> {
     return this._labels

@@ -174,7 +174,10 @@ describe('./cerebro.ts', function () {
         c: { multilevel: [1, 2] },
         d: 12.3,
         e: 'test',
-        asArray: [1, 2]
+        asArray: [1, 2],
+        f: null,
+        g: undefined,
+        h: ''
       }
 
       this.sandbox.stub(Cerebro.prototype, '_build').callsFake(function () {
@@ -203,6 +206,44 @@ describe('./cerebro.ts', function () {
       })
     })
 
+    describe('#getAssertValue', function () {
+      it('returns state value', function () {
+        expect(this.cerebroConfig.getAssertValue('a')).to.equal(111)
+      })
+
+      it('throws an error if the setting is a boolean', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getAssertValue('b')
+          }.bind(this)
+        ).to.throw(/Please use #isEnabled instead./)
+      })
+
+      it('throws an error if the setting is null', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getAssertValue('f')
+          }.bind(this)
+        ).to.throw(/from getAssertValue/)
+      })
+
+      it('throws an error if the setting is undefined', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getAssertValue('g')
+          }.bind(this)
+        ).to.throw(/from getAssertValue/)
+      })
+
+      it('throws an error if the setting is an empty string', function () {
+        expect(
+          function () {
+            this.cerebroConfig.getAssertValue('h')
+          }.bind(this)
+        ).to.throw(/from getAssertValue/)
+      })
+    })
+
     describe('#isEnabled', function () {
       it('does not evaluate if feature is not present', function () {
         expect(this.cerebroConfig.isEnabled('non_existing_feature')).to.be.null
@@ -218,78 +259,6 @@ describe('./cerebro.ts', function () {
             this.cerebroConfig.isEnabled('a')
           }.bind(this)
         ).to.throw(/Please use #getValue instead./)
-      })
-    })
-
-    describe('#getInt', function () {
-      it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getInt('non_existing_feature')).to.be.null
-      })
-
-      it('does not evaluate if feature is not a number', function () {
-        expect(this.cerebroConfig.getInt('b')).to.be.null
-      })
-
-      it('returns feature value', function () {
-        expect(this.cerebroConfig.getInt('a')).to.equal(111)
-      })
-    })
-
-    describe('#getFloat', function () {
-      it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getFloat('non_existing_feature')).to.be.null
-      })
-
-      it('does not evaluate if feature is not a number', function () {
-        expect(this.cerebroConfig.getFloat('b')).to.be.null
-      })
-
-      it('returns feature value', function () {
-        expect(this.cerebroConfig.getFloat('d')).to.equal(12.3)
-      })
-    })
-
-    describe('#getArray', function () {
-      it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getArray('non_existing_feature')).to.be.null
-      })
-
-      it('does not evaluate if feature is not an array', function () {
-        expect(this.cerebroConfig.getArray('d')).to.be.null
-      })
-
-      it('returns feature value', function () {
-        expect(this.cerebroConfig.getArray('asArray')).to.equal(
-          rawConfig.asArray
-        )
-      })
-    })
-
-    describe('#getObject', function () {
-      it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getObject('non_existing_feature')).to.be.null
-      })
-
-      it('does not evaluate if feature is not an object', function () {
-        expect(this.cerebroConfig.getObject('b')).to.be.null
-      })
-
-      it('returns feature value', function () {
-        expect(this.cerebroConfig.getObject('c')).to.equal(rawConfig.c)
-      })
-    })
-
-    describe('#getString', function () {
-      it('does not evaluate if feature is not present', function () {
-        expect(this.cerebroConfig.getString('non_existing_feature')).to.be.null
-      })
-
-      it('does not evaluate if feature is not a string', function () {
-        expect(this.cerebroConfig.getString('b')).to.be.null
-      })
-
-      it('returns feature value', function () {
-        expect(this.cerebroConfig.getString('e')).to.equal('test')
       })
     })
 

@@ -54,36 +54,6 @@ export interface ICerebroConfig {
    */
   isEnabled(name: string): boolean
   /**
-   * Gets the requested value as an object. Returns null if the value does not exist or is not an object.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Object|null} The value of the setting
-   */
-  getObject<U = any>(name: string): Record<string, U>
-  /**
-   * Gets the requested value as an integer. Returns null if the value does not exist or is not a number.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Number|null} The value of the setting
-   */
-  getInt(name: string): number
-  /**
-   * Gets the requested value as a float. Returns null if the value does not exist or is not a number.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Number|null} The value of the setting
-   */
-  getFloat(name: string): number
-  /**
-   * Gets the requested value as an array. Returns null if the value does not exist or is not an array.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {Array|null}
-   */
-  getArray<T = any>(name: string): Array<T>
-  /**
-   * Gets the requested value as a string. Returns null if the value does not exist or is not a string.
-   * @param {String} name The name of the setting that you want to value of
-   * @return {String|null}
-   */
-  getString(name: string): string
-  /**
    * Gets the requested value if it is not a Boolean.  Returns null if the value does not exist.
    * Throws an error if the requested value is a Boolean.
    *
@@ -91,6 +61,14 @@ export interface ICerebroConfig {
    * @return {!Boolean|*} The value of the setting
    */
   getValue<T = any>(name: string): T
+  /**
+   * Gets the requested value if it is not a Boolean.
+   * Throws an error if the requested value is a Boolean or is null.
+   *
+   * @param {String} name The name of the setting that you want to value of
+   * @return {!Boolean|*} The value of the setting
+   */
+  getAssertValue<T = any>(name: string): T
   /**
    * Serializes the object to send to the client.
    * Intended to be used on the server.
@@ -108,13 +86,11 @@ export interface ICerebroConfig {
    */
   getRawConfig(): Record<string, any>
   /**
-   * Returns the labels from the entries
+   * Returns an object in the form of `{ <setting_name>: <array of labels> }`.
    *
-   * @return {Object} The labels as an object just like getRawConfig,
-   * where each key is setting name and its value is an array of string labels.
-   * Entries with no labels are represented as an empty array (not undefined).
+   * For settings without labels, an empty array is assigned instead.
    */
-  getLabels(): Record<string, any>
+  getLabels(): Record<string, Array<string>>
   /**
    * Gets configuration categorized under a specific label.
    *
