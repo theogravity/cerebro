@@ -7,16 +7,18 @@
 
 A production-grade configuration system.
 
-This is a developer-friendly improvement on the battle-tested configuration library [`cerebro`](https://github.com/yahoo/cerebro) used at Yahoo and Samsung properties serving millions of users.
+This is a developer-friendly improvement on the battle-tested configuration library 
+[`cerebro`](https://github.com/yahoo/cerebro) used at Yahoo and Samsung properties 
+serving millions of users.
 
 - Define your configuration using YAML.
+- Override any YAML configuration using environment variables.
 - Use alternate configuration values based on a defined context.
-  * Want to use use one value for dev, and another for production? You can!
+  * Want to use one value for dev and another for production? You can!
   * Dynamically adjust config values through things like query parameters - great for doing things 
   like bucket (A/B-style) testing.
   * ...and much more!  
 - Group settings by tags (aka `labels`)
-- Override any configuration using environment variables.
 - 99% test coverage
 
 # Fork notice
@@ -140,8 +142,8 @@ Outputs:
 
 #### Overriding configuration using environment variables
 
-**This only applies to static configuration. In dynamic configuration, you will have to manually pluck out
-your environment variables into the overrides object.**
+*This only applies to static configuration. In dynamic configuration, you will have to manually pluck out
+your environment variables into the overrides object.*
 
 You can override any configuration value by specifying an environment variable of the same name. 
 
@@ -257,6 +259,9 @@ Throws an error if the requested value is not a `Boolean`.
 ### `getRawConfig() : object`
 
 Returns the resolved configuration as an object.
+
+*NOTE: This does not deep clone the object, which means that clients could abuse this
+by changing values.  Doing a deep clone will obviously impact performance.*
 
 ### `getConfigForLabel(labelName: string): object`
 

@@ -1,7 +1,7 @@
 {
   "name": "configurity",
   "version": "2.0.1",
-  "description": "A production-grade YAML-based configuration system.",
+  "description": "A production-grade, battle-tested YAML / env-based configuration system.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "contributors": [
     "Theo Gravity <theo@suteki.nu> (https://github.com/theogravity)"
