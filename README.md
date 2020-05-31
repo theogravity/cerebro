@@ -47,18 +47,13 @@ Changes:
         - [Specifying arrays](#specifying-arrays)
   - [Dynamic configuration: `getDynamicConfigBuilder(yamlFile)`](#dynamic-configuration-getdynamicconfigbuilderyamlfile)
 - [`CerebroConfig` API](#cerebroconfig-api)
-  - [Basic getters](#basic-getters)
-    - [`getRawConfig() : object`](#getrawconfig--object)
-    - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
-    - [`getRawValue(settingName: string): any`](#getrawvaluesettingname-string-any)
-    - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
-    - [`getConfigForLabel(labelName: string): object`](#getconfigforlabellabelname-string-object)
-  - [Type-specific getters](#type-specific-getters)
-    - [`getString(settingName: string) : string`](#getstringsettingname-string--string)
-    - [`getInt(settingName: string) : number`](#getintsettingname-string--number)
-    - [`getFloat(settingName: string) : number`](#getfloatsettingname-string--number)
-    - [`getArray(settingName: string): Array`](#getarraysettingname-string-array)
-    - [`getObject(settingName: string): object`](#getobjectsettingname-string-object)
+  - [`getAssertValue(settingName: string) : any`](#getassertvaluesettingname-string--any)
+  - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
+  - [`getRawValue(settingName: string): any`](#getrawvaluesettingname-string-any)
+  - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
+  - [`getRawConfig() : object`](#getrawconfig--object)
+  - [`getConfigForLabel(labelName: string): object`](#getconfigforlabellabelname-string-object)
+  - [`getLabels(): object`](#getlabels-object)
 - [Configuration Rules](#configuration-rules)
   - [Basic configuration](#basic-configuration)
   - [Group settings by a set of labels](#group-settings-by-a-set-of-labels)
@@ -124,14 +119,17 @@ const context = {
 // config is an instance of CerebroConfig
 const config = loadStaticConfig('example.yaml', context)
 
+// pluck a boolean value
+const databaseEnabled = config.isEnabled('enable_database')
+
+// pluck any other value that is not boolean
+const databaseName = config.getValue<string>('database_name')
+
 // Third param is a set of overrides that has first priority over any resolved or environment value
 // database_name will always be 'overwritten'
 // const config = loadStaticConfig('example.yaml', context, { database_name: 'overwritten' })
 
 console.log(config.getRawConfig())
-
-// pluck a boolean value
-const databaseEnabled = config.isEnabled('enable_database')
 ```
 
 Outputs:
@@ -195,7 +193,7 @@ export function middleware((req, res) => {
   // the value of max_power will always be 0 here
   // config = configFn(context, { max_power: 0 })
  
-  const configValue = config.getInt('max_power')
+  const configValue = config.getValue('max_power')
 })
 ```
 
@@ -203,15 +201,26 @@ export function middleware((req, res) => {
 
 Use the API to fetch values from your configuration.
 
-### Basic getters
-
 Configuration values are accessed via the `CerebroConfig` API.
 
-#### `getRawConfig() : object`
+You should use the basic getters in your normal workflow.
 
-Returns the resolved configuration as an object.
+### `getAssertValue(settingName: string) : any`
 
-#### `getValue(settingName: string) : any`
+Gets the requested value if it is not a `Boolean`.
+
+Throws an error if the requested value is a `Boolean`, `null`, `undefined`, or is an empty string.
+
+`const value = config.getAssertValue('setting_name')`
+
+If you're using Typescript, you can assign a type to it:
+
+```typescript
+// the value you're fetching is a number type
+const value = config.getAssertValue<number>('setting_name')
+```
+
+### `getValue(settingName: string) : any`
 
 Gets the requested value if it is not a `Boolean`.  Returns `null` if the value does not exist.
 
@@ -226,7 +235,7 @@ If you're using Typescript, you can assign a type to it:
 const value = config.getValue<number>('setting_name')
 ```
 
-#### `getRawValue(settingName: string): any`
+### `getRawValue(settingName: string): any`
 
 Gets the requested value in its raw form. No checks are performed on it.
 
@@ -239,7 +248,7 @@ If you're using Typescript, you can assign a type to it:
 const value = config.getRawValue<string>('setting_name')
 ```
 
-#### `isEnabled(settingName: string) : boolean`
+### `isEnabled(settingName: string) : boolean`
 
 This is recommended for feature flags.
 
@@ -249,7 +258,11 @@ Throws an error if the requested value is not a `Boolean`.
 
 `const isEnabled = config.isEnabled('setting_name')`
 
-#### `getConfigForLabel(labelName: string): object`
+### `getRawConfig() : object`
+
+Returns the resolved configuration as an object.
+
+### `getConfigForLabel(labelName: string): object`
 
 Get an object returning only the settings and their values that was categorized under a label.
 
@@ -276,55 +289,11 @@ const obj = config.getConfigForLabel('server')
 { "database_name": "db-name", "service_port": 3000 }
 ```
 
-### Type-specific getters
+### `getLabels(): object`
 
-In most use-cases, you can use `getValue()` (for all types but `boolean`), and `isEnabled()`.
+Returns an object in the form of `{ <setting_name>: <array of labels> }`.
 
-These methods are provided if you want to return `null` if the value is not of that type.
-
-#### `getString(settingName: string) : string`
-
-Gets the requested value as a string. Returns `null` if the value does not exist or is not a string.
-
-`const value = config.getString('setting_name')`
-
-#### `getInt(settingName: string) : number`
-
-Gets the requested value as an integer. Returns `null` if the value does not exist or is not a number.
-
-`const value = config.getInt('setting_name')`
-
-#### `getFloat(settingName: string) : number`
-
-Gets the requested value as a float. Returns `null` if the value does not exist or is not a number.
-
-`const value = config.getFloat('setting_name')`
-
-#### `getArray(settingName: string): Array`
-
-Gets the requested value as an array. Returns `null` if the value does not exist or is not an array.
-
-`const values = config.getArray('setting_name')`
-
-If you're using Typescript, you can assign a type to it:
-
-```typescript
-// the value you're fetching is an array of numbers
-const values = config.getArray<number>('setting_name')
-```
-
-#### `getObject(settingName: string): object`
-
-Gets the requested value as an object. Returns `null` if the value does not exist or is not an object.
-
-`const obj = config.getObject('setting_name')`
-
-If you're using Typescript, you can assign a type to it:
-
-```typescript
-// the value you're fetching is an object containing string values
-const obj = config.getObject<string>('setting_name')
-```
+For settings without labels, an empty array is assigned instead.
 
 ## Configuration Rules
 
