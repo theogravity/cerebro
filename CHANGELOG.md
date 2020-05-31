@@ -1,3 +1,17 @@
+## 2.0.1 - Sun May 31 2020 00:52:30
+
+**Contributor:** Theo Gravity
+
+- Add getAssertValue(), Remove type-specific getters (#2)
+
+Type-specific getters turned out to be unnecessary as the YAML parser already does proper type conversion internally.
+
+I was unable to justify keeping them as a result, and removed them to simplify the API.
+
+A new method, `getAssertValue()`, was added to ensure a value exists, and throw if it does not.
+
+Due to the removal of the type-specific getters, the package major version has been updated.
+
 ## 1.0.6 - Sat May 30 2020 00:21:04
 
 **Contributor:** Theo Gravity

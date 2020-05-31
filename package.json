@@ -1,6 +1,6 @@
 {
   "name": "configurity",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A production-grade YAML-based configuration system.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "contributors": [
