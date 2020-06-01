@@ -67,8 +67,8 @@ Changes:
     - [Set value based on ranges](#set-value-based-on-ranges)
     - [Dependent settings](#dependent-settings)
       - [Basic dependency](#basic-dependency)
-        - [Multiple dependencies (AND operation)](#multiple-dependencies-and-operation)
-        - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
+      - [Multiple dependencies (AND operation)](#multiple-dependencies-and-operation)
+      - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
 - [Full example YAML](#full-example-yaml)
 - [Benchmarking](#benchmarking)
 
@@ -492,7 +492,7 @@ You can have a setting be dependent on another setting.
       setting: independent
 ```
 
-###### Multiple dependencies (AND operation)
+##### Multiple dependencies (AND operation)
 
 The value `true` will be used only if the value of `foo` and `bar` is true.
 
@@ -504,7 +504,7 @@ The value `true` will be used only if the value of `foo` and `bar` is true.
       setting: ['foo', 'bar']
 ```
 
-###### Multiple dependencies (OR operation)
+##### Multiple dependencies (OR operation)
 
 ```yaml
 - setting: andOfFooOrBar
@@ -536,6 +536,8 @@ The value `true` will be used only if the value of `foo` and `bar` is true.
 # use the alternative value "prd-database"
 # if the "environment" context dimension value is "production" or "stage"
 - setting: database
+  # Assign a label to the setting for grouping settings together
+  labels: ['server']
   # default value if no context is specified
   value: test-database
   except:
