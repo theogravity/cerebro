@@ -668,3 +668,7 @@ Example output:
 >> huge x 3,517 ops/sec ±2.22% (87 runs sampled)
 Fastest test is simple at 1.63x faster than simple with override
 ```
+
+# Looking for a production grade error handling infrastructure?
+
+Try out https://github.com/theogravity/new-error
