@@ -27,6 +27,15 @@ export class Cerebro<Flags extends Record<string, any> = Record<string, any>> {
     this._customEvaluators = options?.customEvaluators
 
     this._validateCustomEvaluators()
+
+    const poller = options && options.poller;
+
+    if (poller) {
+      poller.on('update', config => {
+        this._handleConfigUpdate(config);
+      });
+      poller.start();
+    }
   }
 
   /**
@@ -63,6 +72,10 @@ export class Cerebro<Flags extends Record<string, any> = Record<string, any>> {
     }
 
     return new CerebroConfig<Flags>(builtObject)
+  }
+
+  private _handleConfigUpdate (config) {
+    this._config = this._preprocess(config);
   }
 
   private _preprocess (config) {
@@ -118,7 +131,7 @@ export class Cerebro<Flags extends Record<string, any> = Record<string, any>> {
    * @private
    * @param {Object} customEvaluators The object to be evaluated
    */
-  _validateCustomEvaluators () {
+  private _validateCustomEvaluators () {
     const customEvaluators = this._customEvaluators
     let key
 

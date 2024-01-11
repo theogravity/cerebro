@@ -1,3 +1,7 @@
+## 3.1.0 - Thu Jan 11 2024
+
+- Cherry-picked [polling](https://github.com/yahoo/cerebro/pull/16/) feature from `cerebro` by @juandopazo
+
 ## 3.0.0 - Wed Jan 10 2024
 
 **Contributor:** Theo Gravity

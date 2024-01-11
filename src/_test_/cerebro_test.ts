@@ -56,6 +56,37 @@ describe('./cerebro.ts', function () {
           }.bind(this)
         ).to.throw(/is not a function in customEvaluators/)
       })
+
+      it('listens to the poller if provided', function() {
+        const poller = {
+          on: this.sandbox.stub(),
+          start: this.sandbox.stub()
+        };
+
+        this.options.poller = poller;
+        const config = [
+          {
+            setting: 'answer',
+            value: 0
+          }
+        ];
+
+        const cerebro = new Cerebro(config, this.options);
+
+        expect(poller.on).to.have.been.calledWith('update');
+        expect(poller.start).to.have.been.calledOnce;
+
+        expect(cerebro.resolveConfig({}).getValue('answer')).to.equal(0);
+
+        poller.on.firstCall.args[1]([
+          {
+            setting: 'answer',
+            value: 42
+          }
+        ]);
+
+        expect(cerebro.resolveConfig({}).getValue('answer')).to.equal(42);
+      });
     })
 
     describe('#resolveConfig', function () {

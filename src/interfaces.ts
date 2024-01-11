@@ -1,3 +1,5 @@
+import {ConfigPoller} from "./config-poller";
+
 export interface ICerebroConfigEntry {
   setting: string
   value: any
@@ -11,6 +13,7 @@ export type ICerebroConfigEntryException = {
 
 export interface ICerebroOptions {
   customEvaluators?: Record<string, Function>
+  poller?: ConfigPoller
 }
 
 export interface ICerebroContext {

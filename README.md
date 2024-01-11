@@ -685,6 +685,30 @@ Example output:
 Fastest test is simple at 1.63x faster than simple with override
 ```
 
+### Configuration polling
+
+This option is useful for having live configuration that updates without having to re-deploy your application. A poller object continuously calls a `fetch` function to retrieve a newer version of the configuration. This is very open ended to allow for different security mechanisms such as mTLS or signed responses.
+
+Optionally (but recommended), a configuration schema can be given to the poller to ensure that the response is a valid configuration.
+
+```typescript
+import { ConfigPoller } from 'configurity';
+
+const poller = new ConfigPoller({
+  clientSchema: /* optional schema */,
+  interval: 5000,
+  fetch: async function() {
+    const response = await fetch(/* ... */);
+
+    return response.json();
+  }
+});
+
+const cerebro = new Cerebro(config, {
+  poller
+});
+```
+
 # Looking for a production grade error handling infrastructure?
 
 Try out https://github.com/theogravity/new-error

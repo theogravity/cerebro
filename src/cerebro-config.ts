@@ -15,9 +15,9 @@ export class CerebroConfig<Flags extends Record<string, any> = Record<string, an
       throw new Error('`resolvedConfig` is required')
     }
 
-    this._labelResolved = resolvedConfig.labelResolved
+    this._labelResolved = resolvedConfig.labelResolved || {}
     this._resolved = resolvedConfig.answers as Flags
-    this._labels = resolvedConfig.labels
+    this._labels = resolvedConfig.labels || {}
   }
 
   /**
