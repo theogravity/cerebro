@@ -12,15 +12,15 @@ import { DynamicConfigBuilder, ICerebroConfig } from './interfaces'
  * @param {Object} [context] environment context
  * @returns {CerebroConfig}
  */
-export function loadStaticConfig (
+export function loadStaticConfig<Flags extends Record<string, any> = Record<string, any>> (
   configFile: string,
   context: Record<string, any> = {},
   overrides: Record<string, any> = {}
-): ICerebroConfig {
+): ICerebroConfig<Flags> {
   const filePath = resolve(process.cwd(), configFile)
   const config = yaml.safeLoad(readFileSync(filePath, 'utf8'))
 
-  const cerebro = new Cerebro(config)
+  const cerebro = new Cerebro<Flags>(config)
 
   return cerebro.resolveConfig(context, {
     overrides: {
@@ -36,12 +36,12 @@ export function loadStaticConfig (
  * @param {String} configFile Path to YAML file
  * @returns {Function}
  */
-export function getDynamicConfigBuilder (
+export function getDynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>> (
   configFile: string
-): DynamicConfigBuilder {
+): DynamicConfigBuilder<Flags> {
   const filePath = resolve(process.cwd(), configFile)
   const config = yaml.safeLoad(readFileSync(filePath, 'utf8'))
-  const cerebro = new Cerebro(config)
+  const cerebro = new Cerebro<Flags>(config)
 
   return (context, overrides = {}) => {
     return cerebro.resolveConfig(context, {

@@ -18,7 +18,7 @@ import { CerebroConfig } from './cerebro-config'
  * @param {Object} [Optional] options Object containing customEvaluators
  * @param {Object} customEvaluators object containing the custom evaluation methods
  */
-export class Cerebro {
+export class Cerebro<Flags extends Record<string, any> = Record<string, any>> {
   _config: any
   _customEvaluators: any
 
@@ -39,8 +39,8 @@ export class Cerebro {
   resolveConfig (
     context: ICerebroContext,
     options: ICerebroConfigOptions = {}
-  ): ICerebroConfig {
-    return new CerebroConfig(this._build(context, options.overrides))
+  ): ICerebroConfig<Flags> {
+    return new CerebroConfig<Flags>(this._build(context, options.overrides))
   }
 
   /**
@@ -51,7 +51,7 @@ export class Cerebro {
    * @param {JSON} dehydratedObject The output of #dehydrate()
    * @return {CerebroConfig} A usable instance of CerebroConfig
    */
-  static rehydrate (dehydratedObject: string): ICerebroConfig {
+  static rehydrate<Flags extends Record<string, any> = Record<string, any>>(dehydratedObject: string): ICerebroConfig {
     // if the dehydratedObject is not valid, JSON parse will fail and throw an error
     const rehydratedObj = JSON.parse(dehydratedObject)
 
@@ -62,7 +62,7 @@ export class Cerebro {
       labelResolved: _labelResolved
     }
 
-    return new CerebroConfig(builtObject)
+    return new CerebroConfig<Flags>(builtObject)
   }
 
   private _preprocess (config) {

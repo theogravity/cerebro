@@ -1,3 +1,16 @@
+## 3.0.0 - Wed Jan 10 2024
+
+**Contributor:** Theo Gravity
+
+- Fix npm audit issues
+- New generics definitions
+
+*Breaking changes:*
+
+- The generics for `CerebroConfig` and related interfaces have changed.
+
+See the `MIGRATING.md` file for more information.
+
 ## 2.0.3 - Wed Jun 03 2020 03:54:49
 
 **Contributor:** Theo Gravity

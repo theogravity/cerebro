@@ -22,7 +22,7 @@ export interface ICerebroConfigOptions {
   overrides?: Record<string, any>
 }
 
-export interface ICerebroConfigParams<Answers extends Record<string, any> = Record<string, any>> {
+export interface ICerebroConfigParams<Flags extends Record<string, any> = Record<string, any>> {
   /**
    * Map of setting name : array of labels
    */
@@ -34,17 +34,17 @@ export interface ICerebroConfigParams<Answers extends Record<string, any> = Reco
   /**
    * The resolved configuration object
    */
-  answers: Answers
+  answers: Flags
 }
 
-export interface ICerebroConfig {
+export interface ICerebroConfig<Flags extends Record<string, any> = Record<string, any>> {
   /**
    * Gets the requested value in its raw form. No checks are performed on it.
    *
    * @param {String} name The name of the setting that you want to value of
    * @return {*} The value of the setting
    */
-  getRawValue<T = any>(name: string): T
+  getRawValue<K extends keyof Flags>(name: K): Flags[K]
   /**
    * Gets the requested value if it is a Boolean.  Returns null if the value does not exist.
    * Throws an error if the requested value is not a Boolean.
@@ -52,7 +52,7 @@ export interface ICerebroConfig {
    * @param {String} name The name of the setting that you want to value of
    * @return {Boolean|null} The value of the setting
    */
-  isEnabled(name: string): boolean
+  isEnabled<K extends keyof Flags>(name: K): boolean | null
   /**
    * Gets the requested value if it is not a Boolean.  Returns null if the value does not exist.
    * Throws an error if the requested value is a Boolean.
@@ -60,7 +60,7 @@ export interface ICerebroConfig {
    * @param {String} name The name of the setting that you want to value of
    * @return {!Boolean|*} The value of the setting
    */
-  getValue<T = any>(name: string): T
+  getValue<K extends keyof Flags>(name: K): Flags[K] | null
   /**
    * Gets the requested value if it is not a Boolean.
    * Throws an error if the requested value is a Boolean or is null.
@@ -68,7 +68,7 @@ export interface ICerebroConfig {
    * @param {String} name The name of the setting that you want to value of
    * @return {!Boolean|*} The value of the setting
    */
-  getAssertValue<T = any>(name: string): T
+  getAssertValue<K extends keyof Flags>(name: K): Flags[K]
   /**
    * Serializes the object to send to the client.
    * Intended to be used on the server.
@@ -84,7 +84,7 @@ export interface ICerebroConfig {
    *
    * @return {Object} The resolved config.
    */
-  getRawConfig(): Record<string, any>
+  getRawConfig(): Flags
   /**
    * Returns an object in the form of `{ <setting_name>: <array of labels> }`.
    *
@@ -99,7 +99,7 @@ export interface ICerebroConfig {
   getConfigForLabel(label: string): Record<string, any>
 }
 
-export type DynamicConfigBuilder = (
+export type DynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>> = (
   context: Record<string, any>,
   overrides?: Record<string, any>
-) => ICerebroConfig
+) => ICerebroConfig<Flags>

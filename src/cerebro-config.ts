@@ -5,10 +5,10 @@ import type { ICerebroConfig, ICerebroConfigParams } from './interfaces'
  * @constructor
  * @param {Object} resolvedConfig - object created by building context with settings config
  */
-export class CerebroConfig implements ICerebroConfig {
-  _resolved: Record<string, any>
-  _labels: Record<string, string[]>
-  _labelResolved: Record<string, any>
+export class CerebroConfig<Flags extends Record<string, any> = Record<string, any>> implements ICerebroConfig<Flags> {
+  private _resolved: Flags
+  private _labels: Record<string, string[]>
+  private _labelResolved: Record<string, any>
 
   constructor (resolvedConfig: ICerebroConfigParams) {
     if (!resolvedConfig.answers) {
@@ -16,7 +16,7 @@ export class CerebroConfig implements ICerebroConfig {
     }
 
     this._labelResolved = resolvedConfig.labelResolved
-    this._resolved = resolvedConfig.answers
+    this._resolved = resolvedConfig.answers as Flags
     this._labels = resolvedConfig.labels
   }
 
@@ -27,7 +27,7 @@ export class CerebroConfig implements ICerebroConfig {
    * @param {String} name The name of the setting that you want to value of
    * @return {Boolean|null} The value of the setting
    */
-  isEnabled (name: string): boolean {
+  isEnabled<K extends keyof Flags>(name: K): boolean {
     const setting = this._resolved[name]
 
     if (typeof setting === 'undefined') {
@@ -37,7 +37,7 @@ export class CerebroConfig implements ICerebroConfig {
     if (typeof setting !== 'boolean') {
       throw new Error(
         'The requested setting (' +
-          name +
+          String(name) +
           ') from isEnabled is not a boolean. ' +
           'It is a ' +
           typeof setting +
@@ -55,7 +55,7 @@ export class CerebroConfig implements ICerebroConfig {
    * @param {String} name The name of the setting that you want to value of
    * @return {!Boolean|*} The value of the setting
    */
-  getValue<T = any> (name: string): T {
+  getValue<K extends keyof Flags>(name: K): Flags[K] | null {
     const setting = this._resolved[name]
 
     if (typeof setting === 'undefined') {
@@ -65,7 +65,7 @@ export class CerebroConfig implements ICerebroConfig {
     if (typeof setting === 'boolean') {
       throw new Error(
         'The requested setting (' +
-          name +
+          String(name) +
           ') from isEnabled is a boolean.  ' +
           'Please use #isEnabled instead.'
       )
@@ -83,13 +83,13 @@ export class CerebroConfig implements ICerebroConfig {
    * @param {String} name The name of the setting that you want to value of
    * @return {!Boolean|*} The value of the setting
    */
-  getAssertValue<T = any> (name: string): T {
+  getAssertValue<K extends keyof Flags>(name: K): Flags[K] {
     const setting = this._resolved[name]
 
     if (setting === '' || setting === null || typeof setting === 'undefined') {
       throw new Error(
         'The requested setting (' +
-          name +
+          String(name) +
           ') from getAssertValue is an empty string, null, or undefined.'
       )
     }
@@ -97,7 +97,7 @@ export class CerebroConfig implements ICerebroConfig {
     if (typeof setting === 'boolean') {
       throw new Error(
         'The requested setting (' +
-          name +
+          String(name) +
           ') from isEnabled is a boolean.  ' +
           'Please use #isEnabled instead.'
       )
@@ -112,9 +112,8 @@ export class CerebroConfig implements ICerebroConfig {
    * @param {String} name The name of the setting that you want to value of
    * @return {*} The value of the setting
    */
-  getRawValue<T = any> (name: string): T {
-    const setting = this._resolved[name]
-    return setting
+  getRawValue<K extends keyof Flags>(name: K): Flags[K] {
+    return this._resolved[name]
   }
 
   /**
@@ -138,7 +137,7 @@ export class CerebroConfig implements ICerebroConfig {
    *
    * @return {Object} The resolved config.
    */
-  getRawConfig (): Record<string, any> {
+  getRawConfig (): Flags {
     return this._resolved
   }
 

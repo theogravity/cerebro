@@ -42,14 +42,14 @@ Changes:
 
 - [Install](#install)
 - [Getting started](#getting-started)
-  - [Static configuration: `loadStaticConfig(yamlFile, context?, overrides?)`](#static-configuration-loadstaticconfigyamlfile-context-overrides)
+  - [Static configuration: `loadStaticConfig<Flags extends Record<string, any> = Record<string, any>>(yamlFile, context?, overrides?)`](#static-configuration-loadstaticconfig--recordyamlfile-context-overrides)
     - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
       - [Via `process.env`](#via-processenv)
       - [via command line](#via-command-line)
         - [Specifying objects](#specifying-objects)
         - [Specifying arrays](#specifying-arrays)
-  - [Dynamic configuration: `getDynamicConfigBuilder(yamlFile)`](#dynamic-configuration-getdynamicconfigbuilderyamlfile)
-- [`CerebroConfig` API](#cerebroconfig-api)
+  - [Dynamic configuration: `getDynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>>(yamlFile)`](#dynamic-configuration-getdynamicconfigbuilder--recordyamlfile)
+- [`CerebroConfig<Flags extends Record<string, any> = Record<string, any>>` API](#cerebroconfig--record-api)
   - [`getAssertValue(settingName: string) : any`](#getassertvaluesettingname-string--any)
   - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
   - [`getRawValue(settingName: string): any`](#getrawvaluesettingname-string-any)
@@ -82,7 +82,7 @@ Changes:
 
 ## Getting started
 
-### Static configuration: `loadStaticConfig(yamlFile, context?, overrides?)`
+### Static configuration: `loadStaticConfig<Flags extends Record<string, any> = Record<string, any>>(yamlFile, context?, overrides?)`
 
 If you have configuration that never changes during run-time, static configuration is recommended.
 
@@ -120,14 +120,20 @@ const context = {
   power: 'low'
 }
 
+interface Settings {
+  enable_database: boolean
+  max_power: number
+  database_name: string
+}
+
 // config is an instance of CerebroConfig
-const config = loadStaticConfig('example.yaml', context)
+const config = loadStaticConfig<Settings>('example.yaml', context)
 
 // pluck a boolean value
 const databaseEnabled = config.isEnabled('enable_database')
 
 // pluck any other value that is not boolean
-const databaseName = config.getValue<string>('database_name')
+const databaseName = config.getValue('database_name')
 
 // Third param is a set of overrides that has first priority over any resolved or environment value
 // database_name will always be 'overwritten'
@@ -170,7 +176,7 @@ calling `loadConfig()`:
 
 `$ enable_database="[\"test\", \"blah\"]" node app.js`
 
-### Dynamic configuration: `getDynamicConfigBuilder(yamlFile)`
+### Dynamic configuration: `getDynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>>(yamlFile)`
 
 If you have configuration that should change during run-time, such as via an HTTP request based on 
 query parameters, use dynamic configuration.
@@ -178,9 +184,15 @@ query parameters, use dynamic configuration.
 ```typescript
 import { getDynamicConfigBuilder } from 'configurity'
 
+interface Settings {
+  enable_database: boolean
+  max_power: number
+  database_name: string
+}
+
 // returns a function in the format of:
 // configFn = (context, overrides = {}) => CerebroConfig
-const configFn = getDynamicConfigBuilder('settings.yaml')
+const configFn = getDynamicConfigBuilder<Settings>('settings.yaml')
 
 // express middleware example
 export function middleware((req, res) => {
@@ -201,7 +213,9 @@ export function middleware((req, res) => {
 })
 ```
 
-## `CerebroConfig` API
+## `CerebroConfig<Flags extends Record<string, any> = Record<string, any>>` API
+
+`Flags` is an optional generic that allows you to define an interface for your settings.
 
 Use the API methods to fetch values from your configuration.
 
@@ -217,7 +231,7 @@ If you're using Typescript, you can assign a type to it:
 
 ```typescript
 // the value you're fetching is a number type
-const value = config.getAssertValue<number>('setting_name')
+const value = config.getAssertValue('setting_name')
 ```
 
 ### `getValue(settingName: string) : any`
@@ -232,7 +246,7 @@ If you're using Typescript, you can assign a type to it:
 
 ```typescript
 // the value you're fetching is a number type
-const value = config.getValue<number>('setting_name')
+const value = config.getValue('setting_name')
 ```
 
 ### `getRawValue(settingName: string): any`
@@ -245,7 +259,7 @@ If you're using Typescript, you can assign a type to it:
 
 ```typescript
 // the value you're fetching is a string
-const value = config.getRawValue<string>('setting_name')
+const value = config.getRawValue('setting_name')
 ```
 
 ### `isEnabled(settingName: string) : boolean`
