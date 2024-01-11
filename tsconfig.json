@@ -3,7 +3,7 @@
     "noImplicitAny": false,
     "strictNullChecks": false,
     "module": "commonjs",
-    "target": "ES2018",
+    "target": "ES2020",
     "sourceMap": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
@@ -12,7 +12,7 @@
     "baseUrl": ".",
     "declaration": true,
     "lib": [
-      "ES2018",
+      "ES2020",
       "dom"
     ],
     "paths": {

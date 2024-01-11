@@ -76,7 +76,11 @@
     "options",
     "prefs",
     "preferences",
-    "yaml"
+    "yaml",
+    "flags",
+    "launchdarkly",
+    "darkly",
+    "bucket"
   ],
   "repository": {
     "type": "git",

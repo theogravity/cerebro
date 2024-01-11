@@ -1,8 +1,7 @@
 # configurity
 
 [![NPM version](https://img.shields.io/npm/v/configurity.svg?style=flat-square)](https://www.npmjs.com/package/configurity)
-[![CircleCI](https://circleci.com/gh/theogravity/configurity.svg?style=svg)](https://circleci.com/gh/theogravity/configurity) 
-![built with typescript](https://camo.githubusercontent.com/92e9f7b1209bab9e3e9cd8cdf62f072a624da461/68747470733a2f2f666c61742e62616467656e2e6e65742f62616467652f4275696c74253230576974682f547970655363726970742f626c7565) 
+[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 A production-grade configuration system.
@@ -42,14 +41,14 @@ Changes:
 
 - [Install](#install)
 - [Getting started](#getting-started)
-  - [Static configuration: `loadStaticConfig<Flags extends Record<string, any> = Record<string, any>>(yamlFile, context?, overrides?)`](#static-configuration-loadstaticconfig--recordyamlfile-context-overrides)
+  - [Static configuration: `loadStaticConfig(yamlFilePath, context?, overrides?)`](#static-configuration-loadstaticconfigyamlfilepath-context-overrides)
     - [Overriding configuration using environment variables](#overriding-configuration-using-environment-variables)
       - [Via `process.env`](#via-processenv)
       - [via command line](#via-command-line)
         - [Specifying objects](#specifying-objects)
         - [Specifying arrays](#specifying-arrays)
-  - [Dynamic configuration: `getDynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>>(yamlFile)`](#dynamic-configuration-getdynamicconfigbuilder--recordyamlfile)
-- [`CerebroConfig<Flags extends Record<string, any> = Record<string, any>>` API](#cerebroconfig--record-api)
+  - [Dynamic configuration: `getDynamicConfigBuilder(yamlFilePath)`](#dynamic-configuration-getdynamicconfigbuilderyamlfilepath)
+- [`CerebroConfig` API](#cerebroconfig-api)
   - [`getAssertValue(settingName: string) : any`](#getassertvaluesettingname-string--any)
   - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
   - [`getRawValue(settingName: string): any`](#getrawvaluesettingname-string-any)
@@ -72,6 +71,7 @@ Changes:
       - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
 - [Full example YAML](#full-example-yaml)
 - [Benchmarking](#benchmarking)
+  - [Configuration polling](#configuration-polling)
 - [Looking for a production grade error handling infrastructure?](#looking-for-a-production-grade-error-handling-infrastructure)
 
 <!-- TOC END -->
@@ -82,7 +82,9 @@ Changes:
 
 ## Getting started
 
-### Static configuration: `loadStaticConfig<Flags extends Record<string, any> = Record<string, any>>(yamlFile, context?, overrides?)`
+### Static configuration: `loadStaticConfig(yamlFilePath, context?, overrides?)`
+
+`loadStaticConfig<Flags extends Record<string, any> = Record<string, any>>(yamlFilePath, context?, overrides?)`
 
 If you have configuration that never changes during run-time, static configuration is recommended.
 
@@ -176,7 +178,9 @@ calling `loadConfig()`:
 
 `$ enable_database="[\"test\", \"blah\"]" node app.js`
 
-### Dynamic configuration: `getDynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>>(yamlFile)`
+### Dynamic configuration: `getDynamicConfigBuilder(yamlFilePath)`
+
+`getDynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>>(yamlFilePath)`
 
 If you have configuration that should change during run-time, such as via an HTTP request based on 
 query parameters, use dynamic configuration.
@@ -213,7 +217,9 @@ export function middleware((req, res) => {
 })
 ```
 
-## `CerebroConfig<Flags extends Record<string, any> = Record<string, any>>` API
+## `CerebroConfig` API
+
+`CerebroConfig<Flags extends Record<string, any> = Record<string, any>>` is the object returned by `loadStaticConfig()` and `getDynamicConfigBuilder()`.
 
 `Flags` is an optional generic that allows you to define an interface for your settings.
 
