@@ -6,8 +6,8 @@
 /* global describe, it, beforeEach */
 /* eslint-disable no-unused-expressions */
 
-var validate = require('../index')
-var expect = require('chai').expect
+import { validate } from '../index'
+import { expect } from 'chai'
 
 beforeEach(function () {
   this.config = [
@@ -42,7 +42,7 @@ beforeEach(function () {
 
 describe('cross setting validation', function () {
   it('returns an error when a setting is not referenced before it is resolved', function () {
-    var report
+    let report
 
     this.config[0].except = [{ setting: 'settingC', value: false }]
 
@@ -59,7 +59,7 @@ describe('cross setting validation', function () {
     // with the current implementation, this should never fail.
     // but, just in case the implementation / assumptions change,
     // i'm writing this test.
-    var report
+    let report
 
     this.config[1].except[0].setting = 'settingC'
 
@@ -73,7 +73,7 @@ describe('cross setting validation', function () {
   })
 
   it('returns an error when the setting depends on itself', function () {
-    var report
+    let report
 
     this.config[1].except[0].setting = 'settingB'
 
@@ -86,7 +86,7 @@ describe('cross setting validation', function () {
   })
 
   it('does not return an error when the setting depends on an existing setting', function () {
-    var report = validate(this.clientSchema, this.config)
+    let report = validate(this.clientSchema, this.config)
 
     expect(report.valid).to.be.true
   })

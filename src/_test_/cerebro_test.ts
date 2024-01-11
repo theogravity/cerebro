@@ -9,9 +9,8 @@
 import { Cerebro } from '../cerebro'
 import { Evaluator } from '../evaluator' // stub purposes
 
-const expect = require('chai').expect
-
-require('../../test/setup/server')
+import { expect } from 'chai'
+import './server'
 
 describe('./cerebro.ts', function () {
   beforeEach(function () {
@@ -28,7 +27,7 @@ describe('./cerebro.ts', function () {
   describe('Cerebro', function () {
     describe('constructor', function () {
       it('initializes the object with all parameters set', function () {
-        var cerebro = new Cerebro(this.config, this.options)
+        let cerebro = new Cerebro(this.config, this.options)
 
         this.sandbox.stub(Evaluator, 'evaluate').returns({})
 
@@ -36,13 +35,6 @@ describe('./cerebro.ts', function () {
         expect(cerebro._customEvaluators).to.deep.equal(
           this.options.customEvaluators
         )
-      })
-
-      it('throws an error if config is not passed in', function () {
-        expect(function () {
-          // @ts-expect-error
-          return new Cerebro()
-        }).to.throw(/`config` is required/)
       })
 
       it('throws an error if custom evaluators is not an object', function () {
@@ -68,23 +60,23 @@ describe('./cerebro.ts', function () {
 
     describe('#resolveConfig', function () {
       it('returns labels when defined', function () {
-        var labelEntries = this.labels
-        var config = this.config.map(function (e) {
-          var setting = Object.keys(e)[0]
-          var value = e[setting]
-          var labels = labelEntries[setting] || []
+        const labelEntries = this.labels
+        const config = this.config.map(function (e) {
+          const setting = Object.keys(e)[0]
+          const value = e[setting]
+          const labels = labelEntries[setting] || []
 
           return { setting, value, labels }
         })
-        var resolved = config.reduce(function (s, e) {
+        const resolved = config.reduce(function (s, e) {
           return Object.assign({}, { [e.setting]: e.value })
         }, {})
-        var expectedLabels = config.reduce(function (s, e) {
+        const expectedLabels = config.reduce(function (s, e) {
           return Object.assign({}, { [e.setting]: e.labels })
         }, {})
-        var options = {}
-        var cerebro = new Cerebro(config, options)
-        var actualConfig = cerebro.resolveConfig({})
+        const options = {}
+        const cerebro = new Cerebro(config, options)
+        const actualConfig = cerebro.resolveConfig({})
 
         // @ts-expect-error
         expect(actualConfig._resolved).to.deep.equal(resolved)
@@ -93,43 +85,34 @@ describe('./cerebro.ts', function () {
       })
 
       it('returns no labels when not defined', function () {
-        var labelEntries = {}
-        var config = this.config.map(function (e) {
-          var setting = Object.keys(e)[0]
-          var value = e[setting]
-          var labels = labelEntries[setting] || []
+        const labelEntries = {}
+        const config = this.config.map(function (e) {
+          const setting = Object.keys(e)[0]
+          const value = e[setting]
+          const labels = labelEntries[setting] || []
 
           return { setting, value, labels }
         })
-        var resolved = config.reduce(function (s, e) {
+        const resolved = config.reduce(function (s, e) {
           return Object.assign({}, { [e.setting]: e.value })
         }, {})
-        var labels = config.reduce(function (s, e) {
+        const labels = config.reduce(function (s, e) {
           return Object.assign({}, { [e.setting]: e.labels })
         }, {})
-        var options = {}
-        var cerebro = new Cerebro(config, options)
-        var actualConfig = cerebro.resolveConfig({})
+        const options = {}
+        const cerebro = new Cerebro(config, options)
+        const actualConfig = cerebro.resolveConfig({})
 
         // @ts-expect-error
         expect(actualConfig._resolved).to.deep.equal(resolved)
         // @ts-expect-error
         expect(actualConfig._labels).to.deep.equal(labels)
       })
-
-      it('throws an error if context is not passed', function () {
-        var cerebro = new Cerebro(this.config)
-
-        expect(function () {
-          // @ts-expect-error
-          cerebro.resolveConfig()
-        }).to.throw(/`context` is required/)
-      })
     })
 
     describe('#rehydrate', function () {
       it('returns a new usable instance of CerebroConfig', function () {
-        var cerebroConfig = Cerebro.rehydrate(
+        let cerebroConfig = Cerebro.rehydrate(
           JSON.stringify({ _resolved: { a: 5 } })
         )
 
@@ -140,21 +123,6 @@ describe('./cerebro.ts', function () {
         expect(function () {
           Cerebro.rehydrate('djdaf')
         }).to.throw(SyntaxError)
-      })
-
-      it('throws an error when no JSON provided', function () {
-        expect(function () {
-          // @ts-expect-error
-          Cerebro.rehydrate()
-        }).to.throw(Error)
-
-        expect(function () {
-          Cerebro.rehydrate(null)
-        }).to.throw(Error)
-
-        expect(function () {
-          Cerebro.rehydrate('{}')
-        }).to.throw(Error)
       })
     })
   })
@@ -270,7 +238,7 @@ describe('./cerebro.ts', function () {
 
     describe('#getRawConfig', function () {
       it('returns the same config used in constructor', function () {
-        var actualConfig = this.cerebroConfig.getRawConfig()
+        let actualConfig = this.cerebroConfig.getRawConfig()
 
         expect(actualConfig).to.deep.equal(this.rawConfig)
       })
@@ -278,7 +246,7 @@ describe('./cerebro.ts', function () {
 
     describe('#getLabels', function () {
       it('returns labeled config used in constructor', function () {
-        var actualConfig = this.cerebroConfig.getLabels()
+        let actualConfig = this.cerebroConfig.getLabels()
 
         expect(actualConfig).to.deep.equal(this.labels)
       })

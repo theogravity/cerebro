@@ -2,9 +2,10 @@
  * Copyright 2017 Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
+import cerebroSchema from './schema.json'
 import { isTemplate, TEMPLATE_REGEX } from './helpers'
 
-const tv4 = require('tv4')
+import tv4 from 'tv4'
 const UINT_REGEX = /^\d+$/
 // URL regex - Thanks to Diego Perini - https://gist.github.com/dperini/729294
 const URL_REGEX = new RegExp(
@@ -58,7 +59,7 @@ const EMAIL_REGEX = /^.+@(.+\.)+(.+)$/
  *
  * @return {Object} The generated schema that combines both the schema outline and the user-provided schema.
  */
-function _generateSchema (cerebroSchema, clientSchema) {
+function _generateSchema (cerebroSchema: Record<string, any>, clientSchema: Record<string,any>) {
   const schema = JSON.parse(JSON.stringify(cerebroSchema)) // to not mutate the caller's object
   const refLink = '#/definitions/'
   const keys = Object.keys(clientSchema)
@@ -364,20 +365,19 @@ function _addErrors (report, errors) {
  * @return {Object} An object containing the errors, what schema is missing, and a boolean that describes whether
  *      validation passed or not.  For more detail, see https://www.npmjs.com/package/tv4#usage-3-multiple-errors
  */
-module.exports = function validate (clientSchema, configuration) {
-  var cerebroSchema = require('./schema.json')
-  var schema = _generateSchema(cerebroSchema, clientSchema)
-  var checkRecursive = false // check for circular references in the schema
-  var banUnknownProperties = true // check for any unknown properties in the schema
-  var errorReport = tv4.validateMultiple(
+export function validate (clientSchema, configuration) {
+  const schema = _generateSchema(cerebroSchema, clientSchema);
+  const checkRecursive = false; // check for circular references in the schema
+  const banUnknownProperties = true; // check for any unknown properties in the schema
+  const errorReport = tv4.validateMultiple(
     configuration,
     schema,
     checkRecursive,
     banUnknownProperties
-  )
-  var valueTypeErrorReport = _validateValueTypes(configuration)
-  var templateErrorReport = _validateTemplates(configuration)
-  var crossSettingErrorReport = _validateCrossSettingDependencies(configuration)
+  );
+  const valueTypeErrorReport = _validateValueTypes(configuration);
+  const templateErrorReport = _validateTemplates(configuration);
+  const crossSettingErrorReport = _validateCrossSettingDependencies(configuration);
 
   if (!valueTypeErrorReport.valid) {
     _addErrors(errorReport, valueTypeErrorReport.errors)

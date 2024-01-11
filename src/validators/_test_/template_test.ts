@@ -7,8 +7,8 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-template-curly-in-string */
 
-const validate = require('../index')
-const expect = require('chai').expect
+import { validate } from '../index'
+import { expect } from 'chai'
 
 describe('template validation', function () {
   beforeEach(function () {
@@ -16,7 +16,7 @@ describe('template validation', function () {
   })
 
   it('returns no errors if templates not present', function () {
-    var config = [
+    const config = [
       {
         setting: 'setting',
         value: 'default',
@@ -28,14 +28,14 @@ describe('template validation', function () {
         ]
       }
     ]
-    var report = validate(this.clientSchema, config)
+    const report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(0)
     expect(report.valid).to.equal(true)
   })
 
   it('provides no errors on valid template', function () {
-    var config = [
+    const config = [
       {
         setting: 'setting',
         value: 'default',
@@ -47,20 +47,20 @@ describe('template validation', function () {
         ]
       }
     ]
-    var report = validate(this.clientSchema, config)
+    const report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(0)
     expect(report.valid).to.equal(true)
   })
 
   it('prevents templates from being defined at toplevel', function () {
-    var config = [
+    const config = [
       {
         setting: 'setting',
         value: 'https://${colo}.yahoo.com'
       }
     ]
-    var report = validate(this.clientSchema, config)
+    const report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
     expect(report.valid).to.equal(false)
@@ -68,7 +68,7 @@ describe('template validation', function () {
   })
 
   it('ensures that template variable has condition restriction', function () {
-    var config = [
+    const config = [
       {
         setting: 'setting',
         value: 'default',
@@ -80,7 +80,7 @@ describe('template validation', function () {
         ]
       }
     ]
-    var report = validate(this.clientSchema, config)
+    const report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
     expect(report.valid).to.equal(false)
@@ -90,7 +90,7 @@ describe('template validation', function () {
   })
 
   it('restricts templates to one variable', function () {
-    var config = [
+    const config = [
       {
         setting: 'setting',
         value: 'default',
@@ -102,7 +102,7 @@ describe('template validation', function () {
         ]
       }
     ]
-    var report = validate(this.clientSchema, config)
+    const report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
     expect(report.valid).to.equal(false)
@@ -110,7 +110,7 @@ describe('template validation', function () {
   })
 
   it("doesn't allow usage of reserved keywords", function () {
-    var config = [
+    const config = [
       {
         setting: 'setting',
         value: 'default',
@@ -121,7 +121,7 @@ describe('template validation', function () {
         ]
       }
     ]
-    var report = validate(this.clientSchema, config)
+    const report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(1)
     expect(report.valid).to.equal(false)
@@ -131,7 +131,7 @@ describe('template validation', function () {
   })
 
   it('shows all errors for a given entry', function () {
-    var config = [
+    const config = [
       {
         setting: 'setting',
         value: 'bad${template}',
@@ -142,7 +142,7 @@ describe('template validation', function () {
         ]
       }
     ]
-    var report = validate(this.clientSchema, config)
+    const report = validate(this.clientSchema, config)
 
     expect(report.errors).to.have.length(3)
     expect(report.valid).to.equal(false)

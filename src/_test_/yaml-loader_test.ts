@@ -3,8 +3,7 @@
 
 import { loadStaticConfig, getDynamicConfigBuilder } from '../yaml-loader'
 import { join } from 'path'
-
-const expect = require('chai').expect
+import { expect } from 'chai'
 
 describe('./yaml-loader.ts', function () {
   describe('load static config', function () {

@@ -8,15 +8,14 @@
 
 import { Condition } from '../condition'
 import { Evaluator } from '../evaluator'
+import { expect } from 'chai'
 
-const expect = require('chai').expect
-
-require('../../test/setup/server')
+import './server'
 
 describe('evaluator.ts', function () {
   describe('#prepareEntry', function () {
     it('precompiles templates', function () {
-      var entry = {
+      const entry = {
         setting: 'setting',
         value: 3,
         except: [
@@ -33,7 +32,7 @@ describe('evaluator.ts', function () {
         ]
       }
 
-      var prepared = Evaluator.prepareEntry(entry)
+      const prepared = Evaluator.prepareEntry(entry)
 
       expect(prepared.except[0]).to.have.property('_compiledTemplate')
       expect(prepared.except[0]._compiledTemplate({ farm: '123' })).to.equal(
@@ -67,14 +66,14 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if the setting is disabled', function () {
-      var answer = Evaluator.evaluate(this.entry, {}, {}, this.answers)
+      const answer = Evaluator.evaluate(this.entry, {}, {}, this.answers)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.equal(3)
     })
 
     it('returns the except answer if the setting is enabled', function () {
-      var answer
+      let answer
 
       this.answers.testSettingA = true
 
@@ -101,13 +100,13 @@ describe('evaluator.ts', function () {
     })
 
     it('overrides the setting if overrides are provided', function () {
-      var context = {
+      const context = {
         farm: '1234'
       }
-      var overrides = {
+      const overrides = {
         testSetting: 54
       }
-      var answer
+      let answer
 
       this.sandbox.stub(Condition, 'evaluate').returns(false)
 
@@ -118,7 +117,7 @@ describe('evaluator.ts', function () {
     })
 
     it('coerces a value to boolean if the original setting is boolean', function () {
-      var entry = {
+      const entry = {
         setting: this.settingName,
         value: true,
         except: [
@@ -128,10 +127,10 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var overrides = {
+      const overrides = {
         testSetting: 0
       }
-      var answer
+      let answer
 
       this.sandbox.stub(Condition, 'evaluate').returns(true)
 
@@ -142,7 +141,7 @@ describe('evaluator.ts', function () {
     })
 
     it('overrides the original setting', function () {
-      var entry = {
+      const entry = {
         setting: this.settingName,
         value: 'abcd',
         except: [
@@ -152,10 +151,10 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var overrides = {
+      const overrides = {
         testSetting: 'higj'
       }
-      var answer
+      let answer
 
       this.sandbox.stub(Condition, 'evaluate').returns(false)
 
@@ -183,12 +182,12 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if all conditions are not fulfilled', function () {
-      var context = {
+      let context = {
         farm: '111',
         option: 'c'
       }
-      var overrides = {}
-      var answer
+      const overrides = {}
+      let answer
 
       this.sandbox.stub(Condition, 'evaluate').returns(false)
 
@@ -199,12 +198,12 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the `except` answer if all conditions are fulfilled', function () {
-      var context = {
+      const context = {
         farm: '111',
         option: 'b'
       }
-      var overrides = {}
-      var answer
+      const overrides = {}
+      let answer
 
       this.sandbox.stub(Condition, 'evaluate').returns(true)
 
@@ -231,9 +230,9 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if the context does not contain the value for a condition', function () {
-      var context = {}
-      var overrides = {}
-      var answer
+      const context = {}
+      const overrides = {}
+      let answer
 
       this.sandbox.stub(Condition, 'evaluate').returns(false)
 
@@ -244,9 +243,9 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if the except block is undefined', function () {
-      var context = {}
-      var overrides = {}
-      var answer
+      const context = {}
+      const overrides = {}
+      let answer
 
       delete this.entry.except
 
@@ -261,8 +260,8 @@ describe('evaluator.ts', function () {
 
   describe('answers', function () {
     it('returns `value` when setting is passed', function () {
-      var settingName = 'testSetting'
-      var settingEntry = {
+      const settingName = 'testSetting'
+      const settingEntry = {
         setting: settingName,
         value: 'default',
         except: [
@@ -275,11 +274,11 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var context = {
+      const context = {
         option: 'b'
       }
-      var overrides = {}
-      var answer
+      const overrides = {}
+      let answer
 
       this.sandbox.stub(Condition, 'evaluate').returns(true)
 
@@ -306,28 +305,28 @@ describe('evaluator.ts', function () {
     })
 
     it('passes a string seed and calls the range condition with the correct values', function () {
-      var context = {
+      const context = {
         percentageSeed: '87625364383'
       }
-      var answer = Evaluator.evaluate(this.settingEntry, context)
+      const answer = Evaluator.evaluate(this.settingEntry, context)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.equal('testSetting')
     })
 
     it('passes a number seed and calls the range condition with the correct values', function () {
-      var context = {
+      const context = {
         percentageSeed: 87625364383
       }
-      var answer = Evaluator.evaluate(this.settingEntry, context)
+      const answer = Evaluator.evaluate(this.settingEntry, context)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.equal('testSetting')
     })
 
     it('throws an error if percentageSeed is not set in the context', function () {
-      var _this = this
-      var conditionStub = this.sandbox.stub(Condition, 'evaluate').returns(true)
+      let _this = this
+      let conditionStub = this.sandbox.stub(Condition, 'evaluate').returns(true)
 
       expect(function () {
         Evaluator.evaluate(_this.settingEntry, {})
@@ -338,8 +337,8 @@ describe('evaluator.ts', function () {
 
   describe('random percentage', function () {
     it('calls the range condition with the correct values', function () {
-      var settingName = 'testSetting'
-      var settingEntry = {
+      const settingName = 'testSetting'
+      const settingEntry = {
         setting: settingName,
         value: 'default',
         except: [
@@ -349,7 +348,7 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer
+      let answer
 
       this.sandbox.stub(Math, 'random').returns(0.19)
       answer = Evaluator.evaluate(settingEntry, {})

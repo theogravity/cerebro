@@ -2,9 +2,8 @@
 /* eslint-disable no-unused-expressions */
 
 import { getOverridesFromEnv } from '../env-loader'
-const expect = require('chai').expect
-
-const yamlData = require('./fixtures/yaml-data.json')
+import { expect } from 'chai'
+import yamlData from './fixtures/yaml-data.json'
 
 describe('./env-loader.ts', function () {
   describe('environment variable overrides', function () {

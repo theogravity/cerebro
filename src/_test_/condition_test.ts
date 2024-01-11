@@ -7,16 +7,14 @@
 /* eslint-disable no-unused-expressions */
 
 import { Condition } from '../condition'
-
-const expect = require('chai').expect
-
-require('../../test/setup/server')
+import { expect } from 'chai'
+import './server'
 
 describe('./condition.ts', function () {
   describe('general', function () {
     it('throws an error when an unrecognized condition value is passed in', function () {
-      var conditionValue = null
-      var contextValue = []
+      const conditionValue = null
+      const contextValue = []
 
       expect(function () {
         Condition.evaluate(conditionValue, contextValue)
@@ -43,17 +41,16 @@ describe('./condition.ts', function () {
     })
 
     it('does not identify all objects as custom evaluators', function () {
-      var condition = {}
-      var testValue = {}
+      const condition = {}
+      const testValue = {}
 
       expect(() => {
-        // @ts-expect-error
         Condition.evaluate(condition, testValue, this.customEvaluators)
       }).to.throw(/Unknown type of context field/)
     })
 
     it('returns true when the custom evaluator passes', function () {
-      var testValue = 'en-us'
+      const testValue = 'en-us'
 
       expect(
         Condition.evaluate(this.condition, testValue, this.customEvaluators)
@@ -61,7 +58,7 @@ describe('./condition.ts', function () {
     })
 
     it('returns false when the custom evaluator does not pass', function () {
-      var testValue = 'no'
+      const testValue = 'no'
 
       expect(
         Condition.evaluate(this.condition, testValue, this.customEvaluators)
@@ -69,7 +66,7 @@ describe('./condition.ts', function () {
     })
 
     it('returns true when the custom evaluator returns a value that evaluates to true', function () {
-      var testValue = 'en-us'
+      const testValue = 'en-us'
 
       this.customEvaluators = {
         evaluateCondition: function (condition, tv) {
@@ -87,7 +84,7 @@ describe('./condition.ts', function () {
     })
 
     it('returns false when the custom evaluator returns a value that evaluates to false', function () {
-      var testValue = 'no'
+      const testValue = 'no'
 
       this.customEvaluators = {
         evaluateCondition: function (condition, tv) {
@@ -105,7 +102,7 @@ describe('./condition.ts', function () {
     })
 
     it('returns false when the custom evaluator given does not exist', function () {
-      var testValue = 'en-us'
+      const testValue = 'en-us'
 
       this.customEvaluators = {}
 
@@ -118,15 +115,15 @@ describe('./condition.ts', function () {
   describe('enum check', function () {
     context('single value', function () {
       it('returns true when the value is inside the condition', function () {
-        var conditionValue = ['111', '222']
-        var contextValue = '222'
+        const conditionValue = ['111', '222']
+        const contextValue = '222'
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns false when the value is not inside the condition', function () {
-        var conditionValue = ['111', '222']
-        var contextValue = '333'
+        const conditionValue = ['111', '222']
+        const contextValue = '333'
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
@@ -134,15 +131,15 @@ describe('./condition.ts', function () {
 
     context('array value', function () {
       it('returns true when the array contains a value that is inside the condition', function () {
-        var conditionValue = ['111', '222']
-        var contextValue = ['000', '111']
+        const conditionValue = ['111', '222']
+        const contextValue = ['000', '111']
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns false when the array does not have a value that is inside the condition', function () {
-        var conditionValue = ['111', '222']
-        var contextValue = ['333', '444']
+        const conditionValue = ['111', '222']
+        const contextValue = ['333', '444']
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
@@ -150,14 +147,14 @@ describe('./condition.ts', function () {
 
     context('all', function () {
       it('returns true when the value is defined', function () {
-        var conditionValue = ['all']
-        var contextValue = '222'
+        const conditionValue = ['all']
+        const contextValue = '222'
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns false when the value is undefined', function () {
-        var conditionValue = ['all']
+        const conditionValue = ['all']
 
         expect(Condition.evaluate(conditionValue, undefined)).to.be.false
       })
@@ -165,14 +162,14 @@ describe('./condition.ts', function () {
 
     context('none', function () {
       it('returns true when the value is undefined', function () {
-        var conditionValue = ['none']
+        const conditionValue = ['none']
 
         expect(Condition.evaluate(conditionValue, undefined)).to.be.true
       })
 
       it('returns false when the value is defined', function () {
-        var conditionValue = ['none']
-        var contextValue = '222'
+        const conditionValue = ['none']
+        const contextValue = '222'
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
@@ -180,15 +177,15 @@ describe('./condition.ts', function () {
 
     context('range value', function () {
       it('returns true when the value is inside the range', function () {
-        var conditionValue = ['1200..1205']
-        var contextValue = 1201
+        const conditionValue = ['1200..1205']
+        const contextValue = 1201
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns false when the value is outside the range', function () {
-        var conditionValue = ['1200..1205']
-        var contextValue = 1206
+        const conditionValue = ['1200..1205']
+        let contextValue = 1206
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
 
@@ -197,22 +194,22 @@ describe('./condition.ts', function () {
       })
 
       it('returns true when the range max value is inclusive', function () {
-        var conditionValue = ['1200..1205']
-        var contextValue = 1205
+        const conditionValue = ['1200..1205']
+        const contextValue = 1205
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns false when the range max value is exclusive', function () {
-        var conditionValue = ['1200...1205']
-        var contextValue = 1205
+        const conditionValue = ['1200...1205']
+        const contextValue = 1205
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
 
       it('returns true when there are multiple values and the value is inside the range', function () {
-        var conditionValue = [9323, 9326, '1200..1205', 3000]
-        var contextValue = 1201
+        const conditionValue = [9323, 9326, '1200..1205', 3000]
+        let contextValue = 1201
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
 
@@ -221,64 +218,64 @@ describe('./condition.ts', function () {
       })
 
       it('returns false when there are multiple values and the value is outside the range', function () {
-        var conditionValue = [9323, 9326, '1200..1205', 3000]
-        var contextValue = 3001
+        const conditionValue = [9323, 9326, '1200..1205', 3000]
+        const contextValue = 3001
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
 
       it('returns true when the value is negative and inside the range', function () {
-        var conditionValue = ['-1205..-1200']
-        var contextValue = -1201
+        const conditionValue = ['-1205..-1200']
+        const contextValue = -1201
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns false when the value is negative and inside the range', function () {
-        var conditionValue = ['-1205..-1200']
-        var contextValue = -1206
+        const conditionValue = ['-1205..-1200']
+        const contextValue = -1206
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
 
       it('returns true when the value is inside the reverse range', function () {
-        var conditionValue = ['1205..1200']
-        var contextValue = 1201
+        const conditionValue = ['1205..1200']
+        const contextValue = 1201
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns true when the value is negative and inside the reverse range', function () {
-        var conditionValue = ['-1200..-1205']
-        var contextValue = -1201
+        const conditionValue = ['-1200..-1205']
+        const contextValue = -1201
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns true when the reverse range min value is inclusive', function () {
-        var conditionValue = ['1205..1200']
-        var contextValue = 1200
+        const conditionValue = ['1205..1200']
+        const contextValue = 1200
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.true
       })
 
       it('returns false when the reverse range min value is exclusive', function () {
-        var conditionValue = ['1205...1200']
-        var contextValue = 1200
+        const conditionValue = ['1205...1200']
+        const contextValue = 1200
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
 
       it('returns false when the min and max are the same and the range is exclusive', function () {
-        var conditionValue = ['1200...1200']
-        var contextValue = 1200
+        const conditionValue = ['1200...1200']
+        const contextValue = 1200
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
       })
 
       it('returns false when the context input types is incorrect', function () {
-        var conditionValue = ['1205...1200']
-        var contextValue: any = [1200]
+        const conditionValue = ['1205...1200']
+        let contextValue: any = [1200]
 
         expect(Condition.evaluate(conditionValue, contextValue)).to.be.false
 
@@ -293,8 +290,8 @@ describe('./condition.ts', function () {
       })
 
       it('throws an exception when the condition input is the wrong type', function () {
-        var conditionValue = 1200
-        var contextValue = 1200
+        const conditionValue = 1200
+        const contextValue = 1200
 
         expect(function () {
           // @ts-expect-error
@@ -303,8 +300,8 @@ describe('./condition.ts', function () {
       })
 
       it('throws an exception when the context input is the wrong type', function () {
-        var conditionValue = '1205..1200'
-        var contextValue = '1200'
+        const conditionValue = '1205..1200'
+        const contextValue = '1200'
 
         expect(function () {
           // @ts-expect-error
@@ -335,7 +332,7 @@ describe('./condition.ts', function () {
     })
 
     it('does not get called with an array', function () {
-      var primitiveSpy = this.sandbox.spy(Condition, '_checkPrimitive')
+      const primitiveSpy = this.sandbox.spy(Condition, '_checkPrimitive')
 
       Condition.evaluate([], true)
 

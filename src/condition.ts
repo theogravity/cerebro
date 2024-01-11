@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-/* global module */
 'use strict'
 
 enum CONDITION_TYPES {

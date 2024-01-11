@@ -39,6 +39,7 @@ Changes:
 # Table of Contents
 
 <!-- TOC -->
+
 - [Install](#install)
 - [Getting started](#getting-started)
   - [Static configuration: `loadStaticConfig(yamlFile, context?, overrides?)`](#static-configuration-loadstaticconfigyamlfile-context-overrides)
@@ -71,6 +72,7 @@ Changes:
       - [Multiple dependencies (OR operation)](#multiple-dependencies-or-operation)
 - [Full example YAML](#full-example-yaml)
 - [Benchmarking](#benchmarking)
+- [Looking for a production grade error handling infrastructure?](#looking-for-a-production-grade-error-handling-infrastructure)
 
 <!-- TOC END -->
 

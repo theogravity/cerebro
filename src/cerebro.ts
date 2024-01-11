@@ -2,7 +2,7 @@
  * Copyright 2017 Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
-import {
+import type {
   ICerebroConfig,
   ICerebroConfigEntry,
   ICerebroConfigOptions,
@@ -23,10 +23,6 @@ export class Cerebro {
   _customEvaluators: any
 
   constructor (config: ICerebroConfigEntry[], options?: ICerebroOptions) {
-    if (!config) {
-      throw new Error('`config` is required')
-    }
-
     this._config = this._preprocess(config)
     this._customEvaluators = options?.customEvaluators
 
@@ -42,14 +38,8 @@ export class Cerebro {
    */
   resolveConfig (
     context: ICerebroContext,
-    options?: ICerebroConfigOptions
+    options: ICerebroConfigOptions = {}
   ): ICerebroConfig {
-    if (!context) {
-      throw new Error('`context` is required')
-    }
-
-    options = options || {}
-
     return new CerebroConfig(this._build(context, options.overrides))
   }
 
@@ -61,7 +51,7 @@ export class Cerebro {
    * @param {JSON} dehydratedObject The output of #dehydrate()
    * @return {CerebroConfig} A usable instance of CerebroConfig
    */
-  static rehydrate (dehydratedObject): ICerebroConfig {
+  static rehydrate (dehydratedObject: string): ICerebroConfig {
     // if the dehydratedObject is not valid, JSON parse will fail and throw an error
     const rehydratedObj = JSON.parse(dehydratedObject)
 
@@ -82,12 +72,12 @@ export class Cerebro {
     })
   }
 
-  private _build (context, overrides) {
+  private _build (context: ICerebroContext, overrides: Record<string, any>) {
     const answers = {}
-    const labels: Record<string, Array<string>> = {}
+    const labels: Record<string, string[]> = {}
     const labelResolved = {}
 
-    let answer
+    let answer: { key: string, value: any }
 
     this._config.forEach(function (entry) {
       answer = Evaluator.evaluate(

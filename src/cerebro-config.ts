@@ -1,4 +1,4 @@
-import { ICerebroConfig, ICerebroConfigParams } from './interfaces'
+import type { ICerebroConfig, ICerebroConfigParams } from './interfaces'
 
 /**
  * Wrapper for resolvedConfig that provides convenience methods for checking value types and dehydration
@@ -7,7 +7,7 @@ import { ICerebroConfig, ICerebroConfigParams } from './interfaces'
  */
 export class CerebroConfig implements ICerebroConfig {
   _resolved: Record<string, any>
-  _labels: Record<string, Array<string>>
+  _labels: Record<string, string[]>
   _labelResolved: Record<string, any>
 
   constructor (resolvedConfig: ICerebroConfigParams) {
@@ -156,7 +156,7 @@ export class CerebroConfig implements ICerebroConfig {
    *
    * For settings without labels, an empty array is assigned instead.
    */
-  getLabels (): Record<string, Array<string>> {
+  getLabels (): Record<string, string[]> {
     return this._labels
   }
 }

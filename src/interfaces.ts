@@ -22,7 +22,7 @@ export interface ICerebroConfigOptions {
   overrides?: Record<string, any>
 }
 
-export interface ICerebroConfigParams {
+export interface ICerebroConfigParams<Answers extends Record<string, any> = Record<string, any>> {
   /**
    * Map of setting name : array of labels
    */
@@ -34,7 +34,7 @@ export interface ICerebroConfigParams {
   /**
    * The resolved configuration object
    */
-  answers: Record<string, any>
+  answers: Answers
 }
 
 export interface ICerebroConfig {

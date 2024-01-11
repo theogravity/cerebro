@@ -3,17 +3,17 @@
  * Licensed under the terms of the MIT license. See LICENSE file in project root for terms.
  */
 
-const TEMPLATE_REGEX = /\${[a-z]+}/gi
+export const TEMPLATE_REGEX = /\${[a-z]+}/gi
 
 /**
  * Indicated whether the value is a template string
  * there may be further constraints on its "validity" for Cerebro, which are not imposed here
  *
- * @param  {*}  value
+ * @param  {string}  value
  * @return {Boolean}
  */
-function isTemplate (value) {
-  let matches
+export function isTemplate (value: string): boolean {
+  let matches: string[]
 
   if (typeof value === 'string') {
     matches = value.match(TEMPLATE_REGEX)
@@ -23,5 +23,3 @@ function isTemplate (value) {
 
   return false
 }
-
-export { TEMPLATE_REGEX, isTemplate }

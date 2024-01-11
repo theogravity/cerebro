@@ -4,12 +4,8 @@
  */
 
 import { Evaluator } from '../evaluator'
-
-/* eslint-env mocha */
-/* eslint-disable no-unused-expressions */
-const expect = require('chai').expect
-
-require('../../test/setup/server')
+import { expect } from 'chai'
+import './server'
 
 describe('evaluator.ts', function () {
   describe('multiple conditions', function () {
@@ -30,24 +26,24 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if all conditions are not fulfilled', function () {
-      var context = {
+      const context = {
         farm: '111',
         option: 'c'
       }
-      var overrides = {}
-      var answer = Evaluator.evaluate(this.entry, context, overrides)
+      const overrides = {}
+      const answer = Evaluator.evaluate(this.entry, context, overrides)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('returns the `except` answer if all conditions are fulfilled', function () {
-      var context = {
+      const context = {
         farm: '111',
         option: 'b'
       }
-      var overrides = {}
-      var answer = Evaluator.evaluate(this.entry, context, overrides)
+      const overrides = {}
+      const answer = Evaluator.evaluate(this.entry, context, overrides)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
@@ -71,20 +67,20 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if setting condition is not fulfilled', function () {
-      var context = {}
-      var answers = { foo: false }
-      var overrides = {}
-      var answer = Evaluator.evaluate(this.entry, context, overrides, answers)
+      const context = {}
+      const answers = { foo: false }
+      const overrides = {}
+      const answer = Evaluator.evaluate(this.entry, context, overrides, answers)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('returns the `except` answer if setting condition is fulfilled', function () {
-      var context = {}
-      var answers = { foo: true }
-      var overrides = {}
-      var answer = Evaluator.evaluate(this.entry, context, overrides, answers)
+      const context = {}
+      const answers = { foo: true }
+      const overrides = {}
+      const answer = Evaluator.evaluate(this.entry, context, overrides, answers)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
@@ -108,30 +104,30 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if none of the settings conditions are fulfilled', function () {
-      var context = {}
-      var answers = { foo: false, bar: false }
-      var overrides = {}
-      var answer = Evaluator.evaluate(this.entry, context, overrides, answers)
+      const context = {}
+      const answers = { foo: false, bar: false }
+      const overrides = {}
+      const answer = Evaluator.evaluate(this.entry, context, overrides, answers)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('returns the default answer if only some of the settings conditions are fulfilled', function () {
-      var context = {}
-      var answers = { foo: false, bar: true }
-      var overrides = {}
-      var answer = Evaluator.evaluate(this.entry, context, overrides, answers)
+      const context = {}
+      const answers = { foo: false, bar: true }
+      const overrides = {}
+      const answer = Evaluator.evaluate(this.entry, context, overrides, answers)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('returns the `except` answer if all settings conditions are fulfilled', function () {
-      var context = {}
-      var answers = { foo: true, bar: true }
-      var overrides = {}
-      var answer = Evaluator.evaluate(this.entry, context, overrides, answers)
+      const context = {}
+      const answers = { foo: true, bar: true }
+      const overrides = {}
+      const answer = Evaluator.evaluate(this.entry, context, overrides, answers)
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
@@ -167,10 +163,10 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the new answer if the custom evaluator returns true', function () {
-      var context = {
+      const context = {
         customCondition: 'en-US'
       }
-      var answer
+      let answer
 
       answer = Evaluator.evaluate(
         this.entry,
@@ -185,10 +181,10 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer if the custom evaluator returns false', function () {
-      var context = {
+      const context = {
         customCondition: 'no'
       }
-      var answer
+      let answer
 
       answer = Evaluator.evaluate(
         this.entry,
@@ -203,10 +199,10 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the new answer when return value of the custom evaluator resolves to true', function () {
-      var context = {
+      const context = {
         customCondition: 'en-US'
       }
-      var answer
+      let answer
 
       this.customEvaluators = {
         evaluateCondition: function (condition, testValue) {
@@ -231,10 +227,10 @@ describe('evaluator.ts', function () {
     })
 
     it('returns the default answer when return value of the custom evaluator resolves to false', function () {
-      var context = {
+      const context = {
         customCondition: 'no'
       }
-      var answer
+      let answer
 
       this.customEvaluators = {
         evaluateCondition: function (condition, testValue) {
@@ -276,30 +272,30 @@ describe('evaluator.ts', function () {
     })
 
     it('returns true if the calculated context percentage is within the given percentage', function () {
-      var context = {
+      const context = {
         percentageSeed: '87625364382'
       }
-      var answer = Evaluator.evaluate(this.entry, context, {})
+      const answer = Evaluator.evaluate(this.entry, context, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('returns false if the calculated context percentage is outside of the given percentage', function () {
-      var context = {
+      const context = {
         percentageSeed: '87625364385'
       }
-      var answer = Evaluator.evaluate(this.entry, context, {})
+      const answer = Evaluator.evaluate(this.entry, context, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
     })
 
     it('returns true if the percentage is 100%', function () {
-      var context = {
+      const context = {
         percentageSeed: '87625364385'
       }
-      var entry100 = {
+      const entry100 = {
         setting: this.settingName,
         value: false,
         except: [
@@ -309,17 +305,17 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry100, context, {})
+      const answer = Evaluator.evaluate(entry100, context, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('returns false if the percentage is 100%', function () {
-      var context = {
+      const context = {
         percentageSeed: '87625364385'
       }
-      var entry100 = {
+      const entry100 = {
         setting: this.settingName,
         value: true,
         except: [
@@ -329,17 +325,17 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry100, context, {})
+      const answer = Evaluator.evaluate(entry100, context, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
     })
 
     it('returns false if the percentage is 0%', function () {
-      var context = {
+      const context = {
         percentageSeed: '87625364382'
       }
-      var entry0 = {
+      const entry0 = {
         setting: this.settingName,
         value: false,
         except: [
@@ -349,17 +345,17 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry0, context, {})
+      const answer = Evaluator.evaluate(entry0, context, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
     })
 
     it('returns true if the percentage is 0%', function () {
-      var context = {
+      const context = {
         percentageSeed: '87625364382'
       }
-      var entry0 = {
+      const entry0 = {
         setting: this.settingName,
         value: true,
         except: [
@@ -369,15 +365,15 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry0, context, {})
+      const answer = Evaluator.evaluate(entry0, context, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('throws an error if the percentageSeed property is not supplied', function () {
-      var context = {}
-      var entry = {
+      const context = {}
+      const entry = {
         setting: this.settingName,
         value: true,
         except: [
@@ -394,10 +390,10 @@ describe('evaluator.ts', function () {
     })
 
     it('returns true if the percentageSeed is passed as a number', function () {
-      var context = {
+      const context = {
         percentageSeed: 87625364382
       }
-      var answer = Evaluator.evaluate(this.entry, context, {})
+      const answer = Evaluator.evaluate(this.entry, context, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
@@ -423,7 +419,7 @@ describe('evaluator.ts', function () {
     })
 
     it('returns true if the randomPercentage is within the given percentage', function () {
-      var answer
+      let answer
 
       // Override the random function so that we get reliable test results.
       this.sandbox.stub(Math, 'random').returns(0.019)
@@ -434,7 +430,7 @@ describe('evaluator.ts', function () {
     })
 
     it('returns false if the randomPercentage is outside of the given percentage', function () {
-      var answer
+      let answer
 
       // Override the random function so that we get reliable test results.
       this.sandbox.stub(Math, 'random').returns(0.8)
@@ -445,7 +441,7 @@ describe('evaluator.ts', function () {
     })
 
     it('returns false if the randomPercentage is on the edge of the given percentage', function () {
-      var answer
+      let answer
 
       // Override the random function so that we get reliable test results.
       this.sandbox.stub(Math, 'random').returns(0.02)
@@ -456,7 +452,7 @@ describe('evaluator.ts', function () {
     })
 
     it('returns true if the randomPercentage is just below the given percentage', function () {
-      var answer
+      let answer
 
       // Override the random function so that we get reliable test results.
       this.sandbox.stub(Math, 'random').returns(0.019999999999)
@@ -467,7 +463,7 @@ describe('evaluator.ts', function () {
     })
 
     it('returns true if the randomPercentage is 100%', function () {
-      var entry100 = {
+      const entry100 = {
         setting: this.settingName,
         value: false,
         except: [
@@ -477,14 +473,14 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry100, {}, {})
+      const answer = Evaluator.evaluate(entry100, {}, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
     })
 
     it('returns false if the randomPercentage is 100%', function () {
-      var entry100 = {
+      const entry100 = {
         setting: this.settingName,
         value: true,
         except: [
@@ -494,14 +490,14 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry100, {}, {})
+      const answer = Evaluator.evaluate(entry100, {}, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
     })
 
     it('returns false if the randomPercentage is 0%', function () {
-      var entry0 = {
+      const entry0 = {
         setting: this.settingName,
         value: false,
         except: [
@@ -511,14 +507,14 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry0, {}, {})
+      const answer = Evaluator.evaluate(entry0, {}, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.false
     })
 
     it('returns true if the randomPercentage is 0%', function () {
-      var entry0 = {
+      const entry0 = {
         setting: this.settingName,
         value: true,
         except: [
@@ -528,7 +524,7 @@ describe('evaluator.ts', function () {
           }
         ]
       }
-      var answer = Evaluator.evaluate(entry0, {}, {})
+      const answer = Evaluator.evaluate(entry0, {}, {})
 
       expect(answer.key).to.equal(this.settingName)
       expect(answer.value).to.be.true
@@ -551,7 +547,7 @@ describe('evaluator.ts', function () {
     })
 
     it('compares a primitive', function () {
-      var answer = Evaluator.evaluate(this.settingEntry, {
+      let answer = Evaluator.evaluate(this.settingEntry, {
         dogfood: true
       })
 
@@ -565,8 +561,8 @@ describe('evaluator.ts', function () {
     })
 
     it('does not compare a non-primitive', function () {
-      var settingName = 'testSetting'
-      var settingEntry = {
+      const settingName = 'testSetting'
+      const settingEntry = {
         setting: settingName,
         value: 'default',
         except: [

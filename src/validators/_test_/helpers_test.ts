@@ -6,8 +6,7 @@
 /* global describe, it */
 /* eslint-disable no-unused-expressions */
 import { isTemplate } from '../helpers'
-
-const expect = require('chai').expect
+import { expect } from 'chai'
 
 describe('validator helpers', function () {
   describe('#isTemplate', function () {
@@ -32,6 +31,7 @@ describe('validator helpers', function () {
 
       expect(isTemplate(null)).to.equal(false)
       expect(isTemplate(undefined)).to.equal(false)
+      // @ts-ignore
       expect(isTemplate({ not: 'string' })).to.equal(false)
       expect(isTemplate('no_vars')).to.equal(false)
       expect(isTemplate('${}')).to.equal(false)

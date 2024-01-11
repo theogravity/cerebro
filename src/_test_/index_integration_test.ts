@@ -6,23 +6,22 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 import { Cerebro } from '../cerebro'
+import { expect } from 'chai'
+import './server'
 
-const expect = require('chai').expect
 const FIXTURE_PATH = '../../test/fixtures/'
-
-require('../../test/setup/server')
 
 describe('Feature Flipper', function () {
   describe('integrated test cases', function () {
     describe('feature', function () {
       // takes a generated file from the build and runs it through cerebro
       it('generates the correct output for features', function () {
-        var context = {
+        const context = {
           buckets: '1'
         }
-        var configuration = require(FIXTURE_PATH + 'generated/feature.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'generated/feature.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('optionA')).to.be.true
         expect(cerebroConfig.isEnabled('optionB')).to.be.false
@@ -33,13 +32,13 @@ describe('Feature Flipper', function () {
 
     describe('setting', function () {
       it('generates the correct output for settings', function () {
-        var context = {
+        const context = {
           buckets: '2',
           intls: 'us'
         }
-        var configuration = require(FIXTURE_PATH + 'generated/setting.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'generated/setting.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.getValue('sender')).to.equal('foo@yahoo.com')
         expect(cerebroConfig.getValue('helpUrl')).to.equal('')
@@ -67,19 +66,19 @@ describe('Feature Flipper', function () {
   describe('isolated test cases', function () {
     context('simple features', function () {
       it('enables a feature when enabled is true', function () {
-        var context = {}
-        var configuration = require(FIXTURE_PATH + 'simple/enabled.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const context = {}
+        const configuration = require(FIXTURE_PATH + 'simple/enabled.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('simple')).to.be.true
       })
 
       it('disables a feature when enabled is false', function () {
-        var context = {}
-        var configuration = require(FIXTURE_PATH + 'simple/disabled.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const context = {}
+        const configuration = require(FIXTURE_PATH + 'simple/disabled.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('simple')).to.be.false
       })
@@ -87,15 +86,15 @@ describe('Feature Flipper', function () {
 
     context('templates', function () {
       it('inserts context value into template', function () {
-        var contextEnabled = {
+        const contextEnabled = {
           partner: 'bar'
         }
-        var contextDisabled = {
+        const contextDisabled = {
           partner: 'baz'
         }
-        var configuration = require(FIXTURE_PATH + 'template/simple.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(contextEnabled)
+        const configuration = require(FIXTURE_PATH + 'template/simple.js')
+        const cerebro = new Cerebro(configuration)
+        let cerebroConfig = cerebro.resolveConfig(contextEnabled)
 
         expect(cerebroConfig.getValue('template')).to.equal('https://bar.com')
 
@@ -106,23 +105,23 @@ describe('Feature Flipper', function () {
 
     context('simple settings', function () {
       it('changes the value when the entry is evaluated to true', function () {
-        var context = {
+        const context = {
           bucket: ['43225', '123']
         }
-        var configuration = require(FIXTURE_PATH + 'settings/setting.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'settings/setting.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.getValue('testSetting')).to.equal(777)
       })
 
       it('does not change the value when the entry is evaluated to false', function () {
-        var context = {
+        const context = {
           bucket: '14353'
         }
-        var configuration = require(FIXTURE_PATH + 'settings/setting.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'settings/setting.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.getValue('testSetting')).to.equal(42)
       })
@@ -130,25 +129,25 @@ describe('Feature Flipper', function () {
 
     context('multiple except blocks', function () {
       it('chooses the right value when the option is first', function () {
-        var context = {
+        const context = {
           bucket: '123'
         }
-        var configuration = require(FIXTURE_PATH +
+        const configuration = require(FIXTURE_PATH +
           'multiple_except_blocks/multiple_except_blocks.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.getValue('testSetting')).to.equal(777)
       })
 
       it('chooses the right value when the option is second', function () {
-        var context = {
+        const context = {
           bucket: '445'
         }
-        var configuration = require(FIXTURE_PATH +
+        const configuration = require(FIXTURE_PATH +
           'multiple_except_blocks/multiple_except_blocks.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.getValue('testSetting')).to.equal(888)
       })
@@ -156,21 +155,21 @@ describe('Feature Flipper', function () {
 
     context('when depending on a feature', function () {
       it('enables a feature when the independent feature is enabled', function () {
-        var context = {}
-        var configuration = require(FIXTURE_PATH + 'dependent/enabled.js')
-        var options = {}
-        var cerebro = new Cerebro(configuration, options)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const context = {}
+        const configuration = require(FIXTURE_PATH + 'dependent/enabled.js')
+        const options = {}
+        const cerebro = new Cerebro(configuration, options)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('dependent')).to.be.true
       })
 
       it('does nothing when the independent feature is disabled', function () {
-        var context = {}
-        var configuration = require(FIXTURE_PATH + 'dependent/disabled.js')
-        var options = {}
-        var cerebro = new Cerebro(configuration, options)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const context = {}
+        const configuration = require(FIXTURE_PATH + 'dependent/disabled.js')
+        const options = {}
+        const cerebro = new Cerebro(configuration, options)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('dependent')).to.be.false
       })
@@ -179,23 +178,23 @@ describe('Feature Flipper', function () {
     context('when the configuration is a list', function () {
       context('default list scenarios', function () {
         it('enables the feature when the context matches', function () {
-          var context = {
+          const context = {
             buckets: 'bucket1'
           }
-          var configuration = require(FIXTURE_PATH + 'enums/default.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'enums/default.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('list')).to.be.true
         })
 
         it('does not enable the feature when the context does not match', function () {
-          var context = {
+          const context = {
             buckets: ['bucket3']
           }
-          var configuration = require(FIXTURE_PATH + 'enums/default.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'enums/default.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('list')).to.be.false
         })
@@ -203,33 +202,33 @@ describe('Feature Flipper', function () {
 
       context('and it contains `all`', function () {
         it('enables the feature when the context contains a valid value', function () {
-          var context = {
+          const context = {
             buckets: ['bucket1']
           }
-          var configuration = require(FIXTURE_PATH + 'enums/all.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'enums/all.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('all')).to.be.true
         })
 
         it('enables the feature when the context contains a invalid value', function () {
           // this functionality is debatable, but it appears to be this way in Storm.
-          var context = {
+          const context = {
             buckets: ['bucket3']
           }
-          var configuration = require(FIXTURE_PATH + 'enums/all.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'enums/all.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('all')).to.be.true
         })
 
         it('disables the feature when the context contains no value', function () {
-          var context = {}
-          var configuration = require(FIXTURE_PATH + 'enums/all.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const context = {}
+          const configuration = require(FIXTURE_PATH + 'enums/all.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('all')).to.be.false
         })
@@ -237,33 +236,33 @@ describe('Feature Flipper', function () {
 
       context('and it contains `none`', function () {
         it('disables the feature when the context contains a valid value', function () {
-          var context = {
+          const context = {
             buckets: ['bucket1']
           }
-          var configuration = require(FIXTURE_PATH + 'enums/none.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'enums/none.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('none')).to.be.false
         })
 
         it('disables the feature when the context contains a invalid value', function () {
           // this functionality is debatable, but it appears to be this way in Storm.
-          var context = {
+          const context = {
             buckets: ['bucket3']
           }
-          var configuration = require(FIXTURE_PATH + 'enums/none.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'enums/none.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('none')).to.be.false
         })
 
         it('enables the feature when the context contains no value', function () {
-          var context = {}
-          var configuration = require(FIXTURE_PATH + 'enums/none.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const context = {}
+          const configuration = require(FIXTURE_PATH + 'enums/none.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('none')).to.be.true
         })
@@ -272,100 +271,100 @@ describe('Feature Flipper', function () {
 
     context('when the configuration contains a range', function () {
       it('enables the feature for a number within the range', function () {
-        var context = {
+        const context = {
           bucket: 1500
         }
-        var configuration = require(FIXTURE_PATH + 'range/default.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/default.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.true
       })
 
       it('enables the feature when the range is inclusive', function () {
-        var context = {
+        const context = {
           bucket: 2000
         }
-        var configuration = require(FIXTURE_PATH + 'range/default.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/default.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.true
       })
 
       it('does not enable the feature when the range is exclusive', function () {
-        var context = {
+        const context = {
           bucket: 2000
         }
-        var configuration = require(FIXTURE_PATH + 'range/exclusive.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/exclusive.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.false
       })
 
       it('does not enable the feature for a number greater than the range', function () {
-        var context = {
+        const context = {
           bucket: 2001
         }
-        var configuration = require(FIXTURE_PATH + 'range/default.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/default.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.false
       })
 
       it('does not enable the feature for a number less than the range', function () {
-        var context = {
+        const context = {
           bucket: 999
         }
-        var configuration = require(FIXTURE_PATH + 'range/default.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/default.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.false
       })
 
       it('enables the feature for a number within a negative range', function () {
-        var context = {
+        const context = {
           bucket: -1500
         }
-        var configuration = require(FIXTURE_PATH + 'range/negative.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/negative.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.true
       })
 
       it('enables the feature for a number within a reverse negative range', function () {
-        var context = {
+        const context = {
           bucket: -1500
         }
-        var configuration = require(FIXTURE_PATH + 'range/reverse_negative.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/reverse_negative.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.true
       })
 
       it('disables the feature for a number outside a negative range', function () {
-        var context = {
+        const context = {
           bucket: -999
         }
-        var configuration = require(FIXTURE_PATH + 'range/negative.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/negative.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.false
       })
 
       it('enables the feature for a number outside a reverse negative range', function () {
-        var context = {
+        const context = {
           bucket: -999
         }
-        var configuration = require(FIXTURE_PATH + 'range/reverse_negative.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const configuration = require(FIXTURE_PATH + 'range/reverse_negative.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('range')).to.be.false
       })
@@ -385,25 +384,25 @@ describe('Feature Flipper', function () {
       'when there are multiple conditions in one except block',
       function () {
         it('enables the feature if all conditions are met', function () {
-          var context = {
+          const context = {
             env: 'alpha',
             bucket: 'bucket1'
           }
-          var configuration = require(FIXTURE_PATH + 'combined/combined.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'combined/combined.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('combined')).to.be.true
         })
 
         it('does not enable the feature if all conditions are not met', function () {
-          var context = {
+          const context = {
             env: 'alpha',
             bucket: 'bucket2'
           }
-          var configuration = require(FIXTURE_PATH + 'combined/combined.js')
-          var cerebro = new Cerebro(configuration)
-          var cerebroConfig = cerebro.resolveConfig(context)
+          const configuration = require(FIXTURE_PATH + 'combined/combined.js')
+          const cerebro = new Cerebro(configuration)
+          const cerebroConfig = cerebro.resolveConfig(context)
 
           expect(cerebroConfig.isEnabled('combined')).to.be.false
         })
@@ -412,31 +411,31 @@ describe('Feature Flipper', function () {
 
     context('overrides', function () {
       it('overrides the setting if provided', function () {
-        var context = {
+        const context = {
           bucket: ['43225', '123']
         }
-        var options = {
+        const options = {
           overrides: {
             testSetting: 888
           }
         }
-        var configuration = require(FIXTURE_PATH + 'settings/setting.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context, options)
+        const configuration = require(FIXTURE_PATH + 'settings/setting.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context, options)
 
         expect(cerebroConfig.getValue('testSetting')).to.equal(888)
       })
 
       it('coerces the override to boolean if the setting is boolean', function () {
-        var context = {}
-        var options = {
+        const context = {}
+        const options = {
           overrides: {
             simple: 0
           }
         }
-        var configuration = require(FIXTURE_PATH + 'simple/enabled.js')
-        var cerebro = new Cerebro(configuration)
-        var cerebroConfig = cerebro.resolveConfig(context, options)
+        const configuration = require(FIXTURE_PATH + 'simple/enabled.js')
+        const cerebro = new Cerebro(configuration)
+        const cerebroConfig = cerebro.resolveConfig(context, options)
 
         expect(cerebroConfig.isEnabled('simple')).to.equal(false)
       })
@@ -456,31 +455,31 @@ describe('Feature Flipper', function () {
       })
 
       it('returns the new answer if the custom evaluator is fulfilled', function () {
-        var context = {
+        const context = {
           customCondition: 'en-US'
         }
-        var options = {
+        const options = {
           customEvaluators: this.customEvaluators
         }
-        var configuration = require(FIXTURE_PATH +
+        const configuration = require(FIXTURE_PATH +
           'custom_evaluator/custom_evaluator.js')
-        var cerebro = new Cerebro(configuration, options)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const cerebro = new Cerebro(configuration, options)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('customEvaluator')).to.be.true
       })
 
       it('returns the default answer if the custom evaluator is not fulfilled', function () {
-        var context = {
+        const context = {
           customCondition: 'no'
         }
-        var options = {
+        const options = {
           customEvaluators: this.customEvaluators
         }
-        var configuration = require(FIXTURE_PATH +
+        const configuration = require(FIXTURE_PATH +
           'custom_evaluator/custom_evaluator.js')
-        var cerebro = new Cerebro(configuration, options)
-        var cerebroConfig = cerebro.resolveConfig(context)
+        const cerebro = new Cerebro(configuration, options)
+        const cerebroConfig = cerebro.resolveConfig(context)
 
         expect(cerebroConfig.isEnabled('customEvaluator')).to.be.false
       })

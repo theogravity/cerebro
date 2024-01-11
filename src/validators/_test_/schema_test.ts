@@ -6,8 +6,8 @@
 /* global describe, it, beforeEach */
 /* eslint-disable no-unused-expressions */
 
-const validate = require('../index')
-const expect = require('chai').expect
+import { validate } from '../index'
+import { expect } from 'chai'
 
 describe('schema validation', function () {
   describe('key validation', function () {
@@ -23,7 +23,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when there is an invalid key', function () {
-      var report
+      let report
 
       this.data[0].invalid = true
       report = validate(this.clientSchema, this.data)
@@ -35,7 +35,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `setting` does not exist', function () {
-      var report
+      let report
 
       delete this.data[0].setting
       report = validate(this.clientSchema, this.data)
@@ -47,7 +47,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `value` does not exist', function () {
-      var report
+      let report
 
       delete this.data[0].value
       report = validate(this.clientSchema, this.data)
@@ -73,7 +73,7 @@ describe('schema validation', function () {
 
     it('returns an error when `setting` is not a string', function () {
       ;[true, 42, {}, [], null, undefined].forEach(function (value) {
-        var report
+        let report
 
         this.data[0].setting = value
 
@@ -83,7 +83,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `setting` is a string', function () {
-      var report = validate(this.clientSchema, this.data)
+      let report = validate(this.clientSchema, this.data)
 
       expect(report.valid).to.be.true
     })
@@ -103,7 +103,7 @@ describe('schema validation', function () {
 
     it('does not return an error when `value` is not null or undefined', function () {
       ;[true, 42, {}, [], 'string'].forEach(function (value) {
-        var report
+        let report
 
         this.data[0].value = value
 
@@ -114,7 +114,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` is null or undefined', function () {
       ;[null, undefined].forEach(function (value) {
-        var report
+        let report
 
         this.data[0].value = value
 
@@ -139,7 +139,7 @@ describe('schema validation', function () {
 
     it('returns an error when `except` is not an array', function () {
       ;[true, 42, {}, 'string', null, undefined].forEach(function (value) {
-        var report
+        let report
 
         this.data[0].except = value
 
@@ -149,13 +149,13 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `except` is an array', function () {
-      var report = validate(this.clientSchema, this.data)
+      let report = validate(this.clientSchema, this.data)
 
       expect(report.valid).to.be.true
     })
 
     it('does not return an error when `except` does not exist', function () {
-      var report
+      let report
 
       delete this.data[0].except
       report = validate(this.clientSchema, this.data)
@@ -163,7 +163,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when there is no `value` inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({})
       report = validate(this.clientSchema, this.data)
@@ -175,7 +175,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error if there is a `value` inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: 'asdf'
@@ -187,7 +187,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error if `value` is an object inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: {
@@ -201,7 +201,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error if there is a null `value` inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: null
@@ -213,7 +213,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error if there is a `percentage` inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -226,7 +226,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error if there is a non-numerical `percentage` inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -239,7 +239,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error if there is a `percentage` that is too big inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -252,7 +252,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error if there is a `percentage` that is too small inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -265,7 +265,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error if there is a `randomPercentage` inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -278,7 +278,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error if there is a `randomPercentage` that is too big inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -291,7 +291,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error if there is a `randomPercentage` that is too big inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -304,7 +304,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error if there is a `randomPercentage` that is too small inside an `except`', function () {
-      var report
+      let report
 
       this.data[0].except.push({
         value: true,
@@ -319,7 +319,7 @@ describe('schema validation', function () {
 
   describe('client schema', function () {
     it('respects the client schema', function () {
-      var data = [
+      let data = [
         {
           setting: 'convReplyBucket',
           value: false,
@@ -331,7 +331,7 @@ describe('schema validation', function () {
           ]
         }
       ]
-      var clientSchema = {
+      let clientSchema = {
         buckets: {
           type: 'array',
           minItems: 1,
@@ -341,16 +341,16 @@ describe('schema validation', function () {
           }
         }
       }
-      var report = validate(clientSchema, data)
+      let report = validate(clientSchema, data)
 
       expect(report.errors.length).to.equal(1)
       expect(report.valid).to.be.false
     })
 
     it('passes validation', function () {
-      var clientSchema = require('./fixtures/settings/client_schema.json')
-      var data = require('./fixtures/settings/settings.json')
-      var report
+      let clientSchema = require('./fixtures/settings/client_schema.json')
+      let data = require('./fixtures/settings/settings.json')
+      let report
 
       report = validate(clientSchema, data)
 
@@ -374,15 +374,15 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is a string', function () {
-      var report = validate(this.clientSchema, this.data)
+      let report = validate(this.clientSchema, this.data)
 
       expect(report.valid).to.be.true
     })
 
     it('returns an error when `value` is not a string', function () {
       ;[true, 42, {}, []].forEach(function (val) {
-        var report
-        var expectedValType = Array.isArray(val) ? 'array' : typeof val
+        let report
+        let expectedValType = Array.isArray(val) ? 'array' : typeof val
 
         this.data[0].value = val
 
@@ -398,7 +398,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is a number', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'number'
       this.data[0].value = -42
@@ -408,7 +408,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` is not a number', function () {
       ;[true, 'abc', {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = 'number'
         this.data[0].value = val
@@ -419,7 +419,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is a boolean', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'boolean'
       this.data[0].value = true
@@ -429,7 +429,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` is not a boolean', function () {
       ;['abc', 42, {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = 'boolean'
         this.data[0].value = val
@@ -440,7 +440,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is a object', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'object'
       this.data[0].value = {
@@ -452,7 +452,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` is not a object', function () {
       ;[true, 'abc', 42, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = 'object'
         this.data[0].value = val
@@ -461,7 +461,7 @@ describe('schema validation', function () {
       }, this)
     })
     it('does not return an error when `valueType` is an array', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'array'
       this.data[0].value = ['abc', 31]
@@ -471,7 +471,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` is not an array', function () {
       ;[true, 'abc', 42, {}].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = 'array'
         this.data[0].value = val
@@ -481,7 +481,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is a uint', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'uint'
       this.data[0].value = 42
@@ -491,7 +491,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` is not a uint', function () {
       ;[true, 'abc', {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = 'uint'
         this.data[0].value = val
@@ -501,7 +501,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is a validurl', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'url'
       this.data[0].value = 'https://www.tumblr.com/share/'
@@ -527,7 +527,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when `valueType` is an invalid url', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'url'
       this.data[0].value = 'http://-error-.invalid/'
@@ -549,7 +549,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` is not a url', function () {
       ;[true, 'abc', 42, {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = 'url'
         this.data[0].value = val
@@ -559,7 +559,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is an external email', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'email'
       this.data[0].value = 'me@example.org'
@@ -568,7 +568,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `valueType` is a regular expression', function () {
-      var report
+      let report
 
       this.data[0].valueType = {
         regex: '^[a-z]+\\s\\d+$'
@@ -581,7 +581,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` does not match the regular expression', function () {
       ;[true, 'abc', 42, {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = {
           regex: '^[a-z]+\\s\\d+$'
@@ -596,7 +596,7 @@ describe('schema validation', function () {
     })
 
     it('return an error when `valueType` case sensitive regular expression', function () {
-      var report
+      let report
 
       this.data[0].valueType = {
         regex: '^[a-z]+\\s\\d+$'
@@ -612,7 +612,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` does not match the regular expression', function () {
       ;[true, 'abc', 42, {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = {
           regex: '^[a-z]+\\s\\d+$'
@@ -627,7 +627,7 @@ describe('schema validation', function () {
     })
 
     it('succeeds when `valueType` is a case insensitive regular expression', function () {
-      var report
+      let report
 
       this.data[0].valueType = {
         iregex: '^[a-z]+\\s\\d+$'
@@ -640,7 +640,7 @@ describe('schema validation', function () {
 
     it('returns an error when `value` does not match the case insensitive regular expression', function () {
       ;[true, 'abc', 42, {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].valueType = {
           iregex: '^[a-z]+\\s\\d+$'
@@ -655,7 +655,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when the valueType is unknown', function () {
-      var report
+      let report
 
       this.data[0].valueType = 'abc'
 
@@ -664,7 +664,7 @@ describe('schema validation', function () {
     })
 
     it('returns an error when an object is not a known valueType', function () {
-      var report
+      let report
 
       this.data[0].valueType = {
         abc: 'allthethings!'
@@ -699,14 +699,14 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when except-block `value` is a string', function () {
-      var report = validate(this.clientSchema, this.data)
+      let report = validate(this.clientSchema, this.data)
 
       expect(report.valid).to.be.true
     })
 
     it('returns an error when except-block `value` is not a string', function () {
       ;[true, 42, {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].except[0].value = val
 
@@ -740,7 +740,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when all `values` are strings', function () {
-      var report
+      let report
 
       report = validate(this.clientSchema, this.data)
       expect(report.valid).to.be.true
@@ -748,7 +748,7 @@ describe('schema validation', function () {
 
     it('returns an error when a second except `value` is not a string', function () {
       ;[true, 42, {}, []].forEach(function (val) {
-        var report
+        let report
 
         this.data[0].except[1].value = val
 
@@ -776,7 +776,7 @@ describe('schema validation', function () {
     })
 
     it('does not return an error when `setting` is a string', function () {
-      var report
+      let report
 
       this.data[1].except.push({
         value: true,
@@ -793,7 +793,7 @@ describe('schema validation', function () {
         value: true
       })
       ;[true, 42, {}, []].forEach(function (valType) {
-        var report
+        let report
 
         this.data[1].except[0].setting = valType
 

@@ -1,4 +1,4 @@
-import { ICerebroConfigEntry } from './interfaces'
+import type { ICerebroConfigEntry } from './interfaces'
 
 /**
  * Generates an override list from process.env
