@@ -1,9 +1,10 @@
 /* eslint-env mocha */
 /* eslint-disable no-unused-expressions */
 
-import { loadStaticConfig, getDynamicConfigBuilder } from '../yaml-loader'
+import { loadStaticConfig, getDynamicConfigBuilder, loadConfigParser } from '../yaml-loader'
 import { join } from 'path'
 import { expect } from 'chai'
+import {Cerebro} from "../cerebro";
 
 describe('./yaml-loader.ts', function () {
   describe('load static config', function () {
@@ -89,6 +90,14 @@ describe('./yaml-loader.ts', function () {
         andOfFooAndBar: true,
         andOfFooOrBar: true
       })
+    })
+  })
+
+  describe('load config parser', function () {
+    it('it should load a yaml file and return a Cerebro instance using loadConfigParser()', () => {
+      const cerebro = loadConfigParser(join(__dirname, '..', '..', 'example.yaml'))
+
+      expect(cerebro instanceof Cerebro).to.be.true
     })
   })
 })

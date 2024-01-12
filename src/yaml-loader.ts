@@ -49,3 +49,17 @@ export function getDynamicConfigBuilder<Flags extends Record<string, any> = Reco
     })
   }
 }
+
+/**
+ * Given the path to a YAML file, returns a Cerebro instance
+ * @param {String} configFile Path to YAML file
+ * @return {Cerebro}
+ */
+export function loadConfigParser<Flags extends Record<string, any> = Record<string, any>> (
+  configFile: string,
+): Cerebro<Flags> {
+  const filePath = resolve(process.cwd(), configFile)
+  const config = yaml.safeLoad(readFileSync(filePath, 'utf8'))
+
+  return new Cerebro<Flags>(config)
+}

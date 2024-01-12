@@ -14,9 +14,16 @@ import { Evaluator } from './evaluator'
 import { CerebroConfig } from './cerebro-config'
 
 /**
- * @param {Array} config - array containing setting entries
- * @param {Object} [Optional] options Object containing customEvaluators
- * @param {Object} customEvaluators object containing the custom evaluation methods
+ * Cerebro is the main class that creates the configuration.
+ * It takes a configuration object and returns a CerebroConfig object
+ * that represents the settings store.
+ *
+ * @class Cerebro
+ * @constructor
+ * @param {Array} config List of configuration objects
+ * @param {Object} [options]
+ * @param {Object} [options.customEvaluators] - contains the list of custom evaluators {evaluator: function}
+ * @param {Object} [options.poller] - contains the poller instance
  */
 export class Cerebro<Flags extends Record<string, any> = Record<string, any>> {
   _config: any

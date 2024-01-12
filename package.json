@@ -1,6 +1,6 @@
 {
   "name": "configurity",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "A production-grade, battle-tested YAML / env-based configuration system.",
   "author": "Scott Sperling <scsper@yahoo.com>",
   "contributors": [

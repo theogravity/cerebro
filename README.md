@@ -48,6 +48,7 @@ Changes:
         - [Specifying objects](#specifying-objects)
         - [Specifying arrays](#specifying-arrays)
   - [Dynamic configuration: `getDynamicConfigBuilder(yamlFilePath)`](#dynamic-configuration-getdynamicconfigbuilderyamlfilepath)
+  - [Get an instance of the Cerebro parser: `loadConfigParser(yamlFilePath)`](#get-an-instance-of-the-cerebro-parser-loadconfigparseryamlfilepath)
 - [`CerebroConfig` API](#cerebroconfig-api)
   - [`getAssertValue(settingName: string) : any`](#getassertvaluesettingname-string--any)
   - [`getValue(settingName: string) : any`](#getvaluesettingname-string--any)
@@ -218,9 +219,15 @@ export function middleware((req, res) => {
 })
 ```
 
+### Get an instance of the Cerebro parser: `loadConfigParser(yamlFilePath)`
+
+This returns an instance of `Cerebro` that you can use to generate a `CerebroConfig` instance.
+
+In most cases, you would want to use `loadStaticConfig()` or `getDynamicConfigBuilder()` instead.
+
 ## `CerebroConfig` API
 
-`CerebroConfig<Flags extends Record<string, any> = Record<string, any>>` is the object returned by `loadStaticConfig()` and `getDynamicConfigBuilder()`.
+`CerebroConfig<Flags extends Record<string, any> = Record<string, any>>` is the instance returned by `loadStaticConfig()` and `getDynamicConfigBuilder()`.
 
 `Flags` is an optional generic that allows you to define an interface for your settings.
 

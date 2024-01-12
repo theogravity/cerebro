@@ -1,5 +1,5 @@
 export { Cerebro } from './cerebro'
-export { loadStaticConfig, getDynamicConfigBuilder } from './yaml-loader'
+export { loadStaticConfig, getDynamicConfigBuilder, loadConfigParser } from './yaml-loader'
 export { CerebroConfig } from './cerebro-config'
 export { ICerebroConfig } from './interfaces'
 export { ConfigPoller } from './config-poller'

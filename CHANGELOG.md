@@ -1,3 +1,7 @@
+## 3.3.0 - Fri Jan 12 2024
+
+- Add `loadConfigParser()` helper that returns a `Cerebro` parser instance that is used to generate a `CerebroConfig` instance.
+
 ## 3.2.0 - Thu Jan 11 2024
 
 - Add `getConfigValueForLabel()` method to `CerebroConfig`
