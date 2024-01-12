@@ -55,6 +55,7 @@ Changes:
   - [`isEnabled(settingName: string) : boolean`](#isenabledsettingname-string--boolean)
   - [`getRawConfig() : object`](#getrawconfig--object)
   - [`getConfigForLabel(labelName: string): object`](#getconfigforlabellabelname-string-object)
+  - [`getConfigValueForLabel(labelName: string, settingName: string): any`](#getconfigvalueforlabellabelname-string-settingname-string-any)
   - [`getLabels(): object`](#getlabels-object)
 - [Configuration Rules](#configuration-rules)
   - [Basic configuration](#basic-configuration)
@@ -311,6 +312,10 @@ const obj = config.getConfigForLabel('server')
 ```typescript
 { "database_name": "db-name", "service_port": 3000 }
 ```
+
+### `getConfigValueForLabel(labelName: string, settingName: string): any`
+
+Get the value of a setting that was categorized under a label. Returns null if the setting does not exist.
 
 ### `getLabels(): object`
 

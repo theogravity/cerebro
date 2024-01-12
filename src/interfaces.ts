@@ -100,6 +100,13 @@ export interface ICerebroConfig<Flags extends Record<string, any> = Record<strin
    * Returns null if the label does not exist.
    */
   getConfigForLabel(label: string): Record<string, any>
+
+  /**
+   * Gets a value from configuration categorized under a specific label.
+   *
+   * Returns null if the label or key does not exist.
+   */
+  getConfigValueForLabel(label: string, key: string): any
 }
 
 export type DynamicConfigBuilder<Flags extends Record<string, any> = Record<string, any>> = (

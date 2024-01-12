@@ -295,6 +295,18 @@ describe('./cerebro.ts', function () {
       })
     })
 
+    describe('#getConfigValueForLabel', function () {
+      it('returns a value for a defined label', function () {
+        expect(this.cerebroConfig.getConfigValueForLabel('s', 'a')).to.eql(
+          labelResolved.s.a
+        )
+      })
+
+      it('returns null for an undefined label', function () {
+        expect(this.cerebroConfig.getConfigValueForLabel('s', 'undef_label')).to.eql(null)
+      })
+    })
+
     describe('#dehydrate', function () {
       it('returns a JSON string', function () {
         const json = this.cerebroConfig.dehydrate()

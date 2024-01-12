@@ -1,3 +1,7 @@
+## 3.2.0 - Thu Jan 11 2024
+
+- Add `getConfigValueForLabel()` method to `CerebroConfig`
+
 ## 3.1.0 - Thu Jan 11 2024
 
 - Cherry-picked [polling](https://github.com/yahoo/cerebro/pull/16/) feature from `cerebro` by @juandopazo

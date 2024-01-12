@@ -151,6 +151,16 @@ export class CerebroConfig<Flags extends Record<string, any> = Record<string, an
   }
 
   /**
+   * Gets a value from configuration that was categorized under a specific label.
+   *
+   * Returns null if the label or key does not exist.
+   */
+  getConfigValueForLabel(label: string, key: string) {
+    const labels = this.getConfigForLabel(label)
+    return labels ? labels[key] ?? null : null
+  }
+
+  /**
    * Returns an object in the form of `{ <setting_name>: <array of labels> }`.
    *
    * For settings without labels, an empty array is assigned instead.
